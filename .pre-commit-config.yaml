@@ -1,0 +1,27 @@
+repos:
+# pre-commit
+## python
+-   repo: https://github.com/pre-commit/mirrors-isort
+    rev: v5.6.4
+    hooks:
+    - id: isort # Sort python imports
+-   repo: https://github.com/ambv/black
+    rev: stable
+    hooks:
+    - id: black # Fix python style
+      language_version: python3
+-   repo: https://gitlab.com/pycqa/flake8
+    rev: 3.8.4
+    hooks:
+    - id: flake8  # Validate McCabe cyclomatic complexity
+# commit-msg
+-   repo: https://github.com/jorisroovers/gitlint
+    rev: v0.13.1
+    hooks:
+    -   id: gitlint # Enforce extra rules
+        stages: [commit-msg]
+-   repo: https://github.com/commitizen-tools/commitizen
+    rev: master
+    hooks:
+    - id: commitizen  # Bump version fail-safe
+      stages: [commit-msg]
