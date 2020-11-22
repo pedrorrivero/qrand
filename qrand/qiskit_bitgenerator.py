@@ -85,13 +85,13 @@ class QiskitBitGenerator:
         return least_busy(backends) if backends else None
 
     ############################# PUBLIC METHODS #############################
-    def get_bitstring(self, n):
+    def get_bitstring(self, n: int) -> str:
         while self._bitcache.size < n:
             self._fetch_random_bits()
         return self._bitcache.get(n)
 
     ############################# PRIVATE METHODS #############################
-    def _fetch_random_bits(self):
+    def _fetch_random_bits(self) -> bool:
         circuits = [self._circuit] * self._get_experiments()
         job = execute(circuits, self._backend, shots=self._get_shots())
         result = job.result()
@@ -100,20 +100,21 @@ class QiskitBitGenerator:
             self._bitcache.put(m)
         return True
 
-    def _get_experiments(self):
+    def _get_experiments(self) -> int:
         config = self._config
         return config["max_experiments"] if config["max_experiments"] else 1
 
-    def _get_shots(self):
+    def _get_shots(self) -> int:
         config = self._config
         return config["max_shots"] if config["memory"] else 1
 
     def _parse_results(self, result):
         config = self._config
         if config["memory"]:
-            msg = "Strategy for Result.get_memory() not implemented "
-            msg += "(see qiskit-terra #5415 on github)"
-            raise NotImplementedError(msg)
+            raise NotImplementedError(
+                "Strategy for Result.get_memory() not implemented \
+                (see qiskit-terra #5415 on github)"
+            )
         else:
             counts = result.get_counts()
             counts = [counts] if type(counts) != list else counts
@@ -130,7 +131,7 @@ class QiskitBitGenerator:
 
     ########################### PRIVATE PROPERTIES ###########################
     @property
-    def _circuit(self):
+    def _circuit(self) -> QuantumCircuit:
         config = self._config
         qr = QuantumRegister(config["n_qubits"])
         cr = ClassicalRegister(config["n_qubits"])
@@ -160,7 +161,7 @@ class QiskitBitGenerator:
         return config
 
     ############################# NUMPY INTERFACE #############################
-    def random_raw(self):
+    def random_raw(self) -> uint64:
         """Generate the next "raw" value, which is 64 bits"""
         bitstring = self.get_bitstring(64)
         random = int(bitstring, 2)
@@ -219,13 +220,13 @@ class QiskitBitGenerator:
 ###############################################################################
 ## QISKIT BIT GENERATOR WRAPPER FOR NUMPY
 ###############################################################################
-def QiskitNumpyBitGenerator(provider=None, backend=None, pybitgen=None):
-    if not pybitgen:
-        pybitgen = QiskitBitGenerator(provider=provider, backend=backend)
+def QiskitNumpyBitGenerator(provider=None, backend=None, bitgen=None):
+    if not bitgen:
+        bitgen = QiskitBitGenerator(provider=provider, backend=backend)
     return UserBitGenerator(
-        pybitgen.next_64,
+        bitgen.next_64,
         64,
-        next_32=pybitgen.next_32,
-        state_getter=pybitgen.state_getter,
-        state_setter=pybitgen.state_setter,
+        next_32=bitgen.next_32,
+        state_getter=bitgen.state_getter,
+        state_setter=bitgen.state_setter,
     )

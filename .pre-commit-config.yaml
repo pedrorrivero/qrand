@@ -50,7 +50,7 @@ repos:
     description: "Run tests"
     stages: [commit]
     language: system
-    entry: pytest
+    entry: pytest tests
     types: [python]
   - id: pytest-cov
     name: pytest-cov
