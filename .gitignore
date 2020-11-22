@@ -1,4 +1,6 @@
 **.DS_Store
 .venv
+.*_cache
 dist
+htmlcov
 **__pycache__

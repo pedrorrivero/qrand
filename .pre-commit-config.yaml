@@ -2,27 +2,82 @@ default_stages: [commit, manual]
 repos:
 # pre-commit
 ## python
--   repo: https://github.com/pre-commit/mirrors-isort
-    rev: v5.6.4
-    hooks:
-    - id: isort # Sort python imports
--   repo: https://github.com/ambv/black
-    rev: stable
-    hooks:
-    - id: black # Fix python style
-      language_version: python3
--   repo: https://gitlab.com/pycqa/flake8
-    rev: 3.8.4
-    hooks:
-    - id: flake8  # Validate McCabe cyclomatic complexity
+- repo: local
+  hooks:
+  - id: isort
+    name: isort
+    description: "Sort python imports"
+    stages: [commit]
+    entry: isort
+    require_serial: true
+    language: python
+    types: [python]
+    args: ['--filter-files']
+
+- repo: https://github.com/pre-commit/mirrors-mypy
+  rev: master
+  hooks:
+  - id: mypy
+    name: mypy
+    description: "Static type checker"
+    stages: [commit]
+    types: [python]
+
+- repo: local
+  hooks:
+  - id: black
+    name: black
+    description: "Python code formatter"
+    stages: [commit]
+    entry: black
+    language: python
+    language_version: python3
+    require_serial: true
+    types: [python]
+
+- repo: https://gitlab.com/pycqa/flake8
+  rev: master
+  hooks:
+  - id: flake8
+    name: flake8
+    description: "PyFlakes lint + PyCodeStyle + McCabe cyclomatic complexity"
+    stages: [commit]
+
+- repo: local
+  hooks:
+  - id: pytest
+    name: pytest
+    description: "Run tests"
+    stages: [commit]
+    language: system
+    entry: pytest
+    types: [python]
+  - id: pytest-cov
+    name: pytest-cov
+    description: "Produce coverage report"
+    stages: [commit]
+    language: system
+    entry: pytest --cov= --cov-report html tests #--cov-fail-under=100
+    types: [python]
+    pass_filenames: false
+
 # commit-msg
--   repo: https://github.com/jorisroovers/gitlint
-    rev: v0.13.1
-    hooks:
-    -   id: gitlint # Enforce extra rules
-        stages: [commit-msg]
--   repo: https://github.com/commitizen-tools/commitizen
-    rev: master
-    hooks:
-    - id: commitizen  # Bump version fail-safe
-      stages: [commit-msg]
+- repo: https://github.com/jorisroovers/gitlint
+  rev: main
+  hooks:
+  - id: gitlint
+    name: gitlint
+    description: "Enforce conventional commits and extra commiting rules"
+    stages: [commit-msg]
+
+- repo: local
+  hooks:
+  - id: commitizen
+    name: commitizen check
+    description: "Check whether the commit message follows commiting rules"
+    stages: [commit-msg]
+    entry: cz check --commit-msg-file
+    language: python
+    language_version: python3
+    require_serial: true
+    minimum_pre_commit_version: "0.15.4"
