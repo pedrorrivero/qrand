@@ -1,6 +1,8 @@
 **.DS_Store
-.venv
-.*_cache
-dist
-htmlcov
 **__pycache__
+**,cover
+.*_cache
+.coverage.db
+.venv
+coverage*
+dist

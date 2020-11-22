@@ -1,2 +1,18 @@
 [run]
+branch = true
+data_file = .coverage.db
 omit = .venv/*,tests/*
+
+[paths]
+
+[report]
+precision = 0
+sort = "Cover"
+
+[html]
+directory = coverage-html
+
+[xml]
+
+[json]
+pretty_print = true

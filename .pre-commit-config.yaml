@@ -57,7 +57,7 @@ repos:
     description: "Produce coverage report"
     stages: [commit]
     language: system
-    entry: pytest --cov= --cov-report html tests #--cov-fail-under=100
+    entry: pytest --cov=qrand --cov-report html tests #--cov-fail-under=100
     types: [python]
     pass_filenames: false
 
