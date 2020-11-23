@@ -13,18 +13,16 @@ repos:
     language: python
     types: [python]
     args: ['--filter-files']
-
-- repo: https://github.com/pre-commit/mirrors-mypy
-  rev: master
-  hooks:
   - id: mypy
     name: mypy
     description: "Static type checker"
     stages: [commit]
+    entry: mypy
+    language: python
     types: [python]
-
-- repo: local
-  hooks:
+    args: ["--ignore-missing-imports", "--scripts-are-modules"]
+    require_serial: true
+    additional_dependencies: []
   - id: black
     name: black
     description: "Python code formatter"
@@ -52,6 +50,7 @@ repos:
     language: system
     entry: pytest tests
     types: [python]
+    pass_filenames: false
   - id: pytest-cov
     name: pytest-cov
     description: "Produce coverage report"
