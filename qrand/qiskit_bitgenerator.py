@@ -42,11 +42,10 @@ class BitCache:
         return s.issubset(b)
 
     ############################# PUBLIC METHODS #############################
-    def flush(self) -> str:
-        bitstring: str = self._cache
+    def flush(self) -> bool:
         self._cache = ""
         self.size = 0
-        return bitstring
+        return True
 
     def get(self, n: int) -> str:
         bitstring: str = self._cache[:n]
@@ -113,9 +112,6 @@ class QiskitBitGenerator:
             self._fetch_random_bits()
         return self._bitcache.get(n_bits)
 
-    def get_random_int(self, n_bits: int) -> int:
-        return int(self.get_random_bitstring(n_bits), 2)
-
     def get_random_double(self, min: float = 0, max: float = 1) -> float:
         """
         Returns a random double from a uniform distribution in the range
@@ -133,6 +129,14 @@ class QiskitBitGenerator:
         packed = struct.pack("Q", unpacked)
         value: float = struct.unpack("d", packed)[0] - 1.0
         return (max - min) * value + min
+
+    def get_random_int(self, n_bits: int) -> int:
+        return int(self.get_random_bitstring(n_bits), 2)
+
+    def load_cache(self, bitstring: str, flush: bool = False) -> bool:
+        if flush:
+            return self._bitcache.flush() and self._bitcache.put(bitstring)
+        return self._bitcache.put(bitstring)
 
     ############################# PRIVATE METHODS #############################
     def _fetch_random_bits(self) -> bool:
@@ -276,8 +280,8 @@ class QiskitBitGenerator:
                 self._backend = value["backend"]
             if "israw32" in keys:
                 self.israw32 = value["israw32"]
-            if "flush_bitcache" in keys:
-                if value["flush_bitcache"]:
+            if "flush_cache" in keys:
+                if value["flush_cache"]:
                     self._bitcache.flush()
 
         return f
