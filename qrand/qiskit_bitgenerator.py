@@ -6,9 +6,10 @@
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
 
-from typing import Any, Callable, Dict, KeysView, List, Optional, Set
+import struct
+from typing import Any, Callable, Dict, KeysView, List, Optional, Set, Union
 
-from numpy import uint32, uint64
+from numpy import float64, uint32, uint64
 from qiskit import (
     BasicAer,
     ClassicalRegister,
@@ -62,7 +63,7 @@ class BitCache:
 
     ############################ PUBLIC PROPERTIES ############################
     @property
-    def state(self) -> Dict[str, int]:
+    def state(self) -> Dict[str, Any]:
         return {"size": self.size}
 
 
@@ -74,6 +75,7 @@ class QiskitBitGenerator:
         self,
         provider: Optional[Provider] = None,
         backend: Optional[Backend] = None,
+        israw32: bool = False,
     ) -> None:
         if provider and not backend:
             backend = QiskitBitGenerator.get_best_backend(provider)
@@ -82,6 +84,7 @@ class QiskitBitGenerator:
         self._backend: Backend = backend
         self._provider: Provider = backend.provider
         self._bitcache: BitCache = BitCache()
+        self.israw32: bool = israw32
 
     ############################# STATIC METHODS #############################
     @staticmethod
@@ -94,10 +97,13 @@ class QiskitBitGenerator:
         return least_busy(backends) if backends else None
 
     ############################# PUBLIC METHODS #############################
-    def get_bitstring(self, n: int) -> str:
-        while self._bitcache.size < n:
+    def get_random_bitstring(self, n_bits: int) -> str:
+        while self._bitcache.size < n_bits:
             self._fetch_random_bits()
-        return self._bitcache.get(n)
+        return self._bitcache.get(n_bits)
+
+    def get_random_int(self, n_bits: int) -> int:
+        return int(self.get_random_bitstring(n_bits), 2)
 
     ############################# PRIVATE METHODS #############################
     def _fetch_random_bits(self) -> bool:
@@ -153,7 +159,7 @@ class QiskitBitGenerator:
 
     @property
     def _config(self) -> Dict[str, Any]:
-        config = {
+        config: Dict[str, Any] = {
             "backend_name": "",
             "credits_required": False,
             "local": True,
@@ -174,44 +180,70 @@ class QiskitBitGenerator:
         return config
 
     ############################# NUMPY INTERFACE #############################
-    def random_raw(self) -> uint64:
-        """Generate the next "raw" value, which is 64 bits"""
-        bitstring: str = self.get_bitstring(64)
-        random: int = int(bitstring, 2)
-        return uint64(random)
+    @property
+    def random_raw(self) -> Callable[[Any], Union[uint32, uint64]]:
+        """
+        A callable that returns either 64 or 32 random bits. It must accept
+        a single input which is a void pointer to a memory address.
+        """
+
+        if self.israw32:
+            return self.next_32
+        else:
+            return self.next_64
 
     @property
-    def next_64(self) -> Callable[[Any], uint64]:
+    def bits(self) -> int:
         """
-        Return a callable that accepts a single input and returns a numpy
-        64-bit unsigned int. The input is usually a void pointer that is cast
-        to a struct that contains the RNGs state. When wiring a bit generator
-        in Python, it is simpler to use a closure than to wrap the state in an
-        array, pass it's address as a ctypes void pointer, and then to get the
-        pointer in the function.
+        The number of bits output by the next_raw callable. Must be either
+        32 or 64.
         """
 
-        def _next_64(void_p: Any) -> uint64:
-            return self.random_raw()
-
-        return _next_64
+        return 32 if self.israw32 else 64
 
     @property
     def next_32(self) -> Callable[[Any], uint32]:
         """
-        Return a callable that accepts a single input. This is identical to
-        ``next_64`` except that it returns a numpy 32-bit unsigned int.
+        A callable with the same signature as as next_raw that always returns
+        a random numpy 32-bit unsigned int.
         """
 
         def _next_32(void_p: Any) -> uint32:
-            bitstring: str = self.get_bitstring(32)
-            random: int = int(bitstring, 2)
-            return uint32(random)
+            return uint32(self.get_random_int(32))
 
         return _next_32
 
     @property
+    def next_64(self) -> Callable[[Any], uint64]:
+        """
+        A callable with the same signature as as next_raw that always returns
+        a random numpy 64-bit unsigned int.
+        """
+
+        def _next_64(void_p: Any) -> uint64:
+            return uint64(self.get_random_int(64))
+
+        return _next_64
+
+    @property
+    def next_double(self) -> Callable[[Any], float64]:
+        """
+        A callable with the same signature as as next_raw that always return
+        a random double in [0,1).
+        """
+
+        def _next_double(void_p: Any) -> float64:
+            unpacked = 0x3FF0000000000000 | self.get_random_int(64) >> 12
+            packed = struct.pack("Q", unpacked)
+            random = struct.unpack("d", packed)[0] - 1.0
+            return float64(random)
+
+        return _next_double
+
+    @property
     def state_getter(self) -> Callable[[], Dict[str, Any]]:
+        """A callable that returns the state of the bit generator."""
+
         def f():
             return self.state
 
@@ -219,6 +251,11 @@ class QiskitBitGenerator:
 
     @property
     def state_setter(self) -> Callable[[Dict[str, Any]], None]:
+        """
+        A callable that sets the state of the bit generator. Must take a
+        single input.
+        """
+
         def f(value: Dict[str, Any]) -> None:
             keys: KeysView[str] = value.keys()
             if "backend" in keys:
@@ -231,19 +268,24 @@ class QiskitBitGenerator:
 
 
 ###############################################################################
-## QISKIT BIT GENERATOR WRAPPER FOR NUMPY
+## QISKIT BIT GENERATOR FOR NUMPY (FACTORY)
 ###############################################################################
 def QiskitNumpyBitGenerator(
     provider: Optional[Provider] = None,
     backend: Optional[Backend] = None,
     bitgen: Optional[QiskitBitGenerator] = None,
+    israw32: bool = False,
 ) -> UserBitGenerator:
     if not bitgen:
-        bitgen = QiskitBitGenerator(provider=provider, backend=backend)
+        bitgen = QiskitBitGenerator(
+            provider=provider, backend=backend, israw32=israw32
+        )
     return UserBitGenerator(
-        bitgen.next_64,
-        64,
+        bitgen.random_raw,
+        bits=bitgen.bits,
         next_32=bitgen.next_32,
+        next_64=bitgen.next_64,
+        next_double=bitgen.next_double,
         state_getter=bitgen.state_getter,
         state_setter=bitgen.state_setter,
     )
