@@ -42,6 +42,9 @@ class BitCache:
         return s.issubset(b)
 
     ############################# PUBLIC METHODS #############################
+    def dump(self) -> str:
+        return self._cache
+
     def flush(self) -> bool:
         self._cache = ""
         self.size = 0
@@ -107,6 +110,12 @@ class QiskitBitGenerator:
         return least_busy(backends) if backends else None
 
     ############################# PUBLIC METHODS #############################
+    def dump_cache(self, flush: bool = False) -> str:
+        bitstring: str = self._bitcache.dump()
+        if flush:
+            self._bitcache.flush()
+        return bitstring
+
     def get_random_bitstring(self, n_bits: int) -> str:
         while self._bitcache.size < n_bits:
             self._fetch_random_bits()
