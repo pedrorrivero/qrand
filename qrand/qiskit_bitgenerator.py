@@ -97,7 +97,7 @@ class QiskitBitGenerator:
         self._backend: Backend = backend
         self._provider: Provider = backend.provider
         self._bitcache: BitCache = BitCache()
-        self.israw32: bool = israw32
+        self._israw32: bool = israw32
 
     ############################# STATIC METHODS #############################
     @staticmethod
@@ -221,7 +221,7 @@ class QiskitBitGenerator:
         A callable that returns either 64 or 32 random bits. It must accept
         a single input which is a void pointer to a memory address.
         """
-        return self.next_32 if self.israw32 else self.next_64
+        return self.next_32 if self._israw32 else self.next_64
 
     @property
     def bits(self) -> int:
@@ -229,7 +229,7 @@ class QiskitBitGenerator:
         The number of bits output by the next_raw callable. Must be either
         32 or 64.
         """
-        return 32 if self.israw32 else 64
+        return 32 if self._israw32 else 64
 
     @property
     def next_32(self) -> Callable[[Any], uint32]:
@@ -288,7 +288,7 @@ class QiskitBitGenerator:
             if "backend" in keys:
                 self._backend = value["backend"]
             if "israw32" in keys:
-                self.israw32 = value["israw32"]
+                self._israw32 = value["israw32"]
             if "flush_cache" in keys:
                 if value["flush_cache"]:
                     self._bitcache.flush()
