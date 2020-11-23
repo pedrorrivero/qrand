@@ -16,5 +16,10 @@ Luckily, the probabilistic nature of quantum computers makes these devices parti
 
 This is why I am setting up to develop an easy to use, modular piece of software, capable of producing quantum random numbers from arbitrary distributions. To do so, I will be using mathematical processing alongside IBM's Qiskit framework.
 
+
+# Acknowledgements
+
+Parts of this software's source code have been borrowed from the [qRNG](https://github.com/ozanerhansha/qRNG) project, which is licensed under the [GPL v3](https://github.com/ozanerhansha/qRNG/blob/master/LICENSE) license. Copyright notice and state changes can be found as a docstring wherever this applies.
+
 ---
 (c) 2020 Pedro Rivero

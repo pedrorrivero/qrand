@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: November 21, 2020
+##   |  ___/|  _  /    DATE: November 23, 2020
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -116,6 +116,24 @@ class QiskitBitGenerator:
     def get_random_int(self, n_bits: int) -> int:
         return int(self.get_random_bitstring(n_bits), 2)
 
+    def get_random_double(self, min: float = 0, max: float = 1) -> float:
+        """
+        Returns a random double from a uniform distribution in the range
+        [min, max). Defaults to [0, 1).
+        COPYRIGHT NOTICE:
+        -----------------
+        Source: https://github.com/ozanerhansha/qRNG
+        License: GNU GENERAL PUBLIC LICENSE VERSION 3
+        State changes:
+            - Add static type hints
+            - Add default range
+            - Replace call to original get_random_int64
+        """
+        unpacked = 0x3FF0000000000000 | self.get_random_int(64) >> 12
+        packed = struct.pack("Q", unpacked)
+        value: float = struct.unpack("d", packed)[0] - 1.0
+        return (max - min) * value + min
+
     ############################# PRIVATE METHODS #############################
     def _fetch_random_bits(self) -> bool:
         circuits: List[QuantumCircuit] = [self._circuit] * self._config[
@@ -186,7 +204,6 @@ class QiskitBitGenerator:
         A callable that returns either 64 or 32 random bits. It must accept
         a single input which is a void pointer to a memory address.
         """
-
         return self.next_32 if self.israw32 else self.next_64
 
     @property
@@ -195,7 +212,6 @@ class QiskitBitGenerator:
         The number of bits output by the next_raw callable. Must be either
         32 or 64.
         """
-
         return 32 if self.israw32 else 64
 
     @property
@@ -230,10 +246,7 @@ class QiskitBitGenerator:
         """
 
         def _next_double(void_p: Any) -> float64:
-            unpacked = 0x3FF0000000000000 | self.get_random_int(64) >> 12
-            packed = struct.pack("Q", unpacked)
-            random = struct.unpack("d", packed)[0] - 1.0
-            return float64(random)
+            return float64(self.get_random_double())
 
         return _next_double
 
