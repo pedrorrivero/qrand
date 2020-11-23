@@ -174,7 +174,11 @@ class QiskitBitGenerator:
     ############################ PUBLIC PROPERTIES ############################
     @property
     def state(self) -> dict:
-        return {"backend": self._config, "bitcache": self._bitcache.state}
+        return {
+            "bits": self.bits,
+            "config": self._config,
+            "bitcache": self._bitcache.state,
+        }
 
     ########################### PRIVATE PROPERTIES ###########################
     @property
@@ -270,6 +274,8 @@ class QiskitBitGenerator:
             keys = value.keys()
             if "backend" in keys:
                 self._backend = value["backend"]
+            if "israw32" in keys:
+                self.israw32 = value["israw32"]
             if "flush_bitcache" in keys:
                 if value["flush_bitcache"]:
                     self._bitcache.flush()
@@ -283,8 +289,8 @@ class QiskitBitGenerator:
 def QiskitNumpyBitGenerator(
     provider: Optional[Provider] = None,
     backend: Optional[Backend] = None,
-    bitgen: Optional[QiskitBitGenerator] = None,
     israw32: bool = False,
+    bitgen: Optional[QiskitBitGenerator] = None,
 ) -> UserBitGenerator:
     if not bitgen:
         bitgen = QiskitBitGenerator(
