@@ -73,7 +73,7 @@ class BitCache:
 ## QISKIT BIT GENERATOR
 ###############################################################################
 class QiskitBitGenerator:
-    DEFAULT_CONFIG: Final[dict] = {
+    _DEFAULT_CONFIG: Final[dict] = {
         "backend_name": "",
         "credits_required": False,
         "local": True,
@@ -91,7 +91,7 @@ class QiskitBitGenerator:
         israw32: bool = False,
     ) -> None:
         if provider and not backend:
-            backend = QiskitBitGenerator.get_best_backend(provider)
+            backend = self.get_best_backend(provider)
         if not backend:
             backend = BasicAer.get_backend("qasm_simulator")
         self._backend: Backend = backend
@@ -180,7 +180,7 @@ class QiskitBitGenerator:
         backend_config: dict = self._backend.configuration().to_dict()
         keys = backend_config.keys()
         config: dict = {}
-        for k, v in QiskitBitGenerator.DEFAULT_CONFIG.items():
+        for k, v in self._DEFAULT_CONFIG.items():
             config[k] = backend_config[k] if k in keys else v
         return config
 
