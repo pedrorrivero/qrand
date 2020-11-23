@@ -47,13 +47,13 @@ class BitCache:
         self.size = 0
         return True
 
-    def get(self, n: int) -> str:
+    def pop(self, n: int) -> str:
         bitstring: str = self._cache[:n]
         self._cache = self._cache[n:]
         self.size -= n if n < self.size else self.size
         return bitstring
 
-    def put(self, bitstring: str) -> bool:
+    def push(self, bitstring: str) -> bool:
         if not BitCache.isbitstring(bitstring):
             raise ValueError(f"Invalid bitstring value '{bitstring}'")
         self._cache += bitstring
@@ -110,7 +110,7 @@ class QiskitBitGenerator:
     def get_random_bitstring(self, n_bits: int) -> str:
         while self._bitcache.size < n_bits:
             self._fetch_random_bits()
-        return self._bitcache.get(n_bits)
+        return self._bitcache.pop(n_bits)
 
     def get_random_double(self, min: float = 0, max: float = 1) -> float:
         """
@@ -135,8 +135,8 @@ class QiskitBitGenerator:
 
     def load_cache(self, bitstring: str, flush: bool = False) -> bool:
         if flush:
-            return self._bitcache.flush() and self._bitcache.put(bitstring)
-        return self._bitcache.put(bitstring)
+            return self._bitcache.flush() and self._bitcache.push(bitstring)
+        return self._bitcache.push(bitstring)
 
     ############################# PRIVATE METHODS #############################
     def _fetch_random_bits(self) -> bool:
@@ -149,7 +149,7 @@ class QiskitBitGenerator:
         result: Result = job.result()
         measurements: List[str] = self._parse_result(result)
         for m in measurements:
-            self._bitcache.put(m)
+            self._bitcache.push(m)
         return True
 
     def _parse_result(self, result: Result) -> List[str]:
