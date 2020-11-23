@@ -7,7 +7,7 @@
 ##
 
 import struct
-from typing import Any, Callable, Dict, KeysView, List, Optional, Set, Union
+from typing import Any, Callable, Final, KeysView, List, Optional, Set, Union
 
 from numpy import float64, uint32, uint64
 from qiskit import (
@@ -63,7 +63,7 @@ class BitCache:
 
     ############################ PUBLIC PROPERTIES ############################
     @property
-    def state(self) -> Dict[str, Any]:
+    def state(self) -> dict:
         return {"size": self.size}
 
 
@@ -71,6 +71,17 @@ class BitCache:
 ## QISKIT BIT GENERATOR
 ###############################################################################
 class QiskitBitGenerator:
+    DEFAULT_CONFIG: Final[dict] = {
+        "backend_name": "",
+        "credits_required": False,
+        "local": True,
+        "max_experiments": None,
+        "max_shots": None,
+        "memory": False,
+        "n_qubits": None,
+        "simulator": True,
+    }
+
     def __init__(
         self,
         provider: Optional[Provider] = None,
@@ -107,27 +118,20 @@ class QiskitBitGenerator:
 
     ############################# PRIVATE METHODS #############################
     def _fetch_random_bits(self) -> bool:
-        circuits: List[QuantumCircuit] = [
-            self._circuit
-        ] * self._get_experiments()
-        job: Job = execute(circuits, self._backend, shots=self._get_shots())
+        circuits: List[QuantumCircuit] = [self._circuit] * self._config[
+            "max_experiments"
+        ]
+        job: Job = execute(
+            circuits, self._backend, shots=self._config["max_shots"]
+        )
         result: Result = job.result()
         measurements: List[str] = self._parse_result(result)
         for m in measurements:
             self._bitcache.put(m)
         return True
 
-    def _get_experiments(self) -> int:
-        config: Dict[str, Any] = self._config
-        return config["max_experiments"] if config["max_experiments"] else 1
-
-    def _get_shots(self) -> int:
-        config: Dict[str, Any] = self._config
-        return config["max_shots"] if config["memory"] else 1
-
     def _parse_result(self, result: Result) -> List[str]:
-        config: Dict[str, Any] = self._config
-        if config["memory"]:
+        if self._config["memory"]:
             raise NotImplementedError(
                 "Strategy for Result.get_memory() not implemented \
                 (see qiskit-terra #5415 on github)"
@@ -141,42 +145,38 @@ class QiskitBitGenerator:
                 measurements.append(m)
         return measurements
 
+    def _parse_backend_config(self) -> dict:
+        backend_config: dict = self._backend.configuration().to_dict()
+        keys: KeysView[str] = backend_config.keys()
+        config: dict = {}
+        for k, v in QiskitBitGenerator.DEFAULT_CONFIG.items():
+            config[k] = backend_config[k] if k in keys else v
+        return config
+
     ############################ PUBLIC PROPERTIES ############################
     @property
-    def state(self) -> Dict[str, Any]:
+    def state(self) -> dict:
         return {"backend": self._config, "bitcache": self._bitcache.state}
 
     ########################### PRIVATE PROPERTIES ###########################
     @property
     def _circuit(self) -> QuantumCircuit:
-        config: Dict[str, Any] = self._config
-        qr: QuantumRegister = QuantumRegister(config["n_qubits"])
-        cr: ClassicalRegister = ClassicalRegister(config["n_qubits"])
+        n_qubits: int = self._config["n_qubits"]
+        qr: QuantumRegister = QuantumRegister(n_qubits)
+        cr: ClassicalRegister = ClassicalRegister(n_qubits)
         circuit: QuantumCircuit = QuantumCircuit(qr, cr)
         circuit.h(qr)
         circuit.measure(qr, cr)
         return circuit
 
     @property
-    def _config(self) -> Dict[str, Any]:
-        config: Dict[str, Any] = {
-            "backend_name": "",
-            "credits_required": False,
-            "local": True,
-            "max_experiments": None,
-            "max_shots": None,
-            "memory": False,
-            "n_qubits": None,
-            "simulator": True,
-        }
-        backend_config: Dict[
-            str, Any
-        ] = self._backend.configuration().to_dict()
-        keys: KeysView[str] = backend_config.keys()
-        for k in config.keys():
-            if k in keys:
-                config[k] = backend_config[k]
+    def _config(self) -> dict:
+        config = self._parse_backend_config()
         config["memory"] = False  # Bug(github): qiskit-terra #5415
+        if not config["max_experiments"]:
+            config["max_experiments"] = 1
+        if not config["memory"]:
+            config["max_shots"] = 1
         return config
 
     ############################# NUMPY INTERFACE #############################
@@ -187,10 +187,7 @@ class QiskitBitGenerator:
         a single input which is a void pointer to a memory address.
         """
 
-        if self.israw32:
-            return self.next_32
-        else:
-            return self.next_64
+        return self.next_32 if self.israw32 else self.next_64
 
     @property
     def bits(self) -> int:
@@ -241,7 +238,7 @@ class QiskitBitGenerator:
         return _next_double
 
     @property
-    def state_getter(self) -> Callable[[], Dict[str, Any]]:
+    def state_getter(self) -> Callable[[], dict]:
         """A callable that returns the state of the bit generator."""
 
         def f():
@@ -250,13 +247,13 @@ class QiskitBitGenerator:
         return f
 
     @property
-    def state_setter(self) -> Callable[[Dict[str, Any]], None]:
+    def state_setter(self) -> Callable[[dict], None]:
         """
         A callable that sets the state of the bit generator. Must take a
         single input.
         """
 
-        def f(value: Dict[str, Any]) -> None:
+        def f(value: dict) -> None:
             keys: KeysView[str] = value.keys()
             if "backend" in keys:
                 self._backend = value["backend"]
