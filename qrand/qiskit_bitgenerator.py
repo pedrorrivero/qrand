@@ -7,7 +7,7 @@
 ##
 
 import struct
-from typing import Any, Callable, Final, KeysView, List, Optional, Set, Union
+from typing import Any, Callable, Final, List, Optional, Union
 
 from numpy import float64, uint32, uint64
 from qiskit import (
@@ -37,8 +37,8 @@ class BitCache:
     def isbitstring(bitstring: str) -> bool:
         if not isinstance(bitstring, str):
             raise TypeError(f"Invalid bitstring type '{type(bitstring)}'")
-        b: Set[str] = {"0", "1"}
-        s: Set[str] = set(bitstring)
+        b = {"0", "1"}
+        s = set(bitstring)
         return s.issubset(b)
 
     ############################# PUBLIC METHODS #############################
@@ -147,7 +147,7 @@ class QiskitBitGenerator:
 
     def _parse_backend_config(self) -> dict:
         backend_config: dict = self._backend.configuration().to_dict()
-        keys: KeysView[str] = backend_config.keys()
+        keys = backend_config.keys()
         config: dict = {}
         for k, v in QiskitBitGenerator.DEFAULT_CONFIG.items():
             config[k] = backend_config[k] if k in keys else v
@@ -171,7 +171,7 @@ class QiskitBitGenerator:
 
     @property
     def _config(self) -> dict:
-        config = self._parse_backend_config()
+        config: dict = self._parse_backend_config()
         config["memory"] = False  # Bug(github): qiskit-terra #5415
         if not config["max_experiments"]:
             config["max_experiments"] = 1
@@ -254,7 +254,7 @@ class QiskitBitGenerator:
         """
 
         def f(value: dict) -> None:
-            keys: KeysView[str] = value.keys()
+            keys = value.keys()
             if "backend" in keys:
                 self._backend = value["backend"]
             if "flush_bitcache" in keys:
