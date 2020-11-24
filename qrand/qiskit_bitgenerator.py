@@ -18,10 +18,15 @@ from qiskit import (
     execute,
 )
 from qiskit.providers import Backend, Job, Provider
-from qiskit.providers.ibmq import least_busy
+from qiskit.providers.ibmq import IBMQError, least_busy
 from qiskit.providers.models import BackendConfiguration
 from qiskit.result import Counts, Result
 from randomgen import UserBitGenerator
+
+###############################################################################
+## CUSTOM TYPES
+###############################################################################
+BackendFilter = Callable[[Backend], bool]
 
 
 ###############################################################################
@@ -32,7 +37,7 @@ class BitCache:
         self._cache: str = ""
         self.size: int = 0
 
-    ############################# STATIC METHODS #############################
+    ########################## STATIC/CLASS METHODS ##########################
     @staticmethod
     def isbitstring(bitstring: str) -> bool:
         if not isinstance(bitstring, str):
@@ -88,26 +93,40 @@ class QiskitBitGenerator:
         self,
         provider: Optional[Provider] = None,
         backend: Optional[Backend] = None,
+        backend_filter: Optional[BackendFilter] = None,
         israw32: bool = False,
     ) -> None:
-        if provider and not backend:
-            backend = self.get_best_backend(provider)
-        if not backend:
+        if provider:
+            backend = self.get_best_backend(provider, backend_filter)
+        elif not backend:
             backend = BasicAer.get_backend("qasm_simulator")
+        self._provider: Optional[Provider] = provider
         self._backend: Backend = backend
-        self._provider: Provider = backend.provider
+        self._backend_filter: Optional[BackendFilter] = backend_filter
         self._bitcache: BitCache = BitCache()
         self._israw32: bool = israw32
 
-    ############################# STATIC METHODS #############################
+    ########################## STATIC/CLASS METHODS ##########################
     @staticmethod
-    def get_best_backend(provider: Provider) -> Optional[Backend]:
-        def filters(b: Backend) -> bool:
-            config: BackendConfiguration = b.configuration()
-            return config.memory and not config.simulator
+    def default_backend_filter(b: Backend) -> bool:
+        config: BackendConfiguration = b.configuration()
+        return config.memory and not config.simulator
 
-        backends: List[Backend] = provider.backends(filters=filters)
-        return least_busy(backends) if backends else None
+    @classmethod
+    def get_best_backend(
+        cls,
+        provider: Provider,
+        filter: Optional[BackendFilter] = None,
+    ) -> Backend:
+        if not filter:
+            filter = cls.default_backend_filter
+        backends: List[Backend] = provider.backends(filters=filter)
+        if not backends:
+            raise IBMQError(
+                "No backends matching the filtering critera on the \
+                requested provider."
+            )
+        return least_busy(backends)
 
     ############################# PUBLIC METHODS #############################
     def dump_cache(self, flush: bool = False) -> str:
@@ -149,6 +168,10 @@ class QiskitBitGenerator:
 
     ############################# PRIVATE METHODS #############################
     def _fetch_random_bits(self) -> bool:
+        if self._provider:
+            self._backend = self.get_best_backend(
+                provider=self._provider, filter=self._backend_filter
+            )
         circuits: List[QuantumCircuit] = [self._circuit] * self._config[
             "max_experiments"
         ]
@@ -187,11 +210,17 @@ class QiskitBitGenerator:
     ############################ PUBLIC PROPERTIES ############################
     @property
     def state(self) -> dict:
-        return {
+        s: dict = {
             "bits": self.bits,
+            "dynamic_backend": {
+                "filter": "Custom" if self._backend_filter else "Default",
+            },
             "config": self._config,
             "bitcache": self._bitcache.state,
         }
+        if not self._provider:
+            s.pop("dynamic_backend")
+        return s
 
     ########################### PRIVATE PROPERTIES ###########################
     @property
