@@ -84,7 +84,6 @@ class QiskitBitGenerator:
         "local": True,
         "max_experiments": None,
         "max_shots": None,
-        "memory": False,
         "n_qubits": None,
         "simulator": True,
     }
@@ -182,7 +181,7 @@ class QiskitBitGenerator:
             circuits,
             self._backend,
             shots=self._config["max_shots"],
-            memory=self._config["memory"],
+            memory=self._memory,
         )
         result: Result = job.result()
         bitstring: str = self._parse_result(result)
@@ -191,7 +190,7 @@ class QiskitBitGenerator:
 
     def _parse_result(self, result: Result) -> str:
         measurements: List[str] = []
-        if self._config["memory"]:
+        if self._memory:
             for e in range(self._config["max_experiments"]):
                 measurements += result.get_memory(e)
         else:
@@ -247,9 +246,13 @@ class QiskitBitGenerator:
         config: dict = self._parse_backend_config()
         if not config["max_experiments"]:
             config["max_experiments"] = 1
-        if not config["memory"]:
+        if not self._backend.configuration().memory:
             config["max_shots"] = 1
         return config
+
+    @property
+    def _memory(self):
+        return True if self._config["max_shots"] > 1 else False
 
     ############################# NUMPY INTERFACE #############################
     @property
