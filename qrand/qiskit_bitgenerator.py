@@ -135,6 +135,9 @@ class QiskitBitGenerator:
             self._bitcache.flush()
         return bitstring
 
+    def flush_cache(self) -> bool:
+        return self._bitcache.flush()
+
     def get_random_bitstring(self, n_bits: int) -> str:
         while self._bitcache.size < n_bits:
             self._fetch_random_bits()
