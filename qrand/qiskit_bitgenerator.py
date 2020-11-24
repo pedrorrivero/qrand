@@ -179,28 +179,30 @@ class QiskitBitGenerator:
             "max_experiments"
         ]
         job: Job = execute(
-            circuits, self._backend, shots=self._config["max_shots"]
+            circuits,
+            self._backend,
+            shots=self._config["max_shots"],
+            memory=self._config["memory"],
         )
         result: Result = job.result()
-        measurements: List[str] = self._parse_result(result)
-        for m in measurements:
-            self._bitcache.push(m)
+        bitstring: str = self._parse_result(result)
+        self._bitcache.push(bitstring)
         return True
 
-    def _parse_result(self, result: Result) -> List[str]:
+    def _parse_result(self, result: Result) -> str:
+        measurements: List[str] = []
         if self._config["memory"]:
-            raise NotImplementedError(
-                "Strategy for Result.get_memory() not implemented \
-                (see qiskit-terra #5415 on github)"
-            )
+            for e in range(self._config["max_experiments"]):
+                measurements += result.get_memory(e)
         else:
             cts = result.get_counts()
             counts: List[Counts] = [cts] if type(cts) != list else cts
-            measurements: List[str] = []
             for c in counts:
-                m: str = [k for k, v in c.items() if v == 1][0]
-                measurements.append(m)
-        return measurements
+                measurements += [k for k, v in c.items() if v == 1]
+        bitstring: str = ""
+        for m in measurements:
+            bitstring += m
+        return bitstring
 
     def _parse_backend_config(self) -> dict:
         backend_config: dict = self._backend.configuration().to_dict()
@@ -243,7 +245,6 @@ class QiskitBitGenerator:
     @property
     def _config(self) -> dict:
         config: dict = self._parse_backend_config()
-        config["memory"] = False  # Bug(github): qiskit-terra #5415
         if not config["max_experiments"]:
             config["max_experiments"] = 1
         if not config["memory"]:
