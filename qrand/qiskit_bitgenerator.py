@@ -149,7 +149,9 @@ class QiskitBitGenerator(UserBitGenerator):
     def flush_cache(self) -> bool:
         return self._bitcache.flush()
 
-    def get_random_bitstring(self, n_bits: int) -> str:
+    def get_random_bitstring(self, n_bits: int = 0) -> str:
+        if n_bits < 1:
+            n_bits = self.bits
         while self._bitcache.size < n_bits:
             self._fetch_random_bits()
         return self._bitcache.pop(n_bits)
@@ -172,7 +174,9 @@ class QiskitBitGenerator(UserBitGenerator):
         value: float = struct.unpack("d", packed)[0] - 1.0
         return value * n
 
-    def get_random_uint(self, n_bits: int) -> int:
+    def get_random_uint(self, n_bits: int = 0) -> int:
+        if n_bits < 1:
+            n_bits = self.bits
         return int(self.get_random_bitstring(n_bits), 2)
 
     def load_cache(self, bitstring: str, flush: bool = False) -> bool:
