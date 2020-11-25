@@ -167,12 +167,12 @@ class QiskitBitGenerator(UserBitGenerator):
             - Limit range to [0,n) instead of [min,max) and add default
             - Replace call to original get_random_int64
         """
-        unpacked = 0x3FF0000000000000 | self.get_random_int(64) >> 12
+        unpacked = 0x3FF0000000000000 | self.get_random_uint(64) >> 12
         packed = struct.pack("Q", unpacked)
         value: float = struct.unpack("d", packed)[0] - 1.0
         return value * n
 
-    def get_random_int(self, n_bits: int) -> int:
+    def get_random_uint(self, n_bits: int) -> int:
         return int(self.get_random_bitstring(n_bits), 2)
 
     def load_cache(self, bitstring: str, flush: bool = False) -> bool:
@@ -315,7 +315,7 @@ class QiskitBitGenerator(UserBitGenerator):
         """
 
         def next_32(void_p: Any) -> uint32:
-            return uint32(self.get_random_int(32))
+            return uint32(self.get_random_uint(32))
 
         return next_32
 
@@ -327,7 +327,7 @@ class QiskitBitGenerator(UserBitGenerator):
         """
 
         def next_64(void_p: Any) -> uint64:
-            return uint64(self.get_random_int(64))
+            return uint64(self.get_random_uint(64))
 
         return next_64
 
