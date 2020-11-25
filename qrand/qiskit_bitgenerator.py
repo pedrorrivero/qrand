@@ -93,7 +93,7 @@ class QiskitBitGenerator(UserBitGenerator):
         provider: Optional[Provider] = None,
         backend: Optional[Backend] = None,
         backend_filter: Optional[BackendFilter] = None,
-        israw32: bool = False,
+        ISRAW32: bool = False,
     ) -> None:
         if backend:
             provider = None
@@ -107,7 +107,7 @@ class QiskitBitGenerator(UserBitGenerator):
         self._provider: Optional[Provider] = provider
         self._backend: Backend = backend
         self._backend_filter: Optional[BackendFilter] = backend_filter
-        self._israw32: bool = israw32
+        self._ISRAW32: Final[bool] = ISRAW32
         self._bitcache: BitCache = BitCache()
         super().__init__(
             bits=self.bits,
@@ -301,7 +301,7 @@ class QiskitBitGenerator(UserBitGenerator):
         The number of bits output by the next_raw callable. Must be either
         32 or 64.
         """
-        return 32 if self._israw32 else 64
+        return 32 if self._ISRAW32 else 64
 
     @property
     def _next_raw(self) -> Callable[[Any], Union[uint32, uint64]]:
@@ -309,7 +309,7 @@ class QiskitBitGenerator(UserBitGenerator):
         A callable that returns either 64 or 32 random bits. It must accept
         a single input which is a void pointer to a memory address.
         """
-        return self._next_32 if self._israw32 else self._next_64
+        return self._next_32 if self._ISRAW32 else self._next_64
 
     @property
     def _next_32(self) -> Callable[[Any], uint32]:
