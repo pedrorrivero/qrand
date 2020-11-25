@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: November 23, 2020
+##   |  ___/|  _  /    DATE: November 24, 2020
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -95,13 +95,11 @@ class QiskitBitGenerator(UserBitGenerator):
         backend_filter: Optional[BackendFilter] = None,
         israw32: bool = False,
     ) -> None:
-        if provider:
-            backend = self.get_best_backend(provider, backend_filter)
-        elif not backend:
-            backend = BasicAer.get_backend("qasm_simulator")
-        self._provider: Optional[Provider] = provider
-        self._backend: Backend = backend
-        self._backend_filter: Optional[BackendFilter] = backend_filter
+        self.set_state(
+            provider=provider,
+            backend=backend,
+            backend_filter=backend_filter,
+        )
         self._bitcache: BitCache = BitCache()
         self._israw32: bool = israw32
         super().__init__(
@@ -176,6 +174,21 @@ class QiskitBitGenerator(UserBitGenerator):
         if flush:
             return self._bitcache.flush() and self._bitcache.push(bitstring)
         return self._bitcache.push(bitstring)
+
+    def set_state(
+        self,
+        provider: Optional[Provider] = None,
+        backend: Optional[Backend] = None,
+        backend_filter: Optional[BackendFilter] = None,
+    ) -> bool:
+        if backend:
+            provider = None
+        else:
+            backend = BasicAer.get_backend("qasm_simulator")
+        self._provider: Optional[Provider] = provider
+        self._backend: Backend = backend
+        self._backend_filter: Optional[BackendFilter] = backend_filter
+        return True
 
     ############################# PRIVATE METHODS #############################
     def _fetch_random_bits(self) -> bool:
@@ -333,11 +346,6 @@ class QiskitBitGenerator(UserBitGenerator):
         """
 
         def f(value: dict) -> None:
-            keys = value.keys()
-            if "backend" in keys:
-                self._backend = value["backend"]
-            if "flush_cache" in keys:
-                if value["flush_cache"]:
-                    self._bitcache.flush()
+            self.set_state(**value)
 
         return f
