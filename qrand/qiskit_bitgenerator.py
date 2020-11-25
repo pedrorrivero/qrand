@@ -7,7 +7,7 @@
 ##
 
 import struct
-from typing import Any, Callable, Final, List, Optional, Union
+from typing import Any, Callable, Final, List, Optional, Tuple, Union
 
 from numpy import float64, uint32, uint64
 from qiskit import (
@@ -78,12 +78,10 @@ class BitCache:
 ## QISKIT BIT GENERATOR
 ###############################################################################
 class QiskitBitGenerator(UserBitGenerator):
-    _DEFAULT_CONFIG: Final[dict] = {
+    _BACKEND_CONFIG_MASK: Final[dict] = {
         "backend_name": "",
         "credits_required": False,
         "local": True,
-        "max_experiments": None,
-        "max_shots": None,
         "n_qubits": None,
         "simulator": True,
     }
@@ -93,6 +91,7 @@ class QiskitBitGenerator(UserBitGenerator):
         provider: Optional[Provider] = None,
         backend: Optional[Backend] = None,
         backend_filter: Optional[BackendFilter] = None,
+        max_bits_per_request: int = 0,
         ISRAW32: bool = False,
     ) -> None:
         if backend:
@@ -107,6 +106,7 @@ class QiskitBitGenerator(UserBitGenerator):
         self._provider: Optional[Provider] = provider
         self._backend: Backend = backend
         self._backend_filter: Optional[BackendFilter] = backend_filter
+        self._max_bits_per_request: int = max_bits_per_request
         self._ISRAW32: Final[bool] = ISRAW32
         self._bitcache: BitCache = BitCache()
         super().__init__(
@@ -189,8 +189,12 @@ class QiskitBitGenerator(UserBitGenerator):
         provider: Optional[Provider] = None,
         backend: Optional[Backend] = None,
         backend_filter: Optional[BackendFilter] = None,
+        max_bits_per_request: Optional[int] = None,
     ) -> bool:
         change: bool = False
+        if max_bits_per_request is not None:
+            change = True
+            self._max_bits_per_request = max_bits_per_request
         if backend_filter:
             change = True
             self._backend_filter = backend_filter
@@ -214,13 +218,11 @@ class QiskitBitGenerator(UserBitGenerator):
                 provider=self._provider,
                 backend_filter=self._backend_filter,
             )
-        circuits: List[QuantumCircuit] = [self._circuit] * self._config[
-            "max_experiments"
-        ]
+        circuits: List[QuantumCircuit] = [self._circuit] * self._experiments
         job: Job = execute(
             circuits,
             self._backend,
-            shots=self._config["max_shots"],
+            shots=self._shots,
             memory=self._memory,
         )
         result: Result = job.result()
@@ -231,7 +233,7 @@ class QiskitBitGenerator(UserBitGenerator):
     def _parse_result(self, result: Result) -> str:
         measurements: List[str] = []
         if self._memory:
-            for e in range(self._config["max_experiments"]):
+            for e in range(self._experiments):
                 measurements += result.get_memory(e)
         else:
             cts = result.get_counts()
@@ -243,23 +245,44 @@ class QiskitBitGenerator(UserBitGenerator):
             bitstring += m
         return bitstring
 
-    def _parse_backend_config(self) -> dict:
-        backend_config: dict = self._backend.configuration().to_dict()
+    def _parse_backend_config(self, backend_config: dict) -> dict:
         keys = backend_config.keys()
         config: dict = {}
-        for k, v in self._DEFAULT_CONFIG.items():
+        for k, v in self._BACKEND_CONFIG_MASK.items():
             config[k] = backend_config[k] if k in keys else v
         return config
+
+    def _partition_job(self, max_bits_per_request: int = 0) -> Tuple[int, int]:
+        backend_config: dict = self._backend_config
+        experiments: int = (
+            backend_config["max_experiments"]
+            if backend_config.__contains__("max_experiments")
+            and backend_config["max_experiments"]
+            else 1
+        )
+        shots: int = (
+            backend_config["max_shots"]
+            if backend_config.__contains__("max_shots")
+            and backend_config["max_shots"]
+            and backend_config.__contains__("memory")
+            and backend_config["memory"]
+            else 1
+        )
+        if max_bits_per_request > 0:
+            experiments = min(experiments, max_bits_per_request // shots + 1)
+            shots = min(shots, max_bits_per_request // experiments)
+        return (shots, experiments)
 
     ############################ PUBLIC PROPERTIES ############################
     @property
     def state(self) -> dict:
         s: dict = {
             "bits": self.bits,
+            "job_config": self._job_config,
+            "backend_config": self._parse_backend_config(self._backend_config),
             "dynamic_backend": {
                 "filter": "Custom" if self._backend_filter else "Default",
             },
-            "config": self._config,
             "bitcache": self._bitcache.state,
         }
         if not self._provider:
@@ -272,8 +295,12 @@ class QiskitBitGenerator(UserBitGenerator):
 
     ########################### PRIVATE PROPERTIES ###########################
     @property
+    def _backend_config(self) -> dict:
+        return self._backend.configuration().to_dict()
+
+    @property
     def _circuit(self) -> QuantumCircuit:
-        n_qubits: int = self._config["n_qubits"]
+        n_qubits: int = self._backend_config["n_qubits"]
         qr: QuantumRegister = QuantumRegister(n_qubits)
         cr: ClassicalRegister = ClassicalRegister(n_qubits)
         circuit: QuantumCircuit = QuantumCircuit(qr, cr)
@@ -282,17 +309,26 @@ class QiskitBitGenerator(UserBitGenerator):
         return circuit
 
     @property
-    def _config(self) -> dict:
-        config: dict = self._parse_backend_config()
-        if not config["max_experiments"]:
-            config["max_experiments"] = 1
-        if not self._backend.configuration().memory:
-            config["max_shots"] = 1
-        return config
+    def _experiments(self) -> int:
+        shots, experiments = self._partition_job(self._max_bits_per_request)
+        return experiments
+
+    @property
+    def _job_config(self) -> dict:
+        return {
+            "max_bits_per_request": self._max_bits_per_request or None,
+            "shots": self._shots,
+            "experiments": self._experiments,
+        }
 
     @property
     def _memory(self):
-        return True if self._config["max_shots"] > 1 else False
+        return True if self._shots > 1 else False
+
+    @property
+    def _shots(self) -> int:
+        shots, experiments = self._partition_job(self._max_bits_per_request)
+        return shots
 
     ############################# NUMPY INTERFACE #############################
     @property
