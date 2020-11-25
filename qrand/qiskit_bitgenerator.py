@@ -264,6 +264,10 @@ class QiskitBitGenerator(UserBitGenerator):
             s.pop("dynamic_backend")
         return s
 
+    @state.setter
+    def state(self, value: dict) -> None:
+        self.set_state(**value)
+
     ########################### PRIVATE PROPERTIES ###########################
     @property
     def _circuit(self) -> QuantumCircuit:
@@ -358,6 +362,6 @@ class QiskitBitGenerator(UserBitGenerator):
         """
 
         def f(value: dict) -> None:
-            self.set_state(**value)
+            self.state = value
 
         return f
