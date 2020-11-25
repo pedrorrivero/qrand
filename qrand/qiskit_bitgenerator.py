@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: November 24, 2020
+##   |  ___/|  _  /    DATE: November 25, 2020
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -110,13 +110,11 @@ class QiskitBitGenerator(UserBitGenerator):
         self._israw32: bool = israw32
         self._bitcache: BitCache = BitCache()
         super().__init__(
-            next_raw=self._next_raw,
             bits=self.bits,
+            next_raw=self._next_raw,
             next_32=self._next_32,
             next_64=self._next_64,
             next_double=self._next_double,
-            state_getter=self._state_getter,
-            state_setter=self._state_setter,
         )
 
     ########################## STATIC/CLASS METHODS ##########################
@@ -344,24 +342,3 @@ class QiskitBitGenerator(UserBitGenerator):
             return float64(self.get_random_double())
 
         return next_double
-
-    @property
-    def _state_getter(self) -> Callable[[], dict]:
-        """A callable that returns the state of the bit generator."""
-
-        def f():
-            return self.state
-
-        return f
-
-    @property
-    def _state_setter(self) -> Callable[[dict], None]:
-        """
-        A callable that sets the state of the bit generator. Must take a
-        single input.
-        """
-
-        def f(value: dict) -> None:
-            self.state = value
-
-        return f
