@@ -192,7 +192,7 @@ class QiskitBitGenerator(UserBitGenerator):
 
     ############################# PRIVATE METHODS #############################
     def _fetch_random_bits(self) -> bool:
-        if self._dynamic_backend:
+        if self._provider:
             self._backend = self.get_best_backend(
                 provider=self._provider, filter=self._backend_filter
             )
@@ -244,7 +244,7 @@ class QiskitBitGenerator(UserBitGenerator):
             "config": self._config,
             "bitcache": self._bitcache.state,
         }
-        if not self._dynamic_backend:
+        if not self._provider:
             s.pop("dynamic_backend")
         return s
 
@@ -258,10 +258,6 @@ class QiskitBitGenerator(UserBitGenerator):
         circuit.h(qr)
         circuit.measure(qr, cr)
         return circuit
-
-    @property
-    def _dynamic_backend(self) -> bool:
-        return True if self._provider else False
 
     @property
     def _config(self) -> dict:
