@@ -77,7 +77,7 @@ class BitCache:
 ###############################################################################
 ## QISKIT BIT GENERATOR
 ###############################################################################
-class QiskitBitGenerator:
+class QiskitBitGenerator(UserBitGenerator):
     _DEFAULT_CONFIG: Final[dict] = {
         "backend_name": "",
         "credits_required": False,
@@ -104,6 +104,15 @@ class QiskitBitGenerator:
         self._backend_filter: Optional[BackendFilter] = backend_filter
         self._bitcache: BitCache = BitCache()
         self._israw32: bool = israw32
+        super().__init__(
+            next_raw=self._next_raw,
+            bits=self.bits,
+            next_32=self._next_32,
+            next_64=self._next_64,
+            next_double=self._next_double,
+            state_getter=self._state_getter,
+            state_setter=self._state_setter,
+        )
 
     ########################## STATIC/CLASS METHODS ##########################
     @staticmethod
@@ -256,14 +265,6 @@ class QiskitBitGenerator:
 
     ############################# NUMPY INTERFACE #############################
     @property
-    def random_raw(self) -> Callable[[Any], Union[uint32, uint64]]:
-        """
-        A callable that returns either 64 or 32 random bits. It must accept
-        a single input which is a void pointer to a memory address.
-        """
-        return self.next_32 if self._israw32 else self.next_64
-
-    @property
     def bits(self) -> int:
         """
         The number of bits output by the next_raw callable. Must be either
@@ -272,43 +273,51 @@ class QiskitBitGenerator:
         return 32 if self._israw32 else 64
 
     @property
-    def next_32(self) -> Callable[[Any], uint32]:
+    def _next_raw(self) -> Callable[[Any], Union[uint32, uint64]]:
+        """
+        A callable that returns either 64 or 32 random bits. It must accept
+        a single input which is a void pointer to a memory address.
+        """
+        return self._next_32 if self._israw32 else self._next_64
+
+    @property
+    def _next_32(self) -> Callable[[Any], uint32]:
         """
         A callable with the same signature as as next_raw that always returns
         a random numpy 32-bit unsigned int.
         """
 
-        def _next_32(void_p: Any) -> uint32:
+        def next_32(void_p: Any) -> uint32:
             return uint32(self.get_random_int(32))
 
-        return _next_32
+        return next_32
 
     @property
-    def next_64(self) -> Callable[[Any], uint64]:
+    def _next_64(self) -> Callable[[Any], uint64]:
         """
         A callable with the same signature as as next_raw that always returns
         a random numpy 64-bit unsigned int.
         """
 
-        def _next_64(void_p: Any) -> uint64:
+        def next_64(void_p: Any) -> uint64:
             return uint64(self.get_random_int(64))
 
-        return _next_64
+        return next_64
 
     @property
-    def next_double(self) -> Callable[[Any], float64]:
+    def _next_double(self) -> Callable[[Any], float64]:
         """
         A callable with the same signature as as next_raw that always return
         a random double in [0,1).
         """
 
-        def _next_double(void_p: Any) -> float64:
+        def next_double(void_p: Any) -> float64:
             return float64(self.get_random_double())
 
-        return _next_double
+        return next_double
 
     @property
-    def state_getter(self) -> Callable[[], dict]:
+    def _state_getter(self) -> Callable[[], dict]:
         """A callable that returns the state of the bit generator."""
 
         def f():
@@ -317,7 +326,7 @@ class QiskitBitGenerator:
         return f
 
     @property
-    def state_setter(self) -> Callable[[dict], None]:
+    def _state_setter(self) -> Callable[[dict], None]:
         """
         A callable that sets the state of the bit generator. Must take a
         single input.
@@ -327,34 +336,8 @@ class QiskitBitGenerator:
             keys = value.keys()
             if "backend" in keys:
                 self._backend = value["backend"]
-            if "israw32" in keys:
-                self._israw32 = value["israw32"]
             if "flush_cache" in keys:
                 if value["flush_cache"]:
                     self._bitcache.flush()
 
         return f
-
-
-###############################################################################
-## QISKIT BIT GENERATOR FOR NUMPY (FACTORY)
-###############################################################################
-def QiskitNumpyBitGenerator(
-    provider: Optional[Provider] = None,
-    backend: Optional[Backend] = None,
-    israw32: bool = False,
-    bitgen: Optional[QiskitBitGenerator] = None,
-) -> UserBitGenerator:
-    if not bitgen:
-        bitgen = QiskitBitGenerator(
-            provider=provider, backend=backend, israw32=israw32
-        )
-    return UserBitGenerator(
-        bitgen.random_raw,
-        bits=bitgen.bits,
-        next_32=bitgen.next_32,
-        next_64=bitgen.next_64,
-        next_double=bitgen.next_double,
-        state_getter=bitgen.state_getter,
-        state_setter=bitgen.state_setter,
-    )
