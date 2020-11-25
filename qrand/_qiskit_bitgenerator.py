@@ -331,6 +331,7 @@ class QiskitBitGenerator(UserBitGenerator):
     def _job_config(self) -> dict:
         return {
             "max_bits_per_request": self._max_bits_per_request or None,
+            "bits_per_request": self._shots * self._experiments,
             "shots": self._shots,
             "experiments": self._experiments,
         }
