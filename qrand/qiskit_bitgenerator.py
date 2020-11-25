@@ -95,13 +95,20 @@ class QiskitBitGenerator(UserBitGenerator):
         backend_filter: Optional[BackendFilter] = None,
         israw32: bool = False,
     ) -> None:
-        self.set_state(
-            provider=provider,
-            backend=backend,
-            backend_filter=backend_filter,
-        )
-        self._bitcache: BitCache = BitCache()
+        if backend:
+            provider = None
+        elif provider:
+            backend = self.get_best_backend(
+                provider=provider,
+                backend_filter=backend_filter,
+            )
+        else:
+            backend = BasicAer.get_backend("qasm_simulator")
+        self._provider: Optional[Provider] = provider
+        self._backend: Backend = backend
+        self._backend_filter: Optional[BackendFilter] = backend_filter
         self._israw32: bool = israw32
+        self._bitcache: BitCache = BitCache()
         super().__init__(
             next_raw=self._next_raw,
             bits=self.bits,
@@ -122,11 +129,11 @@ class QiskitBitGenerator(UserBitGenerator):
     def get_best_backend(
         cls,
         provider: Provider,
-        filter: Optional[BackendFilter] = None,
+        backend_filter: Optional[BackendFilter] = None,
     ) -> Backend:
-        if not filter:
-            filter = cls.default_backend_filter
-        backends: List[Backend] = provider.backends(filters=filter)
+        if not backend_filter:
+            backend_filter = cls.default_backend_filter
+        backends: List[Backend] = provider.backends(filters=backend_filter)
         if not backends:
             raise IBMQError(
                 "No backends matching the filtering critera on the \
@@ -181,20 +188,29 @@ class QiskitBitGenerator(UserBitGenerator):
         backend: Optional[Backend] = None,
         backend_filter: Optional[BackendFilter] = None,
     ) -> bool:
+        change: bool = False
+        if backend_filter:
+            change = True
+            self._backend_filter = backend_filter
         if backend:
-            provider = None
-        else:
-            backend = BasicAer.get_backend("qasm_simulator")
-        self._provider: Optional[Provider] = provider
-        self._backend: Backend = backend
-        self._backend_filter: Optional[BackendFilter] = backend_filter
-        return True
+            change = True
+            self._provider = None
+            self._backend = backend
+        elif provider:
+            change = True
+            self._provider = provider
+            self._backend = self.get_best_backend(
+                provider=provider,
+                backend_filter=self._backend_filter,
+            )
+        return change
 
     ############################# PRIVATE METHODS #############################
     def _fetch_random_bits(self) -> bool:
         if self._provider:
             self._backend = self.get_best_backend(
-                provider=self._provider, filter=self._backend_filter
+                provider=self._provider,
+                backend_filter=self._backend_filter,
             )
         circuits: List[QuantumCircuit] = [self._circuit] * self._config[
             "max_experiments"
