@@ -106,7 +106,7 @@ class QiskitBitGenerator(UserBitGenerator):
         self._provider: Optional[Provider] = provider
         self._backend: Backend = backend
         self._backend_filter: Optional[BackendFilter] = backend_filter
-        self._max_bits_per_request: int = max_bits_per_request
+        self._set_mbpr(max_bits_per_request)
         self._ISRAW32: Final[bool] = ISRAW32
         self._bitcache: BitCache = BitCache()
         super().__init__(
@@ -194,7 +194,7 @@ class QiskitBitGenerator(UserBitGenerator):
         change: bool = False
         if max_bits_per_request is not None:
             change = True
-            self._max_bits_per_request = max_bits_per_request
+            self._set_mbpr(max_bits_per_request)
         if backend_filter:
             change = True
             self._backend_filter = backend_filter
@@ -273,7 +273,21 @@ class QiskitBitGenerator(UserBitGenerator):
             shots = min(shots, max_bits_per_request // experiments)
         return (shots, experiments)
 
+    def _set_mbpr(self, max_bits_per_request: int) -> bool:
+        self._max_bits_per_request = (
+            max_bits_per_request if max_bits_per_request > 0 else 0
+        )
+        return True
+
     ############################ PUBLIC PROPERTIES ############################
+    @property
+    def bits(self) -> int:
+        """
+        The number of bits output by the next_raw callable. Must be either
+        32 or 64.
+        """
+        return 32 if self._ISRAW32 else 64
+
     @property
     def state(self) -> dict:
         s: dict = {
@@ -331,14 +345,6 @@ class QiskitBitGenerator(UserBitGenerator):
         return shots
 
     ############################# NUMPY INTERFACE #############################
-    @property
-    def bits(self) -> int:
-        """
-        The number of bits output by the next_raw callable. Must be either
-        32 or 64.
-        """
-        return 32 if self._ISRAW32 else 64
-
     @property
     def _next_raw(self) -> Callable[[Any], Union[uint32, uint64]]:
         """
