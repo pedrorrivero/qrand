@@ -154,23 +154,23 @@ class QiskitBitGenerator(UserBitGenerator):
             self._fetch_random_bits()
         return self._bitcache.pop(n_bits)
 
-    def get_random_double(self, min: float = 0, max: float = 1) -> float:
+    def get_random_double(self, n: float = 1) -> float:
         """
         Returns a random double from a uniform distribution in the range
-        [min, max). Defaults to [0, 1).
+        [0,n). Defaults to [0,1).
         COPYRIGHT NOTICE:
         -----------------
         Source: https://github.com/ozanerhansha/qRNG
         License: GNU GENERAL PUBLIC LICENSE VERSION 3
         State changes:
             - Add static type hints
-            - Add default range
+            - Limit range to [0,n) instead of [min,max) and add default
             - Replace call to original get_random_int64
         """
         unpacked = 0x3FF0000000000000 | self.get_random_int(64) >> 12
         packed = struct.pack("Q", unpacked)
         value: float = struct.unpack("d", packed)[0] - 1.0
-        return (max - min) * value + min
+        return value * n
 
     def get_random_int(self, n_bits: int) -> int:
         return int(self.get_random_bitstring(n_bits), 2)
