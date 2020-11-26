@@ -283,7 +283,7 @@ class QiskitBitGenerator(UserBitGenerator):
     @property
     def bits(self) -> int:
         """
-        The number of bits output by the next_raw callable. Must be either
+        The number of bits output by the random_raw callable. Must be either
         32 or 64.
         """
         return 32 if self._ISRAW32 else 64
