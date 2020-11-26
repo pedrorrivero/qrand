@@ -269,8 +269,15 @@ class QiskitBitGenerator(UserBitGenerator):
             else 1
         )
         if max_bits_per_request > 0:
-            experiments = min(experiments, max_bits_per_request // shots + 1)
-            shots = min(shots, max_bits_per_request // experiments)
+            n_qubits: int = backend_config["n_qubits"]
+            experiments = min(
+                experiments,
+                max_bits_per_request // (shots * n_qubits) + 1,
+            )
+            shots = min(
+                shots,
+                max_bits_per_request // (experiments * n_qubits),
+            )
         return (shots, experiments)
 
     def _set_mbpr(self, max_bits_per_request: int) -> bool:
@@ -331,7 +338,9 @@ class QiskitBitGenerator(UserBitGenerator):
     def _job_config(self) -> dict:
         return {
             "max_bits_per_request": self._max_bits_per_request or None,
-            "bits_per_request": self._shots * self._experiments,
+            "bits_per_request": self._backend_config["n_qubits"]
+            * self._shots
+            * self._experiments,
             "shots": self._shots,
             "experiments": self._experiments,
         }
