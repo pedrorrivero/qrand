@@ -149,14 +149,14 @@ class QiskitBitGenerator(UserBitGenerator):
     def flush_cache(self) -> bool:
         return self._bitcache.flush()
 
-    def get_random_bitstring(self, n_bits: int = 0) -> str:
+    def random_bitstring(self, n_bits: int = 0) -> str:
         if n_bits < 1:
             n_bits = self.bits
         while self._bitcache.size < n_bits:
             self._fetch_random_bits()
         return self._bitcache.pop(n_bits)
 
-    def get_random_double(self, n: float = 1) -> float:
+    def random_double(self, n: float = 1) -> float:
         """
         Returns a random double from a uniform distribution in the range
         [0,n). Defaults to [0,1).
@@ -169,15 +169,15 @@ class QiskitBitGenerator(UserBitGenerator):
             - Limit range to [0,n) instead of [min,max) and add default
             - Replace call to original get_random_int64
         """
-        unpacked = 0x3FF0000000000000 | self.get_random_uint(64) >> 12
+        unpacked = 0x3FF0000000000000 | self.random_uint(64) >> 12
         packed = struct.pack("Q", unpacked)
         value: float = struct.unpack("d", packed)[0] - 1.0
         return value * n
 
-    def get_random_uint(self, n_bits: int = 0) -> int:
+    def random_uint(self, n_bits: int = 0) -> int:
         if n_bits < 1:
             n_bits = self.bits
-        return int(self.get_random_bitstring(n_bits), 2)
+        return int(self.random_bitstring(n_bits), 2)
 
     def load_cache(self, bitstring: str, flush: bool = False) -> bool:
         if flush:
@@ -371,7 +371,7 @@ class QiskitBitGenerator(UserBitGenerator):
         """
 
         def next_32(void_p: Any) -> uint32:
-            return uint32(self.get_random_uint(32))
+            return uint32(self.random_uint(32))
 
         return next_32
 
@@ -383,7 +383,7 @@ class QiskitBitGenerator(UserBitGenerator):
         """
 
         def next_64(void_p: Any) -> uint64:
-            return uint64(self.get_random_uint(64))
+            return uint64(self.random_uint(64))
 
         return next_64
 
@@ -395,6 +395,6 @@ class QiskitBitGenerator(UserBitGenerator):
         """
 
         def next_double(void_p: Any) -> float64:
-            return float64(self.get_random_double())
+            return float64(self.random_double(1))
 
         return next_double
