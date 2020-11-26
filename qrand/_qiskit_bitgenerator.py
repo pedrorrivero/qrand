@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: November 25, 2020
+##   |  ___/|  _  /    DATE: November 26, 2020
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -252,34 +252,6 @@ class QiskitBitGenerator(UserBitGenerator):
             config[k] = backend_config[k] if k in keys else v
         return config
 
-    def _partition_job(self, max_bits_per_request: int = 0) -> Tuple[int, int]:
-        backend_config: dict = self._backend_config
-        experiments: int = (
-            backend_config["max_experiments"]
-            if backend_config.__contains__("max_experiments")
-            and backend_config["max_experiments"]
-            else 1
-        )
-        shots: int = (
-            backend_config["max_shots"]
-            if backend_config.__contains__("max_shots")
-            and backend_config["max_shots"]
-            and backend_config.__contains__("memory")
-            and backend_config["memory"]
-            else 1
-        )
-        if max_bits_per_request > 0:
-            n_qubits: int = backend_config["n_qubits"]
-            experiments = min(
-                experiments,
-                max_bits_per_request // (shots * n_qubits) + 1,
-            )
-            shots = min(
-                shots,
-                max_bits_per_request // (experiments * n_qubits),
-            )
-        return (shots, experiments)
-
     def _set_mbpr(self, max_bits_per_request: int) -> bool:
         self._max_bits_per_request = (
             max_bits_per_request if max_bits_per_request > 0 else 0
@@ -321,7 +293,14 @@ class QiskitBitGenerator(UserBitGenerator):
 
     @property
     def _circuit(self) -> QuantumCircuit:
-        n_qubits: int = self._backend_config["n_qubits"]
+        n_qubits: int = (
+            min(
+                self._backend_config["n_qubits"],
+                self._max_bits_per_request,
+            )
+            if self._max_bits_per_request > 0
+            else self._backend_config["n_qubits"]
+        )
         qr: QuantumRegister = QuantumRegister(n_qubits)
         cr: ClassicalRegister = ClassicalRegister(n_qubits)
         circuit: QuantumCircuit = QuantumCircuit(qr, cr)
@@ -331,14 +310,14 @@ class QiskitBitGenerator(UserBitGenerator):
 
     @property
     def _experiments(self) -> int:
-        shots, experiments = self._partition_job(self._max_bits_per_request)
+        shots, experiments = self._job_partition
         return experiments
 
     @property
     def _job_config(self) -> dict:
         return {
             "max_bits_per_request": self._max_bits_per_request or None,
-            "bits_per_request": self._backend_config["n_qubits"]
+            "bits_per_request": self._circuit.num_qubits
             * self._shots
             * self._experiments,
             "shots": self._shots,
@@ -346,12 +325,45 @@ class QiskitBitGenerator(UserBitGenerator):
         }
 
     @property
-    def _memory(self):
+    def _memory(self) -> bool:
         return True if self._shots > 1 else False
 
     @property
+    def _job_partition(self) -> Tuple[int, int]:
+        backend_config: dict = self._backend_config
+        experiments: int = (
+            backend_config["max_experiments"]
+            if backend_config.__contains__("max_experiments")
+            and backend_config["max_experiments"]
+            else 1
+        )
+        shots: int = (
+            backend_config["max_shots"]
+            if backend_config.__contains__("max_shots")
+            and backend_config["max_shots"]
+            and backend_config.__contains__("memory")
+            and backend_config["memory"]
+            else 1
+        )
+        max_bits_per_request: int = self._max_bits_per_request
+        n_qubits: int = self._circuit.num_qubits
+        if max_bits_per_request > n_qubits:
+            experiments = min(
+                experiments,
+                max_bits_per_request // (shots * n_qubits) + 1,
+            )
+            shots = min(
+                shots,
+                max_bits_per_request // (experiments * n_qubits),
+            )
+        elif max_bits_per_request > 0:
+            experiments = 1
+            shots = 1
+        return (shots, experiments)
+
+    @property
     def _shots(self) -> int:
-        shots, experiments = self._partition_job(self._max_bits_per_request)
+        shots, experiments = self._job_partition
         return shots
 
     ############################# NUMPY INTERFACE #############################
