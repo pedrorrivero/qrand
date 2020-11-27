@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: November 26, 2020
+##   |  ___/|  _  /    DATE: November 27, 2020
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -293,14 +293,7 @@ class QiskitBitGenerator(UserBitGenerator):
 
     @property
     def _circuit(self) -> QuantumCircuit:
-        n_qubits: int = (
-            min(
-                self._backend_config["n_qubits"],
-                self._max_bits_per_request,
-            )
-            if self._max_bits_per_request > 0
-            else self._backend_config["n_qubits"]
-        )
+        n_qubits: int = self._n_qubits
         qr: QuantumRegister = QuantumRegister(n_qubits)
         cr: ClassicalRegister = ClassicalRegister(n_qubits)
         circuit: QuantumCircuit = QuantumCircuit(qr, cr)
@@ -310,16 +303,17 @@ class QiskitBitGenerator(UserBitGenerator):
 
     @property
     def _experiments(self) -> int:
-        shots, experiments = self._job_partition
+        n_qubits, shots, experiments = self._job_partition
         return experiments
 
     @property
     def _job_config(self) -> dict:
         return {
             "max_bits_per_request": self._max_bits_per_request or None,
-            "bits_per_request": self._circuit.num_qubits
+            "bits_per_request": self._n_qubits
             * self._shots
             * self._experiments,
+            "n_qubits": self._n_qubits,
             "shots": self._shots,
             "experiments": self._experiments,
         }
@@ -329,7 +323,7 @@ class QiskitBitGenerator(UserBitGenerator):
         return True if self._shots > 1 else False
 
     @property
-    def _job_partition(self) -> Tuple[int, int]:
+    def _job_partition(self) -> Tuple[int, int, int]:
         backend_config: dict = self._backend_config
         experiments: int = (
             backend_config["max_experiments"]
@@ -345,8 +339,13 @@ class QiskitBitGenerator(UserBitGenerator):
             and backend_config["memory"]
             else 1
         )
+        n_qubits: int = (
+            backend_config["n_qubits"]
+            if backend_config.__contains__("n_qubits")
+            and backend_config["n_qubits"]
+            else 1
+        )
         max_bits_per_request: int = self._max_bits_per_request
-        n_qubits: int = self._circuit.num_qubits
         if max_bits_per_request > n_qubits:
             experiments = min(
                 experiments,
@@ -359,11 +358,17 @@ class QiskitBitGenerator(UserBitGenerator):
         elif max_bits_per_request > 0:
             experiments = 1
             shots = 1
-        return (shots, experiments)
+            n_qubits = max_bits_per_request
+        return (n_qubits, shots, experiments)
+
+    @property
+    def _n_qubits(self) -> int:
+        n_qubits, shots, experiments = self._job_partition
+        return n_qubits
 
     @property
     def _shots(self) -> int:
-        shots, experiments = self._job_partition
+        n_qubits, shots, experiments = self._job_partition
         return shots
 
     ############################# NUMPY INTERFACE #############################
