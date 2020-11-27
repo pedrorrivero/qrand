@@ -244,6 +244,13 @@ class QiskitBitGenerator(UserBitGenerator):
         self._bitcache.push(bitstring)
         return True
 
+    def _parse_backend_config(self, backend_config: dict) -> dict:
+        keys = backend_config.keys()
+        config: dict = {}
+        for k, v in self._BACKEND_CONFIG_MASK.items():
+            config[k] = backend_config[k] if k in keys else v
+        return config
+
     def _parse_result(self, result: Result) -> str:
         measurements: List[str] = []
         if self._memory:
@@ -258,13 +265,6 @@ class QiskitBitGenerator(UserBitGenerator):
         for m in measurements:
             bitstring += m
         return bitstring
-
-    def _parse_backend_config(self, backend_config: dict) -> dict:
-        keys = backend_config.keys()
-        config: dict = {}
-        for k, v in self._BACKEND_CONFIG_MASK.items():
-            config[k] = backend_config[k] if k in keys else v
-        return config
 
     def _set_mbpr(self, max_bits_per_request: int) -> bool:
         self._max_bits_per_request = (
@@ -333,10 +333,6 @@ class QiskitBitGenerator(UserBitGenerator):
         }
 
     @property
-    def _memory(self) -> bool:
-        return True if self._shots > 1 else False
-
-    @property
     def _job_partition(self) -> Tuple[int, int, int]:
         backend_config: dict = self._backend_config
         experiments: int = (
@@ -373,7 +369,11 @@ class QiskitBitGenerator(UserBitGenerator):
             experiments = 1
             shots = 1
             n_qubits = max_bits_per_request
-        return (n_qubits, shots, experiments)
+        return n_qubits, shots, experiments
+
+    @property
+    def _memory(self) -> bool:
+        return True if self._shots > 1 else False
 
     @property
     def _n_qubits(self) -> int:
