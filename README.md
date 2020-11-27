@@ -19,7 +19,7 @@ This is why I am setting up to develop an easy to use, modular piece of software
 
 # Acknowledgements
 
-Parts of this software's source code have been borrowed from the [qRNG](https://github.com/ozanerhansha/qRNG) project, which is licensed under the [GPL v3](https://github.com/ozanerhansha/qRNG/blob/master/LICENSE) license. Copyright notice and state changes can be found as a docstring wherever this applies.
+Parts of this software's source code have been borrowed from the [qRNG](https://github.com/ozanerhansha/qRNG) project, which is licensed under the [GNU GPLv3](https://github.com/ozanerhansha/qRNG/blob/master/LICENSE) license. Copyright notice and state changes can be found as a docstring wherever this applies.
 
 ---
-(c) 2020 Pedro Rivero
+(c) Copyright 2020 Pedro Rivero

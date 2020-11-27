@@ -45,7 +45,7 @@ description = "A quantum random number generator for arbitrary probability distr
 readme = "README.md"
 homepage = "https://github.com/pedrorrivero/qrand"
 authors = ["Pedro Rivero <pedro.rivero.ramirez@gmail.com>"]
-license = "MIT"
+license = "Apache-2.0"
 
 [tool.poetry.dependencies]
 python = "^3.9"
