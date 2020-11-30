@@ -63,7 +63,13 @@ Additionally, it always chooses the least busy backend from the list of availabl
 
 ### STATIC / CLASS METHODS
 - **default_backend_filter** *(b: Backend) -> bool*: <br/>
-  Default backend filter. A Callable that takes in a Qiskit Backend object and returns `True` if it is not a simulator and has memory enabled, `False` otherwise.
+  Default backend filter Callable.
+  - ARGUMENTS
+    - *b*: Backend <br/>
+      A Qiskit Backend object.
+  - RETURNS
+    - *out*: bool <br/>
+      `True` if `b` is not a simulator and has memory enabled, `False` otherwise.
 - **get_best_backend** *(cls, provider: Provider, backend_filter: Optional[BackendFilter] = None) -> Backend*: <br/>
   Returns the least busy backend available to an input provider, and according to certain filter(s).
   - ARGUMENTS
@@ -79,7 +85,7 @@ Additionally, it always chooses the least busy backend from the list of availabl
 - **dump_cache** *(self, flush: bool = False) -> str*: <br/>
   Returns all the contents stored in the cache.
   - ARGUMENTS
-    - *flush*: bool <br/>
+    - *flush*: bool = False <br/>
       If `True` erase the cache after dumping.
   - RETURNS
     - *out*: str <br/>
@@ -94,7 +100,7 @@ Additionally, it always chooses the least busy backend from the list of availabl
   - ARGUMENTS
     - *bitstring*: str <br/>
       The bitstring to load to cache.
-    - *flush*: bool <br/>
+    - *flush*: bool = False <br/>
       If `True` erase cache before loading.
   - RETURNS
     - *out*: bool <br/>
@@ -107,7 +113,7 @@ Additionally, it always chooses the least busy backend from the list of availabl
 - **random_bitstring** *(self, n_bits: int = 0) -> str*: <br/>
   Returns a random bitstring of a given lenght.
   - ARGUMENTS
-    - *n_bits*: int <br/>
+    - *n_bits*: int = 0 <br/>
       Number of bits to retrieve. If less than one it defaults to the raw number of bits for the instance QiskitBitGenerator (i.e. 32 or 64).
   - RETURNS
     - *out*: str <br/>
@@ -115,7 +121,7 @@ Additionally, it always chooses the least busy backend from the list of availabl
 - **random_double** *(self, n: float = 1) -> float*: <br/>
   Returns a random double from a uniform distribution in the range [0,n). Defaults to [0,1).
   - ARGUMENTS
-    - *n*: float <br/>
+    - *n*: float = 1 <br/>
       Size of the range [0,n) from which to draw the random number.
   - RETURNS
     - *out*: float <br/>
@@ -128,7 +134,7 @@ Additionally, it always chooses the least busy backend from the list of availabl
 - **random_uint** *(self, n_bits: int = 0) -> int*: <br/>
   Returns a random unsigned int of a given size in bits.
   - ARGUMENTS
-    - *n_bits*: int <br/>
+    - *n_bits*: int = 0 <br/>
       Number of bits to retrieve. If less than one it defaults to the raw number of bits for the instance QiskitBitGenerator (i.e. 32 or 64).
   - RETURNS
     - *out*: int <br/>

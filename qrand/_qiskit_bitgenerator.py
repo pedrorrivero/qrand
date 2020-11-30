@@ -259,9 +259,18 @@ class QiskitBitGenerator(UserBitGenerator):
     @staticmethod
     def default_backend_filter(b: Backend) -> bool:
         """
-        Default backend filter.
-        A Callable that takes in a Qiskit Backend object and returns `True`
-        if it is not a simulator and has memory enabled, `False` otherwise.
+        Default backend filter Callable.
+
+        ARGUMENTS
+        ---------
+        b: Backend
+            A Qiskit Backend object.
+
+        RETURNS
+        -------
+        out: bool
+            `True` if `b` is not a simulator and has memory enabled, `False`
+            otherwise.
         """
         config: BackendConfiguration = b.configuration()
         return config.memory and not config.simulator
