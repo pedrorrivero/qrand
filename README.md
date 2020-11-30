@@ -49,7 +49,7 @@ On each request to a backend, it retrieves as many bits as possible and stores t
 
 Additionally, it always chooses the least busy backend from the list of available machines. This list can be filtered by the user through the `backend_filter` argument, which defaults to history-enabled non-simulators. If a Qiskit Backend is explicitly passed in as argument, no backend selection will be performed: effectively ignoring any Qiskit Provider object passed. If neither `provider` nor `backend` are passed as inputs, it will default to running Qiskit BasicAer's 'qasm_simulator' locally.
 
-### ARGUMENTS
+### CLASS ARGUMENTS
 - **provider**: *Optional[Provider] = None* <br/>
   A Qiskit Provider object to access quantum backends. If `None` it defaults to BasicAer.
 - **backend**: *Optional[Backend] = None* <br/>

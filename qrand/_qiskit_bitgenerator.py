@@ -172,8 +172,8 @@ class QiskitBitGenerator(UserBitGenerator):
     implements an efficient strategy to retrieve random bits from IBMQ's quantum
     backends.
 
-    ARGUMENTS
-    ---------
+    CLASS ARGUMENTS
+    ---------------
     provider: Optional[Provider] = None
         A Qiskit Provider object to access quantum backends.
         If `None` it defaults to BasicAer.
