@@ -518,7 +518,7 @@ class QiskitBitGenerator(UserBitGenerator):
     @property
     def bits(self) -> int:
         """
-        The number of bits output by Numpy's `random_raw()` method.
+        The number of bits output by NumPy's `random_raw()` method.
         Either 32 or 64.
         """
         return 32 if self._ISRAW32 else 64
