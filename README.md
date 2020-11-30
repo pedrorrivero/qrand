@@ -89,6 +89,21 @@ Additionally, it always chooses the least busy backend from the list of availabl
   - RETURNS
     - *out*: bool <br/>
       `True` if succeeds, `False` otherwise.
+- **load_cache** *(self, bitstring: str, flush: bool = False) -> bool*: <br/>
+  Load cache contents from bitstring.
+  - ARGUMENTS
+    - *bitstring*: str <br/>
+      The bitstring to load to cache.
+    - *flush*: bool <br/>
+      If `True` erase cache before loading.
+  - RETURNS
+    - *out*: bool <br/>
+      `True` if succeeds, `False` otherwise.
+  - RAISES
+    - *TypeError* <br/>
+      If input bitstring is not str
+    - *ValueError* <br/>
+      If input bitstring is not a valid bitstring
 - **random_bitstring** *(self, n_bits: int = 0) -> str*: <br/>
   Returns a random bitstring of a given lenght.
   - ARGUMENTS
@@ -118,21 +133,6 @@ Additionally, it always chooses the least busy backend from the list of availabl
   - RETURNS
     - *out*: int <br/>
       Unsigned int of `n_bits` bits.
-- **load_cache** *(self, bitstring: str, flush: bool = False) -> bool*: <br/>
-  Load cache contents from bitstring.
-  - ARGUMENTS
-    - *bitstring*: str <br/>
-      The bitstring to load to cache.
-    - *flush*: bool <br/>
-      If `True` erase cache before loading.
-  - RETURNS
-    - *out*: bool <br/>
-      `True` if succeeds, `False` otherwise.
-  - RAISES
-    - *TypeError* <br/>
-      If input bitstring is not str
-    - *ValueError* <br/>
-      If input bitstring is not a valid bitstring
 - **set_state** *(self, provider: Optional[Provider] = None, backend: Optional[Backend] = None, backend_filter: Optional[BackendFilter] = None, max_bits_per_request: Optional[int] = None) -> bool*: <br/>
   Override constructor arguments. Any change must be explicitly passed as input (i.e. not `None`).
   - ARGUMENTS

@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: November 29, 2020
+##   |  ___/|  _  /    DATE: November 30, 2020
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -331,6 +331,33 @@ class QiskitBitGenerator(UserBitGenerator):
         """
         return self._bitcache.flush()
 
+    def load_cache(self, bitstring: str, flush: bool = False) -> bool:
+        """
+        Load cache contents from bitstring.
+
+        ARGUMENTS
+        ---------
+        bitstring: str
+            The bitstring to load to cache.
+        flush: bool
+            If `True` erase cache before loading.
+
+        RETURNS
+        -------
+        out: bool
+            `True` if succeeds, `False` otherwise.
+
+        RAISES
+        ------
+        TypeError (push)
+            If input bitstring is not str
+        ValueError (push)
+            If input bitstring is not a valid bitstring
+        """
+        if flush:
+            return self._bitcache.flush() and self._bitcache.push(bitstring)
+        return self._bitcache.push(bitstring)
+
     def random_bitstring(self, n_bits: int = 0) -> str:
         """
         Returns a random bitstring of a given lenght.
@@ -399,33 +426,6 @@ class QiskitBitGenerator(UserBitGenerator):
         if n_bits < 1:
             n_bits = self.BITS
         return int(self.random_bitstring(n_bits), 2)
-
-    def load_cache(self, bitstring: str, flush: bool = False) -> bool:
-        """
-        Load cache contents from bitstring.
-
-        ARGUMENTS
-        ---------
-        bitstring: str
-            The bitstring to load to cache.
-        flush: bool
-            If `True` erase cache before loading.
-
-        RETURNS
-        -------
-        out: bool
-            `True` if succeeds, `False` otherwise.
-
-        RAISES
-        ------
-        TypeError (push)
-            If input bitstring is not str
-        ValueError (push)
-            If input bitstring is not a valid bitstring
-        """
-        if flush:
-            return self._bitcache.flush() and self._bitcache.push(bitstring)
-        return self._bitcache.push(bitstring)
 
     def set_state(
         self,
