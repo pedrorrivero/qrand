@@ -167,8 +167,10 @@ class BitCache:
 ###############################################################################
 class QiskitBitGenerator(UserBitGenerator):
     """
-    Quantum random bit-generator based on Qiskit. It can interface with
-    NumPy's random library (e.g. to instantiate Generator objects).
+    Quantum random bit-generator based on Qiskit, which can interface with
+    NumPy's random library (e.g. to instantiate Generator objects). It
+    implements an efficient strategy to retrieve random bits from IBMQ quantum
+    backends.
 
     ARGUMENTS
     ---------
@@ -193,13 +195,11 @@ class QiskitBitGenerator(UserBitGenerator):
         Toggle 32-bit BitGenerator mode. If `False` the BitGenerator will
         be 64-bit. This determines the number of bits returned by NumPy's
         `random_raw()` method, and the default number of bits to output on
-        `random_uint()` and `random_double()`. Once an object is instanciated,
+        `random_uint()` and `random_double()`. Once an object is instantiated,
         this cannot be overridden.
 
     NOTES
     -----
-    QiskitBitGenerator uses an efficient strategy to retrieve random bits
-    from IBMQ quantum backends.
     On each request to a backend, it retrieves as many bits as possible and
     stores them in a cache. This way, the number of internet connections
     leading to overheads is greatly reduced and, while the cache is loaded,
@@ -309,6 +309,7 @@ class QiskitBitGenerator(UserBitGenerator):
         ---------
         flush: bool
             If `True` erase the cache after dumping.
+
         RETURNS
         -------
         out: str
@@ -409,6 +410,11 @@ class QiskitBitGenerator(UserBitGenerator):
             The bitstring to load to cache.
         flush: bool
             If `True` erase cache before loading.
+
+        RETURNS
+        -------
+        out: bool
+            `True` if succeeds, `False` otherwise.
         """
         if flush:
             return self._bitcache.flush() and self._bitcache.push(bitstring)
@@ -423,7 +429,7 @@ class QiskitBitGenerator(UserBitGenerator):
     ) -> bool:
         """
         Override constructor arguments.
-        Any change must be explicitely passed as input (i.e. not `None`).
+        Any change must be explicitly passed as input (i.e. not `None`).
 
         ARGUMENTS
         ---------
