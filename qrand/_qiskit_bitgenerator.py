@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: November 27, 2020
+##   |  ___/|  _  /    DATE: November 29, 2020
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -47,6 +47,10 @@ BackendFilter = Callable[[Backend], bool]
 ## BIT CACHE
 ###############################################################################
 class BitCache:
+    """
+    BitCache first in, first out (FIFO) data structure.
+    """
+
     def __init__(self) -> None:
         self._cache: str = ""
         self.size: int = 0
@@ -54,6 +58,24 @@ class BitCache:
     ########################## STATIC/CLASS METHODS ##########################
     @staticmethod
     def isbitstring(bitstring: str) -> bool:
+        """
+        Returns `True` if the input str is a bitstring, `False` otherwise.
+
+        ARGUMENTS
+        ---------
+        bitstring: str
+            The string to check.
+
+        RETURNS
+        -------
+        out: bool
+            `True` if input str is bitstring, `False` otherwise.
+
+        RAISES
+        ------
+        TypeError
+            If input bitstring is not str.
+        """
         if not isinstance(bitstring, str):
             raise TypeError(f"Invalid bitstring type '{type(bitstring)}'")
         b = {"0", "1"}
@@ -62,20 +84,69 @@ class BitCache:
 
     ############################# PUBLIC METHODS #############################
     def dump(self) -> str:
+        """
+        Outputs all the contents in the cache without erasing.
+
+        RETURNS
+        -------
+        out: str
+            Cache contents.
+        """
         return self._cache
 
     def flush(self) -> bool:
+        """
+        Erases the cache.
+
+        RETURNS
+        -------
+        out: bool
+            `True` if succeeds, `False` otherwise.
+        """
         self._cache = ""
         self.size = 0
         return True
 
     def pop(self, n: int) -> str:
+        """
+        Returns a size `n` bitstring removing it from the top of the cache.
+
+        ARGUMENTS
+        ---------
+        n: int
+            Number of bits to retrieve
+
+        RETURNS
+        -------
+        out: str
+            Size `n` bitstring.
+        """
         bitstring: str = self._cache[:n]
         self._cache = self._cache[n:]
         self.size -= n if n < self.size else self.size
         return bitstring
 
     def push(self, bitstring: str) -> bool:
+        """
+        Inserts bitstring at the end of the cache.
+
+        ARGUMENTS
+        ---------
+        bitstring: str
+            The bitstring to insert.
+
+        RETURNS
+        -------
+        out: bool
+            `True` if succeeds, `False` otherwise.
+
+        RAISES
+        ------
+        TypeError (isbitstring)
+            If input bitstring is not str
+        ValueError
+            If input bitstring is not a valid bitstring
+        """
         if not BitCache.isbitstring(bitstring):
             raise ValueError(f"Invalid bitstring value '{bitstring}'")
         self._cache += bitstring
@@ -85,6 +156,9 @@ class BitCache:
     ############################ PUBLIC PROPERTIES ############################
     @property
     def state(self) -> dict:
+        """
+        The state of the BitCache object.
+        """
         return {"size": self.size}
 
 
@@ -92,6 +166,56 @@ class BitCache:
 ## QISKIT BIT GENERATOR
 ###############################################################################
 class QiskitBitGenerator(UserBitGenerator):
+    """
+    Quantum random bit-generator based on Qiskit. It can interface with
+    NumPy's random library (e.g. to instantiate Generator objects).
+
+    ARGUMENTS
+    ---------
+    provider: Optional[Provider] = None
+        A Qiskit Provider object to access quantum backends.
+        If `None` it defaults to BasicAer.
+    backend: Optional[Backend] = None
+        A Qiskit Backend object to produce random bits.
+        If not `None`, `provider` will be ignored.
+    backend_filter: Optional[BackendFilter] = None
+        A Callable that takes in a Qiskit Backend object and returns `True`
+        if it meets certain requirements, `False` otherwise. This is used
+        to filter the list of available backends from which to dynamically
+        choose on each request to the `provider` (if no `backend` is
+        explicitly input). If `None` it defaults to
+        `QiskitBitGenerator.default_backend_filter`.
+    max_bits_per_request: int = 0
+        A limit to the number of bits to be retrieved on each request to any
+        Qiskit Backend. If less than one, no bound will be applied and the
+        maximum allowed number of bits will be retrieved.
+    ISRAW32: Final[bool] = False
+        Toggle 32-bit BitGenerator mode. If `False` the BitGenerator will
+        be 64-bit. This determines the number of bits returned by NumPy's
+        `random_raw()` method, and the default number of bits to output on
+        `random_uint()` and `random_double()`. Once an object is instanciated,
+        this cannot be overridden.
+
+    NOTES
+    -----
+    QiskitBitGenerator uses an efficient strategy to retrieve random bits
+    from IBMQ quantum backends.
+    On each request to a backend, it retrieves as many bits as possible and
+    stores them in a cache. This way, the number of internet connections
+    leading to overheads is greatly reduced and, while the cache is loaded,
+    random bits can be retrieved "instantaneously". The user can limit the
+    number of bits to retrieve on each request through the
+    `max_bits_per_request` argument.
+    Additionally, it always chooses the least busy backend from the list of
+    available machines. This list can be filtered by the user through the
+    `backend_filter` argument, which defaults to history-enabled
+    non-simulators. If a Qiskit Backend is explicitly passed in as argument,
+    no backend selection will be performed: effectively ignoring any Qiskit
+    Provider object passed.
+    If neither `provider` nor `backend` are passed as inputs, it will default
+    to running Qiskit BasicAer's 'qasm_simulator' locally.
+    """
+
     _BACKEND_CONFIG_MASK: Final[dict] = {
         "backend_name": "",
         "credits_required": False,
@@ -134,6 +258,11 @@ class QiskitBitGenerator(UserBitGenerator):
     ########################## STATIC/CLASS METHODS ##########################
     @staticmethod
     def default_backend_filter(b: Backend) -> bool:
+        """
+        Default backend filter.
+        A Callable that takes in a Qiskit Backend object and returns `True`
+        if it is not a simulator and has memory enabled, `False` otherwise.
+        """
         config: BackendConfiguration = b.configuration()
         return config.memory and not config.simulator
 
@@ -143,6 +272,24 @@ class QiskitBitGenerator(UserBitGenerator):
         provider: Provider,
         backend_filter: Optional[BackendFilter] = None,
     ) -> Backend:
+        """
+        Returns the least busy backend available to an input provider, and
+        according to certain filter(s).
+
+        ARGUMENTS
+        ---------
+        provider: Provider
+            A Qiskit Provider object to access quantum backends.
+        backend_filter: Optional[BackendFilter] = None
+            A Callable that takes in a Qiskit Backend object and returns `True`
+            if it meets certain requirements, `False` otherwise.
+            If `None` it defaults to `cls.default_backend_filter`.
+
+        RETURNS
+        -------
+        out: Backend
+            Least busy backend from the filtered list of available backends.
+        """
         if not backend_filter:
             backend_filter = cls.default_backend_filter
         backends: List[Backend] = provider.backends(filters=backend_filter)
@@ -155,15 +302,49 @@ class QiskitBitGenerator(UserBitGenerator):
 
     ############################# PUBLIC METHODS #############################
     def dump_cache(self, flush: bool = False) -> str:
+        """
+        Returns all the contents stored in the cache.
+
+        ARGUMENTS
+        ---------
+        flush: bool
+            If `True` erase the cache after dumping.
+        RETURNS
+        -------
+        out: str
+            The bitstring stored in cache.
+        """
         bitstring: str = self._bitcache.dump()
         if flush:
             self._bitcache.flush()
         return bitstring
 
     def flush_cache(self) -> bool:
+        """
+        Erase the cache.
+
+        RETURNS
+        -------
+        out: bool
+            `True` if succeeds, `False` otherwise.
+        """
         return self._bitcache.flush()
 
     def random_bitstring(self, n_bits: int = 0) -> str:
+        """
+        Returns a random bitstring of a given lenght.
+
+        ARGUMENTS
+        ---------
+        n_bits: int
+            Number of bits to retrieve. If less than one it defaults to the raw
+            number of bits for the instance QiskitBitGenerator (i.e. 32 or 64).
+
+        RETURNS
+        -------
+        out: str
+            Bitstring of lenght `n_bits`.
+        """
         if n_bits < 1:
             n_bits = self.bits
         while self._bitcache.size < n_bits:
@@ -174,11 +355,22 @@ class QiskitBitGenerator(UserBitGenerator):
         """
         Returns a random double from a uniform distribution in the range
         [0,n). Defaults to [0,1).
-        COPYRIGHT NOTICE:
-        -----------------
+
+        ARGUMENTS
+        ---------
+        n: float
+            Size of the range [0,n) from which to draw the random number.
+
+        RETURNS
+        -------
+        out: float
+            Random float in the range [0,n).
+
+        COPYRIGHT NOTICE
+        ----------------
         Source: https://github.com/ozanerhansha/qRNG
         License: GNU GENERAL PUBLIC LICENSE VERSION 3
-        State changes:
+        Changes:
             - Add static type hints
             - Limit range to [0,n) instead of [min,max) and add default
             - Replace call to original get_random_int64
@@ -189,11 +381,35 @@ class QiskitBitGenerator(UserBitGenerator):
         return value * n
 
     def random_uint(self, n_bits: int = 0) -> int:
+        """
+        Returns a random unsigned int of a given size in bits.
+
+        ARGUMENTS
+        ---------
+        n_bits: int
+            Number of bits to retrieve. If less than one it defaults to the raw
+            number of bits for the instance QiskitBitGenerator (i.e. 32 or 64).
+
+        RETURNS
+        -------
+        out: int
+            Unsigned int of `n_bits` bits.
+        """
         if n_bits < 1:
             n_bits = self.bits
         return int(self.random_bitstring(n_bits), 2)
 
     def load_cache(self, bitstring: str, flush: bool = False) -> bool:
+        """
+        Load cache contents from bitstring.
+
+        ARGUMENTS
+        ---------
+        bitstring: str
+            The bitstring to load to cache.
+        flush: bool
+            If `True` erase cache before loading.
+        """
         if flush:
             return self._bitcache.flush() and self._bitcache.push(bitstring)
         return self._bitcache.push(bitstring)
@@ -205,6 +421,26 @@ class QiskitBitGenerator(UserBitGenerator):
         backend_filter: Optional[BackendFilter] = None,
         max_bits_per_request: Optional[int] = None,
     ) -> bool:
+        """
+        Override constructor arguments.
+        Any change must be explicitely passed as input (i.e. not `None`).
+
+        ARGUMENTS
+        ---------
+        provider: Optional[Provider] = None
+            Same as constructor.
+        backend: Optional[Backend] = None
+            Same as constructor.
+        backend_filter: Optional[BackendFilter] = None
+            Same as constructor.
+        max_bits_per_request: Optional[int] = None
+            Same as constructor.
+
+        RETURNS
+        -------
+        out: bool
+            `True` if any changes were made, `False` otherwise.
+        """
         change: bool = False
         if max_bits_per_request is not None:
             change = True
@@ -276,13 +512,16 @@ class QiskitBitGenerator(UserBitGenerator):
     @property
     def bits(self) -> int:
         """
-        The number of bits output by the random_raw callable. Must be either
-        32 or 64.
+        The number of bits output by Numpy's `random_raw()` method.
+        Either 32 or 64.
         """
         return 32 if self._ISRAW32 else 64
 
     @property
     def state(self) -> dict:
+        """
+        Parsed information about the current state of the QiskitBitGenerator.
+        """
         s: dict = {
             "bits": self.bits,
             "job_config": self._job_config,
@@ -298,6 +537,9 @@ class QiskitBitGenerator(UserBitGenerator):
 
     @state.setter
     def state(self, value: dict) -> None:
+        """
+        An alternative form of `set_state()` parsed from dict equality.
+        """
         self.set_state(**value)
 
     ########################### PRIVATE PROPERTIES ###########################
