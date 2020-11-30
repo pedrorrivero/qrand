@@ -149,8 +149,8 @@ Additionally, it always chooses the least busy backend from the list of availabl
       `True` if any changes were made, `False` otherwise.
 
 ### PUBLIC PROPERTIES
-- **bits**: *Final[int]* <br/>
-  The number of bits output by NumPy's `random_raw()` method. Either 32 or 64.
+- **BITS**: *Final[int]* <br/>
+  Either 32 or 64. The number of bits output by NumPy's `random_raw()` method. Final, it cannot be modified after instantiation through the ISRAW32 argument.
 - **state**: *dict* <br/>
   Parsed information about the current state of the QiskitBitGenerator.
 

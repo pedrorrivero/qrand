@@ -248,7 +248,7 @@ class QiskitBitGenerator(UserBitGenerator):
         self._ISRAW32: Final[bool] = ISRAW32
         self._bitcache: BitCache = BitCache()
         super().__init__(
-            bits=self.bits,
+            bits=self.BITS,
             next_raw=self._next_raw,
             next_32=self._next_32,
             next_64=self._next_64,
@@ -347,7 +347,7 @@ class QiskitBitGenerator(UserBitGenerator):
             Bitstring of lenght `n_bits`.
         """
         if n_bits < 1:
-            n_bits = self.bits
+            n_bits = self.BITS
         while self._bitcache.size < n_bits:
             self._fetch_random_bits()
         return self._bitcache.pop(n_bits)
@@ -397,7 +397,7 @@ class QiskitBitGenerator(UserBitGenerator):
             Unsigned int of `n_bits` bits.
         """
         if n_bits < 1:
-            n_bits = self.bits
+            n_bits = self.BITS
         return int(self.random_bitstring(n_bits), 2)
 
     def load_cache(self, bitstring: str, flush: bool = False) -> bool:
@@ -523,10 +523,11 @@ class QiskitBitGenerator(UserBitGenerator):
 
     ############################ PUBLIC PROPERTIES ############################
     @property
-    def bits(self) -> int:
+    def BITS(self) -> int:
         """
-        The number of bits output by NumPy's `random_raw()` method.
-        Either 32 or 64.
+        Either 32 or 64. The number of bits output by NumPy's `random_raw()`
+        method. Final, it cannot be modified after instantiation through the
+        ISRAW32 argument.
         """
         return 32 if self._ISRAW32 else 64
 
@@ -536,7 +537,7 @@ class QiskitBitGenerator(UserBitGenerator):
         Parsed information about the current state of the QiskitBitGenerator.
         """
         s: dict = {
-            "bits": self.bits,
+            "BITS": self.BITS,
             "job_config": self._job_config,
             "backend_config": self._parse_backend_config(self._backend_config),
             "dynamic_backend": {
