@@ -167,9 +167,9 @@ class BitCache:
 ###############################################################################
 class QiskitBitGenerator(UserBitGenerator):
     """
-    Quantum random bit-generator based on Qiskit, which can interface with
-    NumPy's random library (e.g. to instantiate Generator objects). It
-    implements an efficient strategy to retrieve random bits from IBMQ quantum
+    A quantum random bit-generator based on Qiskit, which can interface with
+    NumPy's random module (e.g. to instantiate Generator objects). It
+    implements an efficient strategy to retrieve random bits from IBMQ's quantum
     backends.
 
     ARGUMENTS

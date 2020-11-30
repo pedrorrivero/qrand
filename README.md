@@ -14,13 +14,36 @@ Computer algorithms, data encryption, physical simulations, and even the arts us
 
 Luckily, the probabilistic nature of quantum computers makes these devices particularly useful for the task. Nonetheless, most of the current efforts in producing quantum random numbers have been focused on uniform probability distributions. Despite this fact, many applications actually need to sample from more complex distributions (e.g. gaussian, poisson).
 
-This is why I am setting up to develop an easy to use, modular piece of software, capable of producing quantum random numbers from arbitrary distributions. To do so, I will be using mathematical processing alongside IBM's Qiskit framework.
+This software introduces an interface layer between [NumPy](https://numpy.org/) and [Qiskit](https://qiskit.org/), along with some useful functionality that enables the production of quantum random numbers (QRN) for a wide variety of probability distributions. This is ultimately accomplished by transforming uniform probability distributions produced in IBMQ's quantum devices, through NumPy's random module.
+
+```python3
+from qrand import QiskitBitGenerator
+from numpy.random import Generator
+from qiskit import IBMQ
+
+provider = IBMQ.load_account()
+bitgen = QiskitBitGenerator(provider)
+gen = Generator(bitgen)
+
+print(f"Random Raw: {bitgen.random_raw()}")
+print(f"Random Bitstring: {bitgen.random_bitstring()}")
+print(f"Random Unsigned Int: {bitgen.random_uint()}")
+print(f"Random Double: {bitgen.random_double()}")
+
+print(f"Random Binomial: {gen.binomial(4, 1/4)}")
+print(f"Random Exponential: {gen.exponential()}")
+print(f"Random Logistic: {gen.logistic()}")
+print(f"Random Poisson: {gen.poisson()}")
+print(f"Random Std. Normal: {gen.standard_normal()}")
+print(f"Random Triangular: {gen.triangular(-1, 0, 1)}")
+# ...
+```
 
 
 # Documentation
 
 ## QiskitBitGenerator
-Quantum random bit-generator based on Qiskit, which can interface with NumPy's random library (e.g. to instantiate Generator objects). It implements an efficient strategy to retrieve random bits from IBMQ quantum backends.
+A quantum random bit-generator based on Qiskit, which can interface with NumPy's random module (e.g. to instantiate Generator objects). It implements an efficient strategy to retrieve random bits from IBMQ's quantum backends.
 
 On each request to a backend, it retrieves as many bits as possible and stores them in a cache. This way, the number of internet connections leading to overheads is greatly reduced and, while the cache is loaded, random bits can be retrieved "instantaneously". The user can limit the number of bits to retrieve on each request through the `max_bits_per_request` argument.
 
