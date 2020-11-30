@@ -415,6 +415,13 @@ class QiskitBitGenerator(UserBitGenerator):
         -------
         out: bool
             `True` if succeeds, `False` otherwise.
+
+        RAISES
+        ------
+        TypeError (push)
+            If input bitstring is not str
+        ValueError (push)
+            If input bitstring is not a valid bitstring
         """
         if flush:
             return self._bitcache.flush() and self._bitcache.push(bitstring)
