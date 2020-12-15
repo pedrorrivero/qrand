@@ -120,7 +120,17 @@ class BitCache:
         -------
         out: str
             Size `n` bitstring.
+
+
+        RAISES
+        ------
+        ValueError
+            If input is bigger than cache size, or not poositive.
         """
+        if not n > 0:
+            raise ValueError("Invalid input number of bits")
+        elif n > self.size:
+            raise ValueError("Insufficient cache size")
         bitstring: str = self._cache[:n]
         self._cache = self._cache[n:]
         self.size -= n if n < self.size else self.size
