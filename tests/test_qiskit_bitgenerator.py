@@ -55,13 +55,13 @@ class TestBitCache:
     ############################# PUBLIC METHODS #############################
     def test_dump(self):
         bitcache = BitCache()
-        cache = "100100100100"
+        cache = "100" * 100
         bitcache.push(cache)
         assert bitcache.dump() == cache
 
     def test_flush(self):
         bitcache = BitCache()
-        cache = "100100100100"
+        cache = "100" * 100
         bitcache.push(cache)
         assert (
             bitcache.flush() and bitcache.size == 0 and bitcache.dump() == ""
@@ -69,29 +69,42 @@ class TestBitCache:
 
     def test_pop(self):
         bitcache = BitCache()
-        cache = "100100100100"
+        cache = "100" * 100
         bitcache.push(cache)
         with pytest.raises(ValueError):
             bitcache.pop(0)
         with pytest.raises(ValueError):
             bitcache.pop(-1)
         with pytest.raises(ValueError):
-            bitcache.pop(16)
-        assert bitcache.pop(3) == "100"
+            bitcache.pop(len(cache) + 1)
+        assert (
+            bitcache.pop(3) == "100"
+            and bitcache._cache == cache[3:]
+            and bitcache.size == len(cache) - 3
+        )
+        assert (
+            bitcache.pop(len(cache) - 3) == cache[3:]
+            and bitcache._cache == ""
+            and bitcache.size == 0
+        )
 
     def test_push(self):
         bitcache = BitCache()
-        cache = "100100100100"
+        cache = "100" * 100
         with pytest.raises(TypeError):
             bitcache.push(0)
         with pytest.raises(ValueError):
             bitcache.push("abc")
-        assert bitcache.push(cache) and bitcache._cache == cache
+        assert (
+            bitcache.push(cache)
+            and bitcache._cache == cache
+            and bitcache.size == len(cache)
+        )
 
     ############################ PUBLIC PROPERTIES ############################
     def test_state(self):
         bitcache = BitCache()
-        cache = "100100100100"
+        cache = "100" * 100
         bitcache.push(cache)
         assert bitcache.state == {"size": len(cache)}
 
@@ -126,7 +139,7 @@ class TestQiskitBitGenerator:
     ############################# PUBLIC METHODS #############################
     def test_dump_cache(self):
         bitgen = QiskitBitGenerator()
-        cache = "100100100100"
+        cache = "100" * 100
         bitgen.load_cache(cache)
         assert bitgen.dump_cache() == cache
         assert (
@@ -137,7 +150,7 @@ class TestQiskitBitGenerator:
 
     def test_flush_cache(self):
         bitgen = QiskitBitGenerator()
-        cache = "100100100100"
+        cache = "100" * 100
         bitgen.load_cache(cache)
         assert (
             bitgen.flush_cache()
@@ -147,10 +160,10 @@ class TestQiskitBitGenerator:
 
     def test_load_cache(self):
         bitgen = QiskitBitGenerator()
-        cache = "100100100100"
-        bitgen.load_cache(cache)
+        cache = "100" * 100
         assert (
             bitgen.load_cache(cache)
+            and bitgen.load_cache(cache)
             and bitgen._bitcache.size == 2 * len(cache)
             and bitgen._bitcache._cache == cache + cache
         )
@@ -160,9 +173,30 @@ class TestQiskitBitGenerator:
             and bitgen._bitcache._cache == cache
         )
 
-    # def test_random_bitstring(self):
-    #     pass ## TODO!!!
-    #
+    def test_random_bitstring(self):
+        bitgen = QiskitBitGenerator()
+        cache = "100" * 100
+        n_bits = 4
+        bitgen.load_cache(cache)
+        assert (
+            bitgen.random_bitstring(-1) == cache[: bitgen.BITS]
+            and bitgen.random_bitstring(0)
+            == cache[bitgen.BITS : bitgen.BITS * 2]
+            and bitgen.random_bitstring(n_bits)
+            == cache[bitgen.BITS * 2 : bitgen.BITS * 2 + n_bits]
+        )
+        bitgen = QiskitBitGenerator(ISRAW32=True)
+        cache = "100" * 100
+        n_bits = 4
+        bitgen.load_cache(cache)
+        assert (
+            bitgen.random_bitstring(-1) == cache[: bitgen.BITS]
+            and bitgen.random_bitstring(0)
+            == cache[bitgen.BITS : bitgen.BITS * 2]
+            and bitgen.random_bitstring(n_bits)
+            == cache[bitgen.BITS * 2 : bitgen.BITS * 2 + n_bits]
+        )
+
     # def test_random_double(self):
     #     pass ## TODO!!!
     #
