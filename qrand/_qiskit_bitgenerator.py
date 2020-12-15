@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: November 30, 2020
+##   |  ___/|  _  /    DATE: December 15, 2020
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -125,10 +125,10 @@ class BitCache:
         RAISES
         ------
         ValueError
-            If input is bigger than cache size, or not poositive.
+            If input is greater than cache size, or less than one.
         """
-        if not n > 0:
-            raise ValueError("Invalid input number of bits")
+        if n < 1:
+            raise ValueError("Input number of bits must be greater than zero")
         elif n > self.size:
             raise ValueError("Insufficient cache size")
         bitstring: str = self._cache[:n]
