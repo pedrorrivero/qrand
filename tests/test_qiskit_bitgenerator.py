@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: December 15, 2020
+##   |  ___/|  _  /    DATE: December 17, 2020
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -22,14 +22,7 @@
 
 import pytest
 from numpy import float64, uint32, uint64
-from qiskit import (
-    IBMQ,
-    BasicAer,
-    ClassicalRegister,
-    QuantumCircuit,
-    QuantumRegister,
-    execute,
-)
+from qiskit import IBMQ, BasicAer, QuantumCircuit, execute
 from qiskit.providers import Backend, Job, Provider
 from qiskit.providers.ibmq import IBMQError, least_busy
 from qiskit.providers.models import BackendConfiguration
@@ -161,6 +154,10 @@ class TestQiskitBitGenerator:
     def test_load_cache(self):
         bitgen = QiskitBitGenerator()
         cache = "100" * 100
+        with pytest.raises(TypeError):
+            bitgen.load_cache(0)
+        with pytest.raises(ValueError):
+            bitgen.load_cache("abc")
         assert (
             bitgen.load_cache(cache)
             and bitgen.load_cache(cache)
@@ -197,12 +194,46 @@ class TestQiskitBitGenerator:
             == cache[bitgen.BITS * 2 : bitgen.BITS * 2 + n_bits]
         )
 
-    # def test_random_double(self):
-    #     pass ## TODO!!!
-    #
-    # def test_random_uint(self):
-    #     pass ## TODO!!!
-    #
+    def test_random_double(self):
+        bitgen = QiskitBitGenerator()
+        cache = "100" * 100
+        n = 4
+        bitgen.load_cache(cache)
+        assert (
+            bitgen.random_double(-1) == -0.5714285714285714
+            and bitgen.random_double(0) == 0.0
+            and bitgen.random_double(n) == 1.1428571428571423
+        )
+        bitgen = QiskitBitGenerator(ISRAW32=True)
+        cache = "100" * 100
+        n = 4
+        bitgen.load_cache(cache)
+        assert (
+            bitgen.random_double(-1) == -0.5714285714285714
+            and bitgen.random_double(0) == 0.0
+            and bitgen.random_double(n) == 1.1428571428571423
+        )
+
+    def test_random_uint(self):
+        bitgen = QiskitBitGenerator()
+        cache = "100" * 100
+        n_bits = 4
+        bitgen.load_cache(cache)
+        assert (
+            bitgen.random_uint(-1) == 10540996613548315209
+            and bitgen.random_uint(0) == 2635249153387078802
+            and bitgen.random_uint(n_bits) == 4
+        )
+        bitgen = QiskitBitGenerator(ISRAW32=True)
+        cache = "100" * 100
+        n_bits = 4
+        bitgen.load_cache(cache)
+        assert (
+            bitgen.random_uint(-1) == 2454267026
+            and bitgen.random_uint(0) == 1227133513
+            and bitgen.random_uint(n_bits) == 2
+        )
+
     # def test_set_state(self):
     #     pass ## TODO!!!
 
@@ -210,41 +241,106 @@ class TestQiskitBitGenerator:
     # def test_fetch_random_bits(self):
     #     pass ## TODO!!!
     #
-    # def test_parse_backend_config(self):
-    #     pass ## TODO!!!
-    #
+    def test_parse_backend_config(self):
+        bitgen = QiskitBitGenerator()
+        MASK = bitgen._BACKEND_CONFIG_MASK
+        backend_config = {
+            "backend_name": "TEST",
+            "simulator": True,
+            "dummy_1": True,
+            "dummy_2": 2,
+            "dummy_3": 0.4,
+            "dummy_4": "test",
+            "dummy_5": None,
+        }
+        parsed_bc = bitgen._parse_backend_config(backend_config)
+        MASK.pop("backend_name")
+        assert parsed_bc.pop("backend_name") == "TEST" and parsed_bc == MASK
+
     # def test_parse_result(self):
     #     pass ## TODO!!!
     #
-    # def test_set_mbpr(self):
-    #     pass ## TODO!!!
+    def test_set_mbpr(self):
+        bitgen = QiskitBitGenerator()
+        assert bitgen._set_mbpr(-1) and bitgen._max_bits_per_request == 0
+        assert bitgen._set_mbpr(0) and bitgen._max_bits_per_request == 0
+        assert bitgen._set_mbpr(1) and bitgen._max_bits_per_request == 1
 
     ############################ PUBLIC PROPERTIES ############################
-    # def test_BITS(self):
-    #     pass ## TODO!!!
-    #
-    # def test_state(self):
+    def test_BITS(self):
+        bitgen64 = QiskitBitGenerator()
+        bitgen32 = QiskitBitGenerator(ISRAW32=True)
+        assert bitgen32.BITS == 32 and bitgen64.BITS == 64
+
+    def test_state(self):
+        bitgen = QiskitBitGenerator()
+        state = {
+            "BITS": 64,
+            "backend_config": {
+                "credits_required": False,
+                "local": True,
+                "n_qubits": 24,
+                "simulator": True,
+            },
+            "bitcache": {"size": 0},
+            "job_config": {
+                "bits_per_request": 1572864,
+                "experiments": 1,
+                "max_bits_per_request": None,
+                "n_qubits": 24,
+                "shots": 65536,
+            },
+        }
+        assert bitgen.state == state
+
+    # def test_set_state(self):
     #     pass ## TODO!!!
 
     ########################### PRIVATE PROPERTIES ###########################
-    # def test_backend_config(self):
-    #     pass ## TODO!!!
-    #
-    # def test_circuit(self):
-    #     pass ## TODO!!!
-    #
+    def test_backend_config(self):
+        bitgen = QiskitBitGenerator()
+        bc = BasicAer.get_backend("qasm_simulator").configuration().to_dict()
+        assert bitgen._backend_config == bc
+
+    def test_circuit(self):
+        bitgen = QiskitBitGenerator()
+        bc = bitgen._circuit
+        n_qubits = bitgen._n_qubits
+        assert (
+            bc.num_qubits == n_qubits
+            and bc.num_clbits == n_qubits
+            and bc.size() == 2 * n_qubits
+        )
+
     # def test_experiments(self):
     #     pass ## TODO!!!
     #
-    # def test_job_config(self):
-    #     pass ## TODO!!!
-    #
+    def test_job_config(self):
+        bitgen = QiskitBitGenerator()
+        bjc = bitgen._job_config
+        jc = {
+            "experiments": 1,
+            "max_bits_per_request": None,
+            "n_qubits": 24,
+            "shots": 65536,
+        }
+        jc["bits_per_request"] = (
+            jc["experiments"] * jc["shots"] * jc["n_qubits"]
+        )
+        assert bjc == jc and (
+            not bjc["max_bits_per_request"]
+            or bjc["max_bits_per_request"] >= bjc["bits_per_request"]
+        )
+
     # def test_job_partition(self):
     #     pass ## TODO!!!
     #
-    # def test_memory(self):
-    #     pass ## TODO!!!
-    #
+    def test_memory(self):
+        bitgen = QiskitBitGenerator()
+        assert bitgen._backend_config["memory"] or not bitgen._memory
+        memory = True if bitgen._n_qubits > 1 else False
+        assert bitgen._memory == memory
+
     # def test_n_qubits(self):
     #     pass ## TODO!!!
     #
