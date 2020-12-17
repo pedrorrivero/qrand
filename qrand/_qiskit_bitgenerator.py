@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: December 15, 2020
+##   |  ___/|  _  /    DATE: December 17, 2020
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -24,13 +24,7 @@ import struct
 from typing import Any, Callable, Final, List, Optional, Tuple, Union
 
 from numpy import float64, uint32, uint64
-from qiskit import (
-    BasicAer,
-    ClassicalRegister,
-    QuantumCircuit,
-    QuantumRegister,
-    execute,
-)
+from qiskit import BasicAer, QuantumCircuit, execute
 from qiskit.providers import Backend, Job, Provider
 from qiskit.providers.ibmq import IBMQError, least_busy
 from qiskit.providers.models import BackendConfiguration
@@ -583,11 +577,9 @@ class QiskitBitGenerator(UserBitGenerator):
     @property
     def _circuit(self) -> QuantumCircuit:
         n_qubits: int = self._n_qubits
-        qr: QuantumRegister = QuantumRegister(n_qubits)
-        cr: ClassicalRegister = ClassicalRegister(n_qubits)
-        circuit: QuantumCircuit = QuantumCircuit(qr, cr)
-        circuit.h(qr)
-        circuit.measure(qr, cr)
+        circuit: QuantumCircuit = QuantumCircuit(n_qubits)
+        circuit.h(range(n_qubits))
+        circuit.measure_all()
         return circuit
 
     @property
