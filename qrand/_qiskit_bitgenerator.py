@@ -115,7 +115,6 @@ class BitCache:
         out: str
             Size `n` bitstring.
 
-
         RAISES
         ------
         ValueError

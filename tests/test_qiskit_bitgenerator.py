@@ -31,11 +31,10 @@ from randomgen import UserBitGenerator
 
 from qrand._qiskit_bitgenerator import BitCache, QiskitBitGenerator
 
+
 ###############################################################################
 ## BIT CACHE
 ###############################################################################
-
-
 class TestBitCache:
     ########################## STATIC/CLASS METHODS ##########################
     def test_isbitstring(self):
@@ -105,8 +104,6 @@ class TestBitCache:
 ###############################################################################
 ## QISKIT BIT GENERATOR
 ###############################################################################
-
-
 class TestQiskitBitGenerator:
     ########################## STATIC/CLASS METHODS ##########################
     def test_default_backend_filter(self):
@@ -240,7 +237,7 @@ class TestQiskitBitGenerator:
     ############################# PRIVATE METHODS #############################
     # def test_fetch_random_bits(self):
     #     pass ## TODO!!!
-    #
+
     def test_parse_backend_config(self):
         bitgen = QiskitBitGenerator()
         MASK = bitgen._BACKEND_CONFIG_MASK
@@ -259,7 +256,7 @@ class TestQiskitBitGenerator:
 
     # def test_parse_result(self):
     #     pass ## TODO!!!
-    #
+
     def test_set_mbpr(self):
         bitgen = QiskitBitGenerator()
         assert bitgen._set_mbpr(-1) and bitgen._max_bits_per_request == 0
@@ -314,7 +311,7 @@ class TestQiskitBitGenerator:
 
     # def test_experiments(self):
     #     pass ## TODO!!!
-    #
+
     def test_job_config(self):
         bitgen = QiskitBitGenerator()
         bjc = bitgen._job_config
@@ -334,7 +331,7 @@ class TestQiskitBitGenerator:
 
     # def test_job_partition(self):
     #     pass ## TODO!!!
-    #
+
     def test_memory(self):
         bitgen = QiskitBitGenerator()
         assert bitgen._backend_config["memory"] or not bitgen._memory
@@ -343,19 +340,19 @@ class TestQiskitBitGenerator:
 
     # def test_n_qubits(self):
     #     pass ## TODO!!!
-    #
+
     # def test_shots(self):
     #     pass ## TODO!!!
 
     ############################# NUMPY INTERFACE #############################
     # def test_next_raw(self):
     #     pass ## TODO!!!
-    #
+
     # def test_next_32(self):
     #     pass ## TODO!!!
-    #
+
     # def test_next_64(self):
     #     pass ## TODO!!!
-    #
+
     # def test_next_double(self):
     #     pass ## TODO!!!
