@@ -39,8 +39,8 @@ class Qrng:
         - Substituted random generation and caching logic
     """
 
-    def __init__(self, quantum_bit_generator):
-        self.quantum_bit_generator = quantum_bit_generator
+    def __init__(self, qiskit_bit_generator):
+        self._qiskit_bit_generator = qiskit_bit_generator
 
     ############################# PUBLIC METHODS #############################
     def get_bit_string(self, n_bits):
@@ -51,14 +51,14 @@ class Qrng:
         ---------
         n_bits: int
             Number of bits to retrieve. If less than one it defaults to the raw
-            number of bits for the quantum_bit_generator (i.e. 32 or 64).
+            number of bits for the qiskit_bit_generator (i.e. 32 or 64).
 
         RETURNS
         -------
         out: str
             Bitstring of lenght `n_bits`.
         """
-        return self.quantum_bit_generator.random_bitstring(n_bits)
+        return self._qiskit_bit_generator.random_bitstring(n_bits)
 
     def get_random_int(self, min, max):
         """
@@ -78,9 +78,9 @@ class Qrng:
         """
         delta = max - min
         n_bits = math.floor(math.log(delta, 2)) + 1
-        result = self.quantum_bit_generator.random_uint(n_bits)
+        result = self._qiskit_bit_generator.random_uint(n_bits)
         while result > delta:
-            result = self.quantum_bit_generator.random_uint(n_bits)
+            result = self._qiskit_bit_generator.random_uint(n_bits)
         return result + min
 
     def get_random_int32(self):
@@ -92,7 +92,7 @@ class Qrng:
         out: int
             Random 32 bit unsigned int.
         """
-        return self.quantum_bit_generator.random_uint(32)
+        return self._qiskit_bit_generator.random_uint(32)
 
     def get_random_int64(self):
         """
@@ -103,7 +103,7 @@ class Qrng:
         out: int
             Random 32 bit unsigned int.
         """
-        return self.quantum_bit_generator.random_uint(64)
+        return self._qiskit_bit_generator.random_uint(64)
 
     def get_random_float(self, min, max):
         """
@@ -145,7 +145,7 @@ class Qrng:
             Random float in the range [min,max).
         """
         delta = max - min
-        value = self.quantum_bit_generator.random_double(delta)
+        value = self._qiskit_bit_generator.random_double(delta)
         return value + min
 
     def get_random_complex_rect(self, r1, r2, i1=None, i2=None):
