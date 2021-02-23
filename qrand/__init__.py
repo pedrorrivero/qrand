@@ -1,12 +1,12 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: November 27, 2020
+##   |  ___/|  _  /    DATE: February 23, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
 
-## Copyright 2020 Pedro Rivero
+## Copyright 2021 Pedro Rivero
 ##
 ## Licensed under the Apache License, Version 2.0 (the "License");
 ## you may not use this file except in compliance with the License.
@@ -23,3 +23,4 @@
 __version__ = "0.1.0"
 
 from ._qiskit_bitgenerator import QiskitBitGenerator
+from ._qrng import Qrng
