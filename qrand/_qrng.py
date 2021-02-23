@@ -36,7 +36,7 @@ class Qrng:
     Source: https://github.com/ozanerhansha/qRNG
     License: GNU GENERAL PUBLIC LICENSE VERSION 3
     Changes:
-        -
+        - Substituted random generation and caching logic
     """
 
     def __init__(self, quantum_bit_generator):
@@ -56,12 +56,26 @@ class Qrng:
             result = int(self.get_bit_string(n), 2)
         return result + min
 
-    # Returns a random 32 bit integer
     def get_random_int32(self):
+        """
+        Returns a random 32 bit unsigned integer from a uniform distribution.
+
+        RETURNS
+        -------
+        out: int
+            Random 32 bit unsigned int.
+        """
         return self.quantum_bit_generator.random_uint(32)
 
-    # Returns a random 64 bit integer
     def get_random_int64(self):
+        """
+        Returns a random 32 bit unsigned integer from a uniform distribution.
+
+        RETURNS
+        -------
+        out: int
+            Random 32 bit unsigned int.
+        """
         return self.quantum_bit_generator.random_uint(64)
 
     # Returns a random float from a uniform distribution in the range [min, max).
@@ -70,7 +84,7 @@ class Qrng:
         unpacked = 0x3F800000 | self.get_random_int32() >> 9
         packed = struct.pack("I", unpacked)
         value = struct.unpack("f", packed)[0] - 1.0
-        return (max - min) * value + min  # Scale float to given range
+        return (max - min) * value + min
 
     def get_random_double(self, min, max):
         """
@@ -88,7 +102,6 @@ class Qrng:
         -------
         out: float
             Random float in the range [min,max).
-
         """
         range = max - min
         value = self.quantum_bit_generator.random_double(range)
