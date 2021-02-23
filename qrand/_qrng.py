@@ -60,9 +60,22 @@ class Qrng:
         """
         return self.quantum_bit_generator.random_bitstring(n_bits)
 
-    # Returns a random integer between and including [min, max].
-    # Running time is probabalistic but complexity is still O(n)
     def get_random_int(self, min, max):
+        """
+        Returns a random integer between and including [min, max].
+
+        ARGUMENTS
+        ---------
+        min: int
+            Lower bound for the random int.
+        max: int
+            Upper bound for the random int.
+
+        RETURNS
+        -------
+        out: int
+            Random int in the range [min,max].
+        """
         delta = max - min
         n_bits = math.floor(math.log(delta, 2)) + 1
         result = self.quantum_bit_generator.random_uint(n_bits)
