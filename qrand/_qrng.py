@@ -47,8 +47,8 @@ class Qrng:
         """
         Returns a random bitstring of a given lenght.
 
-        ARGUMENTS
-        ---------
+        PARAMETERS
+        ----------
         n_bits: int
             Number of bits to retrieve. If less than one it defaults to the raw
             number of bits for the qiskit_bit_generator (i.e. 32 or 64).
@@ -64,8 +64,8 @@ class Qrng:
         """
         Returns a random integer between and including [min, max].
 
-        ARGUMENTS
-        ---------
+        PARAMETERS
+        ----------
         min: int
             Lower bound for the random int.
         max: int
@@ -110,8 +110,8 @@ class Qrng:
         Returns a random float from a uniform distribution in the range
         [min,max).
 
-        ARGUMENTS
-        ---------
+        PARAMETERS
+        ----------
         min: float
             Lower bound for the random number.
         max: float
@@ -132,8 +132,8 @@ class Qrng:
         Returns a random double from a uniform distribution in the range
         [min,max).
 
-        ARGUMENTS
-        ---------
+        PARAMETERS
+        ----------
         min: float
             Lower bound for the random number.
         max: float
@@ -153,8 +153,8 @@ class Qrng:
         Returns a random complex with both real and imaginary parts from the
         given ranges. If no imaginary range specified, real range used.
 
-        ARGUMENTS
-        ---------
+        PARAMETERS
+        ----------
         r1: float
             Real lower bound for the random number.
         r2: float
@@ -181,8 +181,8 @@ class Qrng:
         Returns a random complex in rectangular form from a given polar range.
         If no max angle given, [0,2pi) used.
 
-        ARGUMENTS
-        ---------
+        PARAMETERS
+        ----------
         r: float
             Real lower bound for the random number.
         theta: float, default 2pi

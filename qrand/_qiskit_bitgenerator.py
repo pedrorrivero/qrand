@@ -1,12 +1,12 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: December 17, 2020
+##   |  ___/|  _  /    DATE: February 23, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
 
-## Copyright 2020 Pedro Rivero
+## Copyright 2021 Pedro Rivero
 ##
 ## Licensed under the Apache License, Version 2.0 (the "License");
 ## you may not use this file except in compliance with the License.
@@ -55,8 +55,8 @@ class BitCache:
         """
         Returns `True` if the input str is a bitstring, `False` otherwise.
 
-        ARGUMENTS
-        ---------
+        PARAMETERS
+        ----------
         bitstring: str
             The string to check.
 
@@ -105,8 +105,8 @@ class BitCache:
         """
         Returns a size `n` bitstring removing it from the top of the cache.
 
-        ARGUMENTS
-        ---------
+        PARAMETERS
+        ----------
         n: int
             Number of bits to retrieve
 
@@ -133,8 +133,8 @@ class BitCache:
         """
         Inserts bitstring at the end of the cache.
 
-        ARGUMENTS
-        ---------
+        PARAMETERS
+        ----------
         bitstring: str
             The bitstring to insert.
 
@@ -175,8 +175,8 @@ class QiskitBitGenerator(UserBitGenerator):
     implements an efficient strategy to retrieve random bits from IBMQ's quantum
     backends.
 
-    CLASS ARGUMENTS
-    ---------------
+    PARAMETERS
+    ----------
     provider: Optional[Provider] = None
         A Qiskit Provider object to access quantum backends.
         If `None` it defaults to BasicAer.
@@ -264,8 +264,8 @@ class QiskitBitGenerator(UserBitGenerator):
         """
         Default backend filter Callable.
 
-        ARGUMENTS
-        ---------
+        PARAMETERS
+        ----------
         b: Backend
             A Qiskit Backend object.
 
@@ -288,8 +288,8 @@ class QiskitBitGenerator(UserBitGenerator):
         Returns the least busy backend available to an input provider, and
         according to certain filter(s).
 
-        ARGUMENTS
-        ---------
+        PARAMETERS
+        ----------
         provider: Provider
             A Qiskit Provider object to access quantum backends.
         backend_filter: Optional[BackendFilter] = None
@@ -317,8 +317,8 @@ class QiskitBitGenerator(UserBitGenerator):
         """
         Returns all the contents stored in the cache.
 
-        ARGUMENTS
-        ---------
+        PARAMETERS
+        ----------
         flush: bool
             If `True` erase the cache after dumping.
 
@@ -347,8 +347,8 @@ class QiskitBitGenerator(UserBitGenerator):
         """
         Load cache contents from bitstring.
 
-        ARGUMENTS
-        ---------
+        PARAMETERS
+        ----------
         bitstring: str
             The bitstring to load to cache.
         flush: bool
@@ -374,8 +374,8 @@ class QiskitBitGenerator(UserBitGenerator):
         """
         Returns a random bitstring of a given lenght.
 
-        ARGUMENTS
-        ---------
+        PARAMETERS
+        ----------
         n_bits: int
             Number of bits to retrieve. If less than one it defaults to the raw
             number of bits for the instance QiskitBitGenerator (i.e. 32 or 64).
@@ -396,8 +396,8 @@ class QiskitBitGenerator(UserBitGenerator):
         Returns a random double from a uniform distribution in the range
         [0,n). Defaults to [0,1).
 
-        ARGUMENTS
-        ---------
+        PARAMETERS
+        ----------
         n: float
             Size of the range [0,n) from which to draw the random number.
 
@@ -424,8 +424,8 @@ class QiskitBitGenerator(UserBitGenerator):
         """
         Returns a random unsigned int of a given size in bits.
 
-        ARGUMENTS
-        ---------
+        PARAMETERS
+        ----------
         n_bits: int
             Number of bits to retrieve. If less than one it defaults to the raw
             number of bits for the instance QiskitBitGenerator (i.e. 32 or 64).
@@ -450,8 +450,8 @@ class QiskitBitGenerator(UserBitGenerator):
         Override constructor arguments.
         Any change must be explicitly passed as input (i.e. not `None`).
 
-        ARGUMENTS
-        ---------
+        PARAMETERS
+        ----------
         provider: Optional[Provider] = None
             Same as constructor.
         backend: Optional[Backend] = None
