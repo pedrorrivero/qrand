@@ -58,11 +58,11 @@ class Qrng:
 
     # Returns a random 32 bit integer
     def get_random_int32(self):
-        return int(self.get_bit_string(32), 2)
+        return self.quantum_bit_generator.random_uint(32)
 
     # Returns a random 64 bit integer
     def get_random_int64(self):
-        return int(self.get_bit_string(64), 2)
+        return self.quantum_bit_generator.random_uint(64)
 
     # Returns a random float from a uniform distribution in the range [min, max).
     def get_random_float(self, min, max):
