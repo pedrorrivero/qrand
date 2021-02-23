@@ -42,7 +42,6 @@ class Qrng:
     def __init__(self, quantum_bit_generator):
         self.quantum_bit_generator = quantum_bit_generator
 
-    # Returns a random n-bit string by popping n bits from bitCache.
     def get_bit_string(self, n_bits):
         """
         Returns a random bitstring of a given lenght.
@@ -105,9 +104,23 @@ class Qrng:
         """
         return self.quantum_bit_generator.random_uint(64)
 
-    # Returns a random float from a uniform distribution in the range [min, max).
     def get_random_float(self, min, max):
-        # Get random float from [0,1)
+        """
+        Returns a random float from a uniform distribution in the range
+        [min,max).
+
+        ARGUMENTS
+        ---------
+        min: float
+            Lower bound for the random number.
+        max: float
+            Strict upper bound for the random number.
+
+        RETURNS
+        -------
+        out: float
+            Random float in the range [min,max).
+        """
         unpacked = 0x3F800000 | self.get_random_int32() >> 9
         packed = struct.pack("I", unpacked)
         value = struct.unpack("f", packed)[0] - 1.0
