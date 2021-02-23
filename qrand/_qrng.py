@@ -44,6 +44,20 @@ class Qrng:
 
     # Returns a random n-bit string by popping n bits from bitCache.
     def get_bit_string(self, n_bits):
+        """
+        Returns a random bitstring of a given lenght.
+
+        ARGUMENTS
+        ---------
+        n_bits: int
+            Number of bits to retrieve. If less than one it defaults to the raw
+            number of bits for the quantum_bit_generator (i.e. 32 or 64).
+
+        RETURNS
+        -------
+        out: str
+            Bitstring of lenght `n_bits`.
+        """
         return self.quantum_bit_generator.random_bitstring(n_bits)
 
     # Returns a random integer between and including [min, max].
