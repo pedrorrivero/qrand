@@ -42,6 +42,7 @@ class Qrng:
     def __init__(self, quantum_bit_generator):
         self.quantum_bit_generator = quantum_bit_generator
 
+    ############################# PUBLIC METHODS #############################
     def get_bit_string(self, n_bits):
         """
         Returns a random bitstring of a given lenght.
@@ -147,9 +148,27 @@ class Qrng:
         value = self.quantum_bit_generator.random_double(delta)
         return value + min
 
-    # Returns a random complex with both real and imaginary parts
-    # from the given ranges. If no imaginary range specified, real range used.
     def get_random_complex_rect(self, r1, r2, i1=None, i2=None):
+        """
+        Returns a random complex with both real and imaginary parts from the
+        given ranges. If no imaginary range specified, real range used.
+
+        ARGUMENTS
+        ---------
+        r1: float
+            Real lower bound for the random number.
+        r2: float
+            Real strict upper bound for the random number.
+        i1: float, default None
+            Imaginary lower bound for the random number.
+        i2: float, default None
+            Imaginary strict upper bound for the random number.
+
+        RETURNS
+        -------
+        out: complex
+            Random complex in the range [r1,r2) + j[i1,i2).
+        """
         re = self.get_random_float(r1, r2)
         if i1 is None or i2 is None:
             im = self.get_random_float(r1, r2)
@@ -157,9 +176,23 @@ class Qrng:
             im = self.get_random_float(i1, i2)
         return re + im * 1j
 
-    # Returns a random complex in rectangular form from a given polar range.
-    # If no max angle given, [0,2pi) used.
     def get_random_complex_polar(self, r, theta=2 * math.pi):
+        """
+        Returns a random complex in rectangular form from a given polar range.
+        If no max angle given, [0,2pi) used.
+
+        ARGUMENTS
+        ---------
+        r: float
+            Real lower bound for the random number.
+        theta: float, default 2pi
+            Real strict upper bound for the random number.
+
+        RETURNS
+        -------
+        out: complex
+            Random complex in the range [0,r) * exp{ j[0,theta) }.
+        """
         r0 = r * math.sqrt(self.get_random_float(0, 1))
         theta0 = self.get_random_float(0, theta)
         return r0 * math.cos(theta0) + r0 * math.sin(theta0) * 1j
