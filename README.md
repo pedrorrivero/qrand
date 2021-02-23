@@ -167,4 +167,4 @@ Additionally, it always chooses the least busy backend from the list of availabl
 Parts of this software's source code have been borrowed from the [qRNG](https://github.com/ozanerhansha/qRNG) project, which is licensed under the [GNU GPLv3](https://github.com/ozanerhansha/qRNG/blob/master/LICENSE) license. Copyright notice and specific changes can be found as a docstring wherever this applies.
 
 ---
-(c) Copyright 2020 Pedro Rivero
+(c) Copyright 2021 Pedro Rivero
