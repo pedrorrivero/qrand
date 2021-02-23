@@ -45,15 +45,7 @@ repos:
   hooks:
   - id: pytest
     name: pytest
-    description: "Run tests"
-    stages: [commit]
-    language: system
-    entry: pytest tests
-    types: [python]
-    pass_filenames: false
-  - id: pytest-cov
-    name: pytest-cov
-    description: "Produce coverage report"
+    description: "Run tests and produce coverage report"
     stages: [commit]
     language: system
     entry: pytest --cov=qrand --cov-report html tests #--cov-fail-under=100
