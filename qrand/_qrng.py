@@ -64,10 +64,10 @@ class Qrng:
     # Running time is probabalistic but complexity is still O(n)
     def get_random_int(self, min, max):
         delta = max - min
-        n = math.floor(math.log(delta, 2)) + 1
-        result = int(self.get_bit_string(n), 2)
+        n_bits = math.floor(math.log(delta, 2)) + 1
+        result = self.quantum_bit_generator.random_uint(n_bits)
         while result > delta:
-            result = int(self.get_bit_string(n), 2)
+            result = self.quantum_bit_generator.random_uint(n_bits)
         return result + min
 
     def get_random_int32(self):
@@ -117,8 +117,8 @@ class Qrng:
         out: float
             Random float in the range [min,max).
         """
-        range = max - min
-        value = self.quantum_bit_generator.random_double(range)
+        delta = max - min
+        value = self.quantum_bit_generator.random_double(delta)
         return value + min
 
     # Returns a random complex with both real and imaginary parts
