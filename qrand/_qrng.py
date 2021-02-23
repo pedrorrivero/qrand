@@ -72,8 +72,24 @@ class Qrng:
         value = struct.unpack("f", packed)[0] - 1.0
         return (max - min) * value + min  # Scale float to given range
 
-    # Returns a random double from a uniform distribution in the range [min, max).
     def get_random_double(self, min, max):
+        """
+        Returns a random double from a uniform distribution in the range
+        [min,max).
+
+        ARGUMENTS
+        ---------
+        min: float
+            Lower bound for the random number.
+        max: float
+            Strict upper bound for the random number.
+
+        RETURNS
+        -------
+        out: float
+            Random float in the range [min,max).
+
+        """
         range = max - min
         value = self.quantum_bit_generator.random_double(range)
         return value + min
