@@ -74,11 +74,9 @@ class Qrng:
 
     # Returns a random double from a uniform distribution in the range [min, max).
     def get_random_double(self, min, max):
-        # Get random double from [0,1)
-        unpacked = 0x3FF0000000000000 | self.get_random_int64() >> 12
-        packed = struct.pack("Q", unpacked)
-        value = struct.unpack("d", packed)[0] - 1.0
-        return (max - min) * value + min  # Scale double to given range
+        range = max - min
+        value = self.quantum_bit_generator.random_double(range)
+        return value + min
 
     # Returns a random complex with both real and imaginary parts
     # from the given ranges. If no imaginary range specified, real range used.
