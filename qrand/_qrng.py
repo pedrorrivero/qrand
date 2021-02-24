@@ -69,6 +69,98 @@ class Qrng:
         """
         return self._qiskit_bit_generator.random_bitstring(n_bits)
 
+    def get_random_complex_polar(self, r, theta=2 * math.pi):
+        """
+        Returns a random complex in rectangular form from a given polar range.
+        If no max angle given, [0,2pi) used.
+
+        PARAMETERS
+        ----------
+        r: float
+            Real lower bound for the random number.
+        theta: float, default 2pi
+            Real strict upper bound for the random number.
+
+        RETURNS
+        -------
+        out: complex
+            Random complex in the range [0,r) * exp{ j[0,theta) }.
+        """
+        r0 = r * math.sqrt(self.get_random_float(0, 1))
+        theta0 = self.get_random_float(0, theta)
+        return r0 * math.cos(theta0) + r0 * math.sin(theta0) * 1j
+
+    def get_random_complex_rect(self, r1, r2, i1=None, i2=None):
+        """
+        Returns a random complex with both real and imaginary parts from the
+        given ranges. If no imaginary range specified, real range used.
+
+        PARAMETERS
+        ----------
+        r1: float
+            Real lower bound for the random number.
+        r2: float
+            Real strict upper bound for the random number.
+        i1: float, default None
+            Imaginary lower bound for the random number.
+        i2: float, default None
+            Imaginary strict upper bound for the random number.
+
+        RETURNS
+        -------
+        out: complex
+            Random complex in the range [r1,r2) + j[i1,i2).
+        """
+        re = self.get_random_float(r1, r2)
+        if i1 is None or i2 is None:
+            im = self.get_random_float(r1, r2)
+        else:
+            im = self.get_random_float(i1, i2)
+        return re + im * 1j
+
+    def get_random_double(self, min, max):
+        """
+        Returns a random double from a uniform distribution in the range
+        [min,max).
+
+        PARAMETERS
+        ----------
+        min: float
+            Lower bound for the random number.
+        max: float
+            Strict upper bound for the random number.
+
+        RETURNS
+        -------
+        out: float
+            Random float in the range [min,max).
+        """
+        delta = max - min
+        value = self._qiskit_bit_generator.random_double(delta)
+        return value + min
+
+    def get_random_float(self, min, max):
+        """
+        Returns a random float from a uniform distribution in the range
+        [min,max).
+
+        PARAMETERS
+        ----------
+        min: float
+            Lower bound for the random number.
+        max: float
+            Strict upper bound for the random number.
+
+        RETURNS
+        -------
+        out: float
+            Random float in the range [min,max).
+        """
+        unpacked = 0x3F800000 | self.get_random_int32() >> 9
+        packed = struct.pack("I", unpacked)
+        value = struct.unpack("f", packed)[0] - 1.0
+        return (max - min) * value + min
+
     def get_random_int(self, min, max):
         """
         Returns a random integer between and including [min, max].
@@ -113,95 +205,3 @@ class Qrng:
             Random 32 bit unsigned int.
         """
         return self._qiskit_bit_generator.random_uint(64)
-
-    def get_random_float(self, min, max):
-        """
-        Returns a random float from a uniform distribution in the range
-        [min,max).
-
-        PARAMETERS
-        ----------
-        min: float
-            Lower bound for the random number.
-        max: float
-            Strict upper bound for the random number.
-
-        RETURNS
-        -------
-        out: float
-            Random float in the range [min,max).
-        """
-        unpacked = 0x3F800000 | self.get_random_int32() >> 9
-        packed = struct.pack("I", unpacked)
-        value = struct.unpack("f", packed)[0] - 1.0
-        return (max - min) * value + min
-
-    def get_random_double(self, min, max):
-        """
-        Returns a random double from a uniform distribution in the range
-        [min,max).
-
-        PARAMETERS
-        ----------
-        min: float
-            Lower bound for the random number.
-        max: float
-            Strict upper bound for the random number.
-
-        RETURNS
-        -------
-        out: float
-            Random float in the range [min,max).
-        """
-        delta = max - min
-        value = self._qiskit_bit_generator.random_double(delta)
-        return value + min
-
-    def get_random_complex_rect(self, r1, r2, i1=None, i2=None):
-        """
-        Returns a random complex with both real and imaginary parts from the
-        given ranges. If no imaginary range specified, real range used.
-
-        PARAMETERS
-        ----------
-        r1: float
-            Real lower bound for the random number.
-        r2: float
-            Real strict upper bound for the random number.
-        i1: float, default None
-            Imaginary lower bound for the random number.
-        i2: float, default None
-            Imaginary strict upper bound for the random number.
-
-        RETURNS
-        -------
-        out: complex
-            Random complex in the range [r1,r2) + j[i1,i2).
-        """
-        re = self.get_random_float(r1, r2)
-        if i1 is None or i2 is None:
-            im = self.get_random_float(r1, r2)
-        else:
-            im = self.get_random_float(i1, i2)
-        return re + im * 1j
-
-    def get_random_complex_polar(self, r, theta=2 * math.pi):
-        """
-        Returns a random complex in rectangular form from a given polar range.
-        If no max angle given, [0,2pi) used.
-
-        PARAMETERS
-        ----------
-        r: float
-            Real lower bound for the random number.
-        theta: float, default 2pi
-            Real strict upper bound for the random number.
-
-        RETURNS
-        -------
-        out: complex
-            Random complex in the range [0,r) * exp{ j[0,theta) }.
-        """
-        r0 = r * math.sqrt(self.get_random_float(0, 1))
-        theta0 = self.get_random_float(0, theta)
-        return r0 * math.cos(theta0) + r0 * math.sin(theta0) * 1j
