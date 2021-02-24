@@ -360,8 +360,11 @@ class TestQiskitBitGenerator:
             or bjc["max_bits_per_request"] >= bjc["bits_per_request"]
         )
 
-    # def test_job_partition(self):
-    #     pass ## TODO!!!
+    def test_job_partition(self):
+        bitgen = QiskitBitGenerator()
+        assert bitgen._job_partition == (24, 65536, 1)
+        bitgen.state = {"max_bits_per_request": 4}
+        assert bitgen._job_partition == (4, 1, 1)
 
     def test_memory(self):
         bitgen = QiskitBitGenerator()
