@@ -243,8 +243,15 @@ class TestQiskitBitGenerator:
             and bitgen.random_uint(n_bits) == 2
         )
 
-    # def test_set_state(self):
-    #     pass ## TODO!!!
+    def test_set_state(self):
+        provider = IBMQ.load_account()
+        simulator = BasicAer.get_backend("qasm_simulator")
+        bitgen = QiskitBitGenerator()
+        assert not bitgen.set_state()
+        assert bitgen.set_state(backend_filter=lambda b: True)
+        assert bitgen.set_state(max_bits_per_request=400)
+        assert bitgen.set_state(backend=simulator)
+        assert bitgen.set_state(provider=provider)
 
     ############################# PRIVATE METHODS #############################
     # def test_fetch_random_bits(self):
@@ -303,8 +310,19 @@ class TestQiskitBitGenerator:
         }
         assert bitgen.state == state
 
-    # def test_set_state(self):
-    #     pass ## TODO!!!
+    def test_state_setter(self):
+        provider = IBMQ.load_account()
+        backend = QiskitBitGenerator.get_best_backend(provider)
+        bitgen = QiskitBitGenerator()
+        bitgen.state = {}
+        assert bitgen.state == QiskitBitGenerator().state
+        bitgen.state = {"backend_filter": lambda b: True}
+        bitgen.state = {"max_bits_per_request": 400}
+        assert bitgen.state["job_config"]["max_bits_per_request"] == 400
+        bitgen.state = {"backend": backend}
+        assert not bitgen.state["backend_config"]["simulator"]
+        bitgen.state = {"provider": BasicAer}
+        assert bitgen.state["backend_config"]["simulator"]
 
     ########################### PRIVATE PROPERTIES ###########################
     def test_backend_config(self):
