@@ -31,12 +31,21 @@ from ._qiskit_bit_generator import QiskitBitGenerator
 ###############################################################################
 class Qrng:
     """
+    An integrated implementation of the QRNG PyPI package which makes use of
+    QRAND's enhanced random bit generation and caching capabilities.
+
+    PARAMETERS
+    ----------
+    qiskit_bit_generator: QiskitBitGenerator
+        A QiskitBitGenerator instance object to handle random number production.
+
     COPYRIGHT NOTICE
     ----------------
     Source: https://github.com/ozanerhansha/qRNG
     License: GNU GENERAL PUBLIC LICENSE VERSION 3
     Changes:
-        - Substituted random generation and caching logic
+        - Deleted IBMQ log-in logic
+        - Replaced random bit generation and caching logic
     """
 
     def __init__(self, qiskit_bit_generator):
