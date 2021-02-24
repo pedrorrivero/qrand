@@ -22,6 +22,7 @@
 
 import math
 import struct
+from typing import Optional
 
 from ._qiskit_bit_generator import QiskitBitGenerator
 
@@ -48,11 +49,11 @@ class Qrng:
         - Replaced random bit generation and caching logic
     """
 
-    def __init__(self, qiskit_bit_generator):
+    def __init__(self, qiskit_bit_generator: QiskitBitGenerator):
         self._qiskit_bit_generator = qiskit_bit_generator
 
     ############################# PUBLIC METHODS #############################
-    def get_bit_string(self, n_bits):
+    def get_bit_string(self, n_bits: int):
         """
         Returns a random bitstring of a given lenght.
 
@@ -69,7 +70,7 @@ class Qrng:
         """
         return self._qiskit_bit_generator.random_bitstring(n_bits)
 
-    def get_random_complex_polar(self, r, theta=2 * math.pi):
+    def get_random_complex_polar(self, r: float, theta: float = 2 * math.pi):
         """
         Returns a random complex in rectangular form from a given polar range.
         If no max angle given, [0,2pi) used.
@@ -86,11 +87,17 @@ class Qrng:
         out: complex
             Random complex in the range [0,r) * exp{ j[0,theta) }.
         """
-        r0 = r * math.sqrt(self.get_random_float(0, 1))
-        theta0 = self.get_random_float(0, theta)
+        r0: float = r * math.sqrt(self.get_random_float(0, 1))
+        theta0: float = self.get_random_float(0, theta)
         return r0 * math.cos(theta0) + r0 * math.sin(theta0) * 1j
 
-    def get_random_complex_rect(self, r1, r2, i1=None, i2=None):
+    def get_random_complex_rect(
+        self,
+        r1: float,
+        r2: float,
+        i1: Optional[float] = None,
+        i2: Optional[float] = None,
+    ):
         """
         Returns a random complex with both real and imaginary parts from the
         given ranges. If no imaginary range specified, real range used.
@@ -111,14 +118,14 @@ class Qrng:
         out: complex
             Random complex in the range [r1,r2) + j[i1,i2).
         """
-        re = self.get_random_float(r1, r2)
+        re: float = self.get_random_float(r1, r2)
         if i1 is None or i2 is None:
-            im = self.get_random_float(r1, r2)
+            im: float = self.get_random_float(r1, r2)
         else:
             im = self.get_random_float(i1, i2)
         return re + im * 1j
 
-    def get_random_double(self, min, max):
+    def get_random_double(self, min: float, max: float):
         """
         Returns a random double from a uniform distribution in the range
         [min,max).
@@ -135,11 +142,11 @@ class Qrng:
         out: float
             Random float in the range [min,max).
         """
-        delta = max - min
-        value = self._qiskit_bit_generator.random_double(delta)
-        return value + min
+        delta: float = max - min
+        shifted: float = self._qiskit_bit_generator.random_double(delta)
+        return shifted + min
 
-    def get_random_float(self, min, max):
+    def get_random_float(self, min: float, max: float):
         """
         Returns a random float from a uniform distribution in the range
         [min,max).
@@ -158,10 +165,10 @@ class Qrng:
         """
         unpacked = 0x3F800000 | self.get_random_int32() >> 9
         packed = struct.pack("I", unpacked)
-        value = struct.unpack("f", packed)[0] - 1.0
-        return (max - min) * value + min
+        shifted = struct.unpack("f", packed)[0] - 1.0
+        return (max - min) * shifted + min
 
-    def get_random_int(self, min, max):
+    def get_random_int(self, min: int, max: int):
         """
         Returns a random integer between and including [min, max].
 
@@ -177,12 +184,12 @@ class Qrng:
         out: int
             Random int in the range [min,max].
         """
-        delta = max - min
-        n_bits = math.floor(math.log(delta, 2)) + 1
-        result = self._qiskit_bit_generator.random_uint(n_bits)
-        while result > delta:
-            result = self._qiskit_bit_generator.random_uint(n_bits)
-        return result + min
+        delta: int = max - min
+        n_bits: int = math.floor(math.log(delta, 2)) + 1
+        shifted: int = self._qiskit_bit_generator.random_uint(n_bits)
+        while shifted > delta:
+            shifted = self._qiskit_bit_generator.random_uint(n_bits)
+        return shifted + min
 
     def get_random_int32(self):
         """
