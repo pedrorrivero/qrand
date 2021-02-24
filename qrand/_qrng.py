@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: February 23, 2021
+##   |  ___/|  _  /    DATE: February 24, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -52,23 +52,25 @@ class Qrng:
     Changes:
         - Delete IBMQ log-in logic
         - Replace random bit generation and caching logic
-        - Add static type hints
+        - Add default parameter values
         - Rename internal variables
+        - Add static type hints
     """
 
     def __init__(self, qiskit_bit_generator: QiskitBitGenerator):
         self._qiskit_bit_generator = qiskit_bit_generator
 
     ############################# PUBLIC METHODS #############################
-    def get_bit_string(self, n_bits: int):
+    def get_bit_string(self, n_bits: int = 0):
         """
-        Returns a random bitstring of a given lenght.
+        Returns a random bitstring of a given lenght. If less than one it
+        defaults to the raw number of bits for its internal
+        qiskit_bit_generator (i.e. 32 or 64).
 
         PARAMETERS
         ----------
-        n_bits: int
-            Number of bits to retrieve. If less than one it defaults to the raw
-            number of bits for the qiskit_bit_generator (i.e. 32 or 64).
+        n_bits: int, default 0
+            Number of bits to retrieve.
 
         RETURNS
         -------
@@ -77,14 +79,16 @@ class Qrng:
         """
         return self._qiskit_bit_generator.random_bitstring(n_bits)
 
-    def get_random_complex_polar(self, r: float, theta: float = 2 * math.pi):
+    def get_random_complex_polar(
+        self, r: float = 1, theta: float = 2 * math.pi
+    ):
         """
         Returns a random complex in rectangular form from a given polar range.
-        If no max angle given, [0,2pi) used.
+        If no max radius give, 1 is used. If no max angle given, 2pi used.
 
         PARAMETERS
         ----------
-        r: float
+        r: float, default 1
             Real lower bound for the random number.
         theta: float, default 2pi
             Real strict upper bound for the random number.
@@ -100,20 +104,21 @@ class Qrng:
 
     def get_random_complex_rect(
         self,
-        r1: float,
-        r2: float,
+        r1: float = -1,
+        r2: float = +1,
         i1: Optional[float] = None,
         i2: Optional[float] = None,
     ):
         """
         Returns a random complex with both real and imaginary parts from the
-        given ranges. If no imaginary range specified, real range used.
+        given ranges. Default range [-1,1) If no imaginary range specified,
+        real range used.
 
         PARAMETERS
         ----------
-        r1: float
+        r1: float, default -1
             Real lower bound for the random number.
-        r2: float
+        r2: float, default +1
             Real strict upper bound for the random number.
         i1: float, default None
             Imaginary lower bound for the random number.
@@ -132,16 +137,16 @@ class Qrng:
             im = self.get_random_float(i1, i2)
         return re + im * 1j
 
-    def get_random_double(self, min: float, max: float):
+    def get_random_double(self, min: float = -1, max: float = +1):
         """
         Returns a random double from a uniform distribution in the range
         [min,max).
 
         PARAMETERS
         ----------
-        min: float
+        min: float, default -1
             Lower bound for the random number.
-        max: float
+        max: float, default +1
             Strict upper bound for the random number.
 
         RETURNS
@@ -153,16 +158,16 @@ class Qrng:
         shifted: float = self._qiskit_bit_generator.random_double(delta)
         return shifted + min
 
-    def get_random_float(self, min: float, max: float):
+    def get_random_float(self, min: float = -1, max: float = +1):
         """
         Returns a random float from a uniform distribution in the range
         [min,max).
 
         PARAMETERS
         ----------
-        min: float
+        min: float, default -1
             Lower bound for the random number.
-        max: float
+        max: float, default +1
             Strict upper bound for the random number.
 
         RETURNS
@@ -175,15 +180,15 @@ class Qrng:
         value = struct.unpack("f", packed)[0] - 1.0
         return (max - min) * value + min
 
-    def get_random_int(self, min: int, max: int):
+    def get_random_int(self, min: int = -1, max: int = +1):
         """
         Returns a random integer between and including [min, max].
 
         PARAMETERS
         ----------
-        min: int
+        min: int, default -1
             Lower bound for the random int.
-        max: int
+        max: int, default +1
             Upper bound for the random int.
 
         RETURNS
