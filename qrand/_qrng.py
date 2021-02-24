@@ -167,8 +167,8 @@ class Qrng:
         """
         unpacked = 0x3F800000 | self.get_random_int32() >> 9
         packed = struct.pack("I", unpacked)
-        shifted = struct.unpack("f", packed)[0] - 1.0
-        return (max - min) * shifted + min
+        value = struct.unpack("f", packed)[0] - 1.0
+        return (max - min) * value + min
 
     def get_random_int(self, min: int, max: int):
         """
