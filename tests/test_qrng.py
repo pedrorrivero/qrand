@@ -96,10 +96,10 @@ class TestBitCache:
     def test_get_random_int(self):
         bitgen = QiskitBitGenerator()
         qrng = Qrng(bitgen)
-        cache = "100" * 1000
+        cache = "001" * 1000
         bitgen.load_cache(cache)
-        assert qrng.get_random_int() == 1
-        assert qrng.get_random_int(-4, 4) == 0
+        assert qrng.get_random_int() == -1
+        assert qrng.get_random_int(-4, 4) == -2
 
     def test_get_random_int32(self):
         bitgen = QiskitBitGenerator()
