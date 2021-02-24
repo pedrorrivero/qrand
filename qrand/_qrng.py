@@ -205,3 +205,13 @@ class Qrng:
             Random 32 bit unsigned int.
         """
         return self._qiskit_bit_generator.random_uint(64)
+
+    ############################ PUBLIC PROPERTIES ############################
+    @property
+    def state(self) -> dict:
+        """
+        The state of the Qrng object.
+        """
+        return {
+            "qiskit_bit_generator": self._qiskit_bit_generator.state,
+        }
