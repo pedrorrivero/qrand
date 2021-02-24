@@ -29,7 +29,7 @@ from qiskit.providers.models import BackendConfiguration
 from qiskit.result import Counts, Result
 from randomgen import UserBitGenerator
 
-from qrand._qiskit_bitgenerator import BitCache, QiskitBitGenerator
+from qrand._qiskit_bit_generator import BitCache, QiskitBitGenerator
 
 
 ###############################################################################

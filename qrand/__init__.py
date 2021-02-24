@@ -25,5 +25,5 @@ __copyright__ = "Copyright (C) 2021 Pedro Rivero"
 __license__ = "Apache-2.0"
 __version__ = "0.1.0"
 
-from ._qiskit_bitgenerator import QiskitBitGenerator
+from ._qiskit_bit_generator import QiskitBitGenerator
 from ._qrng import Qrng

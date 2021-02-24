@@ -23,7 +23,7 @@
 import math
 import struct
 
-from ._qiskit_bitgenerator import QiskitBitGenerator
+from ._qiskit_bit_generator import QiskitBitGenerator
 
 
 ###############################################################################
