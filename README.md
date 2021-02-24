@@ -1,7 +1,7 @@
 [![Unitary Fund](https://img.shields.io/badge/Supported_By-UNITARY_FUND-FFF000.svg?style=flat)](http://unitary.fund)
 [![YouTube](https://img.shields.io/badge/PR-qrand-FF0000.svg?style=flat&logo=YouTube&logoColor=white)](https://youtu.be/CG7BxuWFpME)
 [![PyPI](https://img.shields.io/pypi/v/qrand?label=PyPI&style=flat&color=3776AB&logo=Python&logoColor=white)](https://pypi.org/project/qrand/)
-[![Coverage](https://img.shields.io/badge/Coverage-83%25-green.svg?style=flat)](http://pytest.org)
+[![Coverage](https://img.shields.io/badge/Coverage-86%25-green.svg?style=flat)](http://pytest.org)
 [![Apache-2.0 License](https://img.shields.io/github/license/pedrorrivero/qrand?label=License&style=flat&color=1D1D1D)](https://github.com/pedrorrivero/qrand/blob/master/LICENSE)
 
 
