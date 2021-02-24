@@ -45,8 +45,10 @@ class Qrng:
     Source: https://github.com/ozanerhansha/qRNG
     License: GNU GENERAL PUBLIC LICENSE VERSION 3
     Changes:
-        - Deleted IBMQ log-in logic
-        - Replaced random bit generation and caching logic
+        - Delete IBMQ log-in logic
+        - Replace random bit generation and caching logic
+        - Add static type hints
+        - Rename internal variables
     """
 
     def __init__(self, qiskit_bit_generator: QiskitBitGenerator):
