@@ -111,8 +111,8 @@ class Qrng:
     ):
         """
         Returns a random complex with both real and imaginary parts from the
-        given ranges. Default range [-1,1) If no imaginary range specified,
-        real range used.
+        given ranges. Default real range [-1,1). If no imaginary range
+        specified, real range used.
 
         PARAMETERS
         ----------
@@ -140,7 +140,7 @@ class Qrng:
     def get_random_double(self, min: float = -1, max: float = +1):
         """
         Returns a random double from a uniform distribution in the range
-        [min,max).
+        [min,max). Default range [-1,1).
 
         PARAMETERS
         ----------
@@ -161,7 +161,7 @@ class Qrng:
     def get_random_float(self, min: float = -1, max: float = +1):
         """
         Returns a random float from a uniform distribution in the range
-        [min,max).
+        [min,max). Default range [-1,1).
 
         PARAMETERS
         ----------
@@ -182,7 +182,8 @@ class Qrng:
 
     def get_random_int(self, min: int = -1, max: int = +1):
         """
-        Returns a random integer between and including [min, max].
+        Returns a random integer between and including [min, max]. Default
+        range [-1,1].
 
         PARAMETERS
         ----------
