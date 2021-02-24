@@ -208,13 +208,13 @@ class QiskitBitGenerator(UserBitGenerator):
     leading to overheads is greatly reduced and, while the cache is loaded,
     random bits can be retrieved "instantaneously". The user can limit the
     number of bits to retrieve on each request through the
-    `max_bits_per_request` argument.
+    `max_bits_per_request` parameter.
     Additionally, it always chooses the least busy backend from the list of
-    available machines. This list can be filtered by the user through the
-    `backend_filter` argument, which defaults to history-enabled
-    non-simulators. If a Qiskit Backend is explicitly passed in as argument,
-    no backend selection will be performed: effectively ignoring any Qiskit
-    Provider object passed.
+    machines available to the given provider. This list can be filtered by the
+    user through the `backend_filter` parameter, which defaults to history-
+    enabled non-simulators. If a Qiskit Backend is explicitly passed in as
+    parameter, no backend selection will be performed: effectively ignoring any
+    filters, or Qiskit Provider object passed.
     If neither `provider` nor `backend` are passed as inputs, it will default
     to running Qiskit BasicAer's 'qasm_simulator' locally.
     """
@@ -447,7 +447,7 @@ class QiskitBitGenerator(UserBitGenerator):
         max_bits_per_request: Optional[int] = None,
     ) -> bool:
         """
-        Override constructor arguments.
+        Override constructor parameters.
         Any change must be explicitly passed as input (i.e. not `None`).
 
         PARAMETERS
@@ -539,7 +539,7 @@ class QiskitBitGenerator(UserBitGenerator):
         """
         Either 32 or 64. The number of bits output by NumPy's `random_raw()`
         method. Final, it cannot be modified after instantiation through the
-        ISRAW32 argument.
+        ISRAW32 parameter.
         """
         return 32 if self._ISRAW32 else 64
 
