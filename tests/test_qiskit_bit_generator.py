@@ -123,8 +123,20 @@ class TestQiskitBitGenerator:
             )
         ) and QiskitBitGenerator.default_backend_filter(backend[0])
 
-    # def test_get_best_backend(self):
-    #     pass ## TODO!!!
+    def test_get_best_backend(self):
+        provider = IBMQ.load_account()
+        assert QiskitBitGenerator.get_best_backend(provider)
+
+        def filter(b):
+            if b.configuration().backend_name == "ibmq_qasm_simulator":
+                return True
+            else:
+                return False
+
+        backend = QiskitBitGenerator.get_best_backend(provider, filter)
+        assert backend.configuration().backend_name == "ibmq_qasm_simulator"
+        with pytest.raises(IBMQError):
+            QiskitBitGenerator.get_best_backend(provider, lambda b: False)
 
     ############################# PUBLIC METHODS #############################
     def test_dump_cache(self):
