@@ -114,3 +114,31 @@ class TestBitCache:
         cache = "100" * 1000
         bitgen.load_cache(cache)
         assert qrng.get_random_int64() == 10540996613548315209
+
+    def test_state(self):
+        bitgen = QiskitBitGenerator()
+        qrng = Qrng(bitgen)
+        cache = "100" * 1000
+        bitgen.load_cache(cache)
+        job_config = {
+            "max_bits_per_request": None,
+            "bits_per_request": 1572864,
+            "n_qubits": 24,
+            "shots": 65536,
+            "experiments": 1,
+        }
+        backend_config = {
+            # "backend_name": "qasm_simulator",
+            "credits_required": False,
+            "local": True,
+            "n_qubits": 24,
+            "simulator": True,
+        }
+        bitcache = {
+            "size": 3000,
+        }
+        bitgen_state = qrng.state["qiskit_bit_generator"]
+        assert bitgen_state["BITS"] == 64
+        assert bitgen_state["job_config"] == job_config
+        assert bitgen_state["backend_config"] == backend_config
+        assert bitgen_state["bitcache"] == bitcache

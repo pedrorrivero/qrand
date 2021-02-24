@@ -274,6 +274,7 @@ class TestQiskitBitGenerator:
         state = {
             "BITS": 64,
             "backend_config": {
+                # "backend_name": "qasm_simulator",
                 "credits_required": False,
                 "local": True,
                 "n_qubits": 24,
