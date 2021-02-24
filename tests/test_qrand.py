@@ -21,7 +21,7 @@
 ## limitations under the License.
 
 from numpy.random import Generator  # type: ignore
-from qiskit import IBMQ
+from qiskit import IBMQ, BasicAer
 
 from qrand import QiskitBitGenerator, __version__
 
@@ -39,7 +39,10 @@ def test_version():
 def test_QiskitBitGenerator():
     provider = IBMQ.load_account()
     bitgen = QiskitBitGenerator(provider)
-    bitgen = QiskitBitGenerator()
+    assert not bitgen.state["backend_config"]["simulator"]
+    simulator = BasicAer.get_backend("qasm_simulator")
+    bitgen = QiskitBitGenerator(backend=simulator)
+    assert bitgen.state["backend_config"]["simulator"]
     gen = Generator(bitgen)
     cache = "100" * 1000
     assert bitgen.load_cache(cache)
