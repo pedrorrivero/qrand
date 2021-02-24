@@ -40,6 +40,11 @@ class Qrng:
     qiskit_bit_generator: QiskitBitGenerator
         A QiskitBitGenerator instance object to handle random number production.
 
+    ATTRIBUTES
+    ----------
+    state: dict
+        The state of the Qrng object.
+
     COPYRIGHT NOTICE
     ----------------
     Source: https://github.com/ozanerhansha/qRNG
