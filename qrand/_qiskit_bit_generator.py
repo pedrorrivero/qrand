@@ -372,13 +372,14 @@ class QiskitBitGenerator(UserBitGenerator):
 
     def random_bitstring(self, n_bits: int = 0) -> str:
         """
-        Returns a random bitstring of a given lenght.
+        Returns a random bitstring of a given lenght. If less than one it
+        defaults to the raw number of bits for the instance QiskitBitGenerator
+        (i.e. 32 or 64).
 
         PARAMETERS
         ----------
         n_bits: int
-            Number of bits to retrieve. If less than one it defaults to the raw
-            number of bits for the instance QiskitBitGenerator (i.e. 32 or 64).
+            Number of bits to retrieve.
 
         RETURNS
         -------
