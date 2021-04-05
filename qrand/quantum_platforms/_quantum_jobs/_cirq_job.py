@@ -34,12 +34,14 @@ class CirqJob(QuantumJob):
         self.ERROR_MSG = f"{self.__class__.__name__}"  # TODO
         raise NotImplementedError(self.ERROR_MSG)
 
-    def execute(self) -> List[str]:
-        raise NotImplementedError(self.ERROR_MSG)
-
-    def extract_base_job(self) -> None:
+    ############################### PUBLIC API ###############################
+    @property
+    def circuit(self) -> CirqCircuit:
         raise NotImplementedError(self.ERROR_MSG)
 
     @property
-    def circuit(self) -> CirqCircuit:
+    def repetitions(self) -> int:
+        raise NotImplementedError(self.ERROR_MSG)
+
+    def execute(self) -> List[str]:
         raise NotImplementedError(self.ERROR_MSG)

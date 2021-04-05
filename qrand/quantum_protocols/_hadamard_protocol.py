@@ -30,16 +30,17 @@ from . import ProtocolResult, ProtocolStrategy, SimpleResult
 ## HADAMARD PROTOCOL
 ###############################################################################
 class HadamardProtocol(ProtocolStrategy):
+    ############################### PUBLIC API ###############################
     def run(self, platform: QuantumPlatform) -> ProtocolResult:
         circuit: QuantumCircuit = self._build_quantum_circuit(platform)
         job: QuantumJob = platform.create_job(circuit)
         output: List[str] = job.execute()
-        result: ProtocolResult = self._parse_output(output)
-        return result
+        return self._parse_output(output)
 
     def verify(self) -> Literal[False]:
         return False
 
+    ############################### PRIVATE API ###############################
     def _build_quantum_circuit(
         self, platform: QuantumPlatform
     ) -> QuantumCircuit:

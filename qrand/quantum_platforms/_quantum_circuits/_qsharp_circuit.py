@@ -31,6 +31,7 @@ class QsharpCircuit(QuantumCircuit):
         self.ERROR_MSG = f"{self.__class__.__name__}"  # TODO
         raise NotImplementedError(self.ERROR_MSG)
 
+    ############################### PUBLIC API ###############################
     @property
     def num_qubits(self) -> int:
         raise NotImplementedError(self.ERROR_MSG)
@@ -42,7 +43,4 @@ class QsharpCircuit(QuantumCircuit):
         raise NotImplementedError(self.ERROR_MSG)
 
     def measure(self, target_qubit: int) -> None:
-        raise NotImplementedError(self.ERROR_MSG)
-
-    def extract_base_circuit(self) -> None:
         raise NotImplementedError(self.ERROR_MSG)

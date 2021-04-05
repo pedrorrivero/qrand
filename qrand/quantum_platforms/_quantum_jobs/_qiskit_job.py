@@ -38,19 +38,40 @@ class QiskitJob(QuantumJob):
     def __init__(
         self,
         circuit: QuantumCircuit,
-        shots: int,
-        experiments: int,
         backend: Backend,
+        shots: int = 1024,
+        experiments: int = 1,
     ) -> None:
+        experiments = experiments if experiments > 1 else 1
+        shots = shots if shots > 1 else 1
+        backend_config = backend.configuration().to_dict()
+        max_num_qubits = backend_config["n_qubits"]
+        max_shots = backend_config["max_shots"]
+        max_experiments = backend_config["max_experiments"]
+        if max_num_qubits < circuit.num_qubits:
+            raise RuntimeError(
+                f"Failed to create QiskitJob. Number of qubits in argument \
+                QiskitCircuit unsupported by the provided Backend: \
+                {max_num_qubits}<{circuit.num_qubits}."
+            )
         self._backend: Backend = backend
-        self._base_job: Optional[Job] = None
         self._circuit: QuantumCircuit = circuit
-        self._experiments: int = experiments
-        self._shots: int = shots
+        self._base_job: Optional[Job] = None
+        self._experiments: int = min(experiments, max_experiments)
+        self._shots: int = min(shots, max_shots)
+
+    ############################### PUBLIC API ###############################
+    @property
+    def circuit(self) -> QuantumCircuit:
+        return self._circuit
+
+    @property
+    def repetitions(self) -> int:
+        return self._shots * self._experiments
 
     def execute(self) -> List[str]:
         circuits: List[QiskitQuantumCircuit] = [
-            self._circuit.extract_base_circuit()
+            self.circuit
         ] * self._experiments
         self._base_job = execute(
             circuits,
@@ -61,9 +82,7 @@ class QiskitJob(QuantumJob):
         result: Result = self._base_job.result()
         return self._parse_result(result)
 
-    def extract_base_job(self) -> Job:
-        return self._base_job
-
+    ############################### PRIVATE API ###############################
     def _parse_result(self, result) -> List[str]:
         measurements: List[str] = []
         if self._memory:
@@ -85,10 +104,6 @@ class QiskitJob(QuantumJob):
     @staticmethod
     def _reverse_string(string: str) -> str:
         return string[::-1]
-
-    @property
-    def circuit(self) -> QuantumCircuit:
-        return self._circuit
 
     @property
     def _memory(self) -> bool:

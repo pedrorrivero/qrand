@@ -35,6 +35,7 @@ class EntanglementProtocol(ProtocolStrategy):
     def ERROR_MSG(cls):
         return f"{cls.__name__}"  # TODO
 
+    ############################### PUBLIC API ###############################
     def run(self, platform: QuantumPlatform) -> ProtocolResult:
         raise NotImplementedError(self.__class__.ERROR_MSG)
 

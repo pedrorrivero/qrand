@@ -34,12 +34,14 @@ class QsharpJob(QuantumJob):
         self.ERROR_MSG = f"{self.__class__.__name__}"  # TODO
         raise NotImplementedError(self.ERROR_MSG)
 
-    def execute(self) -> List[str]:
-        raise NotImplementedError(self.ERROR_MSG)
-
-    def extract_base_job(self) -> None:
+    ############################### PUBLIC API ###############################
+    @property
+    def circuit(self) -> QsharpCircuit:
         raise NotImplementedError(self.ERROR_MSG)
 
     @property
-    def circuit(self) -> QsharpCircuit:
+    def repetitions(self) -> int:
+        raise NotImplementedError(self.ERROR_MSG)
+
+    def execute(self) -> List[str]:
         raise NotImplementedError(self.ERROR_MSG)

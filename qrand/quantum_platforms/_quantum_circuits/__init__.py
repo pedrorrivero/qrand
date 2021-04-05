@@ -34,6 +34,10 @@ from ._qsharp_circuit import QsharpCircuit
 ## QUANTUM CIRCUIT INTERFACE (ADAPTER)
 ###############################################################################
 class QuantumCircuit(ABC):
+    @abstractmethod
+    def __init__(self, num_qubits: int) -> None:
+        pass
+
     @property
     @abstractmethod
     def num_qubits(self) -> int:
@@ -49,8 +53,4 @@ class QuantumCircuit(ABC):
 
     @abstractmethod
     def measure(self, target_qubit: int) -> None:
-        pass
-
-    @abstractmethod
-    def extract_base_circuit(self):
         pass

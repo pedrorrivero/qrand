@@ -35,6 +35,7 @@ class SimpleResult(ProtocolResult):
         self._bitstring: str = bitstring
         self._validation_token: str = validation_token or bitstring
 
+    ############################### PUBLIC API ###############################
     @property
     def bitstring(self) -> str:
         return self._bitstring

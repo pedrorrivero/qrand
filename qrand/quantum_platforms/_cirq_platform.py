@@ -20,6 +20,8 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
+from typing import Optional
+
 from .._quantum_protocols import QuantumProtocol
 from . import QuantumPlatform
 from ._quantum_circuits import QuantumCircuit
@@ -34,10 +36,15 @@ class CirqPlatform(QuantumPlatform):
         self.ERROR_MSG = f"{self.__class__.__name__}"  # TODO
         raise NotImplementedError(self.ERROR_MSG)
 
-    def create_circuit(self) -> QuantumCircuit:
+    ############################### PUBLIC API ###############################
+    def create_circuit(
+        self, num_qubits: Optional[int] = None
+    ) -> QuantumCircuit:
         raise NotImplementedError(self.ERROR_MSG)
 
-    def create_job(self, circuit: QuantumCircuit) -> QuantumJob:
+    def create_job(
+        self, circuit: QuantumCircuit, max_repetitions: Optional[int] = None
+    ) -> QuantumJob:
         raise NotImplementedError(self.ERROR_MSG)
 
     def fetch_random_bits(self, protocol: QuantumProtocol) -> str:

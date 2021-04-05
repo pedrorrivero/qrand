@@ -28,22 +28,20 @@ from . import QuantumCircuit
 ###############################################################################
 ## QISKIT CIRCUIT
 ###############################################################################
-class QiskitCircuit(QuantumCircuit):
+class QiskitCircuit(QuantumCircuit, QiskitQuantumCircuit):
     def __init__(self, num_qubits: int) -> None:
-        self._base_circuit = QiskitQuantumCircuit(num_qubits, num_qubits)
+        super(QuantumCircuit, self).__init__(num_qubits, num_qubits)
 
+    ############################### PUBLIC API ###############################
     @property
     def num_qubits(self) -> int:
-        return self._base_circuit.num_qubits
+        return super(QuantumCircuit, self).num_qubits
 
     def h(self, target_qubit: int) -> None:
-        self._base_circuit.h(target_qubit)
+        super(QuantumCircuit, self).h(target_qubit)
 
     def cx(self, control_qubit: int, target_qubit: int) -> None:
-        self._base_circuit.cx(control_qubit, target_qubit)
+        super(QuantumCircuit, self).cx(control_qubit, target_qubit)
 
     def measure(self, target_qubit: int) -> None:
-        self._base_circuit.measure(target_qubit, target_qubit)
-
-    def extract_base_circuit(self) -> QiskitQuantumCircuit:
-        return self._base_circuit
+        super(QuantumCircuit, self).measure(target_qubit, target_qubit)

@@ -37,15 +37,16 @@ from ._qsharp_job import QsharpJob
 ## QUANTUM JOB INTERFACE (ADAPTER)
 ###############################################################################
 class QuantumJob(ABC):
+    @property
     @abstractmethod
-    def execute(self) -> List[str]:
-        pass
-
-    @abstractmethod
-    def extract_base_job(self):
+    def circuit(self) -> QuantumCircuit:
         pass
 
     @property
     @abstractmethod
-    def circuit(self) -> QuantumCircuit:
+    def repetitions(self) -> int:
+        pass
+
+    @abstractmethod
+    def execute(self) -> List[str]:
         pass

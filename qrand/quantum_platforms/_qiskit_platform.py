@@ -63,7 +63,7 @@ class QiskitPlatform(QuantumPlatform):
         self._backend_filter: Optional[BackendFilter] = backend_filter
         self._set_mbpr(max_bits_per_request)
 
-    ########################## STATIC/CLASS METHODS ##########################
+    ############################### PUBLIC API ###############################
     @staticmethod
     def default_backend_filter(b: Backend) -> bool:
         config: BackendConfiguration = b.configuration()
@@ -85,19 +85,30 @@ class QiskitPlatform(QuantumPlatform):
             )
         return least_busy(backends)
 
-    ############################# PUBLIC METHODS #############################
-    def create_circuit(self) -> QuantumCircuit:
-        return QiskitCircuit(self._num_qubits)
+    def create_circuit(
+        self, num_qubits: Optional[int] = None
+    ) -> QuantumCircuit:
+        if not num_qubits:
+            num_qubits = self._num_qubits
+        return QiskitCircuit(num_qubits)
 
-    def create_job(self, circuit: QuantumCircuit) -> QuantumJob:
+    def create_job(
+        self, circuit: QuantumCircuit, max_repetitions: Optional[int] = None
+    ) -> QuantumJob:
         num_qubits, shots, experiments = self._job_partition
         if num_qubits != circuit.num_qubits:
             raise RuntimeError(
-                f"Failed to create QiskitJob, platform state changed. \
-                Outdated number of qubits in argument QiskitCircuit: \
-                {circuit.num_qubits}!={num_qubits}."
+                f"Failed to create QiskitJob. Invalid number of qubits in \
+                argument QiskitCircuit: {circuit.num_qubits}!={num_qubits}."
             )
-        return QiskitJob(circuit, shots, experiments, self._backend)
+        if max_repetitions:
+            if shots >= max_repetitions:
+                shots = max_repetitions
+                experiments = 1
+            else:
+                e = max_repetitions // shots
+                experiments = min(e, experiments)
+        return QiskitJob(circuit, self._backend, shots, experiments)
 
     def fetch_random_bits(self, protocol: QuantumProtocol) -> str:
         self.refresh()
@@ -111,13 +122,7 @@ class QiskitPlatform(QuantumPlatform):
                 backend_filter=self._backend_filter,
             )
 
-    ############################# PRIVATE METHODS #############################
-    def _set_mbpr(self, max_bits_per_request: int) -> None:
-        self._max_bits_per_request = (
-            max_bits_per_request if max_bits_per_request > 0 else 0
-        )
-
-    ########################### PRIVATE PROPERTIES ###########################
+    ############################### PRIVATE API ###############################
     @property
     def _backend_config(self) -> dict:
         return self._backend.configuration().to_dict()
@@ -175,3 +180,8 @@ class QiskitPlatform(QuantumPlatform):
     def _shots(self) -> int:
         num_qubits, shots, experiments = self._job_partition
         return shots
+
+    def _set_mbpr(self, max_bits_per_request: int) -> None:
+        self._max_bits_per_request = (
+            max_bits_per_request if max_bits_per_request > 0 else 0
+        )

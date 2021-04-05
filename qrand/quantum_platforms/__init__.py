@@ -21,6 +21,7 @@
 ## limitations under the License.
 
 from abc import ABC, abstractmethod
+from typing import Optional
 
 from ..quantum_protocols import ProtocolResult, QuantumProtocol
 
@@ -39,11 +40,15 @@ from ._quantum_jobs import QuantumJob
 ###############################################################################
 class QuantumPlatform(ABC):
     @abstractmethod
-    def create_circuit(self) -> QuantumCircuit:
+    def create_circuit(
+        self, num_qubits: Optional[int] = None
+    ) -> QuantumCircuit:
         pass
 
     @abstractmethod
-    def create_job(self, circuit: QuantumCircuit) -> QuantumJob:
+    def create_job(
+        self, circuit: QuantumCircuit, max_repetitions: Optional[int] = None
+    ) -> QuantumJob:
         pass
 
     @abstractmethod

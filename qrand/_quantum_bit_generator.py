@@ -31,9 +31,7 @@ from .quantum_protocols import QuantumProtocol
 ###############################################################################
 class QuantumBitGenerator(UserBitGenerator):
     def __init__(
-        self,
-        platform: QuantumPlatform,
-        protocol: QuantumProtocol,
+        self, platform: QuantumPlatform, protocol: QuantumProtocol
     ) -> None:
         self._platform = platform
         self._protocol = protocol
