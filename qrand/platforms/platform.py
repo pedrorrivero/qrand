@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: March 29, 2021
+##   |  ___/|  _  /    DATE: April 5, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -21,36 +21,28 @@
 ## limitations under the License.
 
 from abc import ABC, abstractmethod
+from typing import Optional
 
-###############################################################################
-## EXPOSE IMPLEMENTATIONS
-###############################################################################
-from ._cirq_circuit import CirqCircuit
-from ._qiskit_circuit import QiskitCircuit
-from ._qsharp_circuit import QsharpCircuit
+from ..protocols import ProtocolResult, QuantumProtocol
+from . import QuantumCircuit, QuantumJob
 
 
 ###############################################################################
-## QUANTUM CIRCUIT INTERFACE (ADAPTER)
+## QUANTUM PLATFORM INTERFACE (FACADE AND ABSTRACT FACTORY)
 ###############################################################################
-class QuantumCircuit(ABC):
+class QuantumPlatform(ABC):
     @abstractmethod
-    def __init__(self, num_qubits: int) -> None:
-        pass
-
-    @property
-    @abstractmethod
-    def num_qubits(self) -> int:
+    def create_circuit(
+        self, num_qubits: Optional[int] = None
+    ) -> QuantumCircuit:
         pass
 
     @abstractmethod
-    def h(self, target_qubit: int) -> None:
+    def create_job(
+        self, circuit: QuantumCircuit, max_repetitions: Optional[int] = None
+    ) -> QuantumJob:
         pass
 
     @abstractmethod
-    def cx(self, control_qubit: int, target_qubit: int) -> None:
-        pass
-
-    @abstractmethod
-    def measure(self, target_qubit: int) -> None:
+    def fetch_random_bits(self, protocol: QuantumProtocol) -> str:
         pass

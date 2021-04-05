@@ -20,24 +20,19 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import List, Literal
+from .entanglement import EntanglementProtocol
+from .hadamard import HadamardProtocol
+from .protocol import ProtocolStrategy, QuantumProtocol, ValidationDecorator
+from .protocol_result import ProtocolResult, SimpleResult
+from .sycamore import SycamoreProtocol
 
-from ..quantum_platforms import QuantumPlatform
-from . import ProtocolResult, ProtocolStrategy
-
-
-###############################################################################
-## ENTANGLEMENT PROTOCOL
-###############################################################################
-class EntanglementProtocol(ProtocolStrategy):
-    @property
-    @classmethod
-    def ERROR_MSG(cls):
-        return f"{cls.__name__}"  # TODO
-
-    ############################### PUBLIC API ###############################
-    def run(self, platform: QuantumPlatform) -> ProtocolResult:
-        raise NotImplementedError(self.__class__.ERROR_MSG)
-
-    def verify(self) -> Literal[False]:
-        raise NotImplementedError(self.__class__.ERROR_MSG)
+__all__ = [
+    "QuantumProtocol",
+    "ProtocolStrategy",
+    "ValidationStrategy",
+    "ProtocolResult",
+    "SimpleResult",
+    "EntanglementProtocol",
+    "HadamardProtocol",
+    "SycamoreProtocol",
+]

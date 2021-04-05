@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: March 30, 2021
+##   |  ___/|  _  /    DATE: April 5, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,26 +20,8 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import Optional
+from .validation import ValidationStrategy
 
-from . import ProtocolResult
-
-
-###############################################################################
-## SIMPLE RESULT
-###############################################################################
-class SimpleResult(ProtocolResult):
-    def __init__(
-        self, bitstring: str, validation_token: Optional[str] = None
-    ) -> None:
-        self._bitstring: str = bitstring
-        self._validation_token: str = validation_token or bitstring
-
-    ############################### PUBLIC API ###############################
-    @property
-    def bitstring(self) -> str:
-        return self._bitstring
-
-    @property
-    def validation_token(self) -> str:
-        return self._validation_token
+__all__ = [
+    "ValidationStrategy",
+]

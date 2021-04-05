@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: March 27, 2021
+##   |  ___/|  _  /    DATE: April 5, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,28 +20,27 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from qiskit import QuantumCircuit as QiskitQuantumCircuit
-
-from . import QuantumCircuit
+from .. import QuantumCircuit
 
 
 ###############################################################################
-## QISKIT CIRCUIT
+## CIRQ CIRCUIT
 ###############################################################################
-class QiskitCircuit(QuantumCircuit, QiskitQuantumCircuit):
+class CirqCircuit(QuantumCircuit):
     def __init__(self, num_qubits: int) -> None:
-        super(QuantumCircuit, self).__init__(num_qubits, num_qubits)
+        self.ERROR_MSG = f"{self.__class__.__name__}"  # TODO
+        raise NotImplementedError(self.ERROR_MSG)
 
     ############################### PUBLIC API ###############################
     @property
     def num_qubits(self) -> int:
-        return super(QuantumCircuit, self).num_qubits
+        raise NotImplementedError(self.ERROR_MSG)
 
     def h(self, target_qubit: int) -> None:
-        super(QuantumCircuit, self).h(target_qubit)
+        raise NotImplementedError(self.ERROR_MSG)
 
     def cx(self, control_qubit: int, target_qubit: int) -> None:
-        super(QuantumCircuit, self).cx(control_qubit, target_qubit)
+        raise NotImplementedError(self.ERROR_MSG)
 
     def measure(self, target_qubit: int) -> None:
-        super(QuantumCircuit, self).measure(target_qubit, target_qubit)
+        raise NotImplementedError(self.ERROR_MSG)

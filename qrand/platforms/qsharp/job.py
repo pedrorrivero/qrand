@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: March 29, 2021
+##   |  ___/|  _  /    DATE: April 5, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -22,21 +22,21 @@
 
 from typing import List, Optional
 
-from .._quantum_circuits import CirqCircuit
-from . import QuantumJob
+from .. import QuantumJob
+from . import QsharpCircuit
 
 
 ###############################################################################
-## CIRQ JOB
+## QSHARP JOB
 ###############################################################################
-class CirqJob(QuantumJob):
+class QsharpJob(QuantumJob):
     def __init__(self) -> None:
         self.ERROR_MSG = f"{self.__class__.__name__}"  # TODO
         raise NotImplementedError(self.ERROR_MSG)
 
     ############################### PUBLIC API ###############################
     @property
-    def circuit(self) -> CirqCircuit:
+    def circuit(self) -> QsharpCircuit:
         raise NotImplementedError(self.ERROR_MSG)
 
     @property

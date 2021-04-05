@@ -22,7 +22,7 @@
 
 from typing import List, Literal
 
-from ..quantum_platforms import QuantumCircuit, QuantumJob, QuantumPlatform
+from ..platforms import QuantumCircuit, QuantumJob, QuantumPlatform
 from . import ProtocolResult, ProtocolStrategy, SimpleResult
 
 

@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: March 29, 2021
+##   |  ___/|  _  /    DATE: April 5, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,28 +20,18 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import List, Optional
+from randomgen import UserBitGenerator
 
-from .._quantum_circuits import QsharpCircuit
-from . import QuantumJob
+from .platforms import QuantumPlatform
+from .protocols import QuantumProtocol
 
 
 ###############################################################################
-## QSHARP JOB
+## QUANTUM BIT GENERATOR
 ###############################################################################
-class QsharpJob(QuantumJob):
-    def __init__(self) -> None:
-        self.ERROR_MSG = f"{self.__class__.__name__}"  # TODO
-        raise NotImplementedError(self.ERROR_MSG)
-
-    ############################### PUBLIC API ###############################
-    @property
-    def circuit(self) -> QsharpCircuit:
-        raise NotImplementedError(self.ERROR_MSG)
-
-    @property
-    def repetitions(self) -> int:
-        raise NotImplementedError(self.ERROR_MSG)
-
-    def execute(self) -> List[str]:
-        raise NotImplementedError(self.ERROR_MSG)
+class QuantumBitGenerator(UserBitGenerator):
+    def __init__(
+        self, platform: QuantumPlatform, protocol: QuantumProtocol
+    ) -> None:
+        self._platform = platform
+        self._protocol = protocol

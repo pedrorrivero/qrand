@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: March 29, 2021
+##   |  ___/|  _  /    DATE: April 5, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,32 +20,28 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import Optional
+from qiskit import QuantumCircuit as QiskitQuantumCircuit
 
-from .._quantum_protocols import QuantumProtocol
-from . import QuantumPlatform
-from ._quantum_circuits import QuantumCircuit
-from ._quantum_jobs import QuantumJob
+from .. import QuantumCircuit
 
 
 ###############################################################################
-## CIRQ PLATFORM
+## QISKIT CIRCUIT
 ###############################################################################
-class CirqPlatform(QuantumPlatform):
-    def __init__(self) -> None:
-        self.ERROR_MSG = f"{self.__class__.__name__}"  # TODO
-        raise NotImplementedError(self.ERROR_MSG)
+class QiskitCircuit(QuantumCircuit, QiskitQuantumCircuit):
+    def __init__(self, num_qubits: int) -> None:
+        super(QuantumCircuit, self).__init__(num_qubits, num_qubits)
 
     ############################### PUBLIC API ###############################
-    def create_circuit(
-        self, num_qubits: Optional[int] = None
-    ) -> QuantumCircuit:
-        raise NotImplementedError(self.ERROR_MSG)
+    @property
+    def num_qubits(self) -> int:
+        return super(QuantumCircuit, self).num_qubits
 
-    def create_job(
-        self, circuit: QuantumCircuit, max_repetitions: Optional[int] = None
-    ) -> QuantumJob:
-        raise NotImplementedError(self.ERROR_MSG)
+    def h(self, target_qubit: int) -> None:
+        super(QuantumCircuit, self).h(target_qubit)
 
-    def fetch_random_bits(self, protocol: QuantumProtocol) -> str:
-        raise NotImplementedError(self.ERROR_MSG)
+    def cx(self, control_qubit: int, target_qubit: int) -> None:
+        super(QuantumCircuit, self).cx(control_qubit, target_qubit)
+
+    def measure(self, target_qubit: int) -> None:
+        super(QuantumCircuit, self).measure(target_qubit, target_qubit)

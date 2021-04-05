@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: March 28, 2021
+##   |  ___/|  _  /    DATE: April 5, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,13 +20,12 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from abc import ABC, abstractmethod
+from .circuit import QsharpCircuit
+from .job import QsharpJob
+from .platform import QsharpPlatform
 
-
-###############################################################################
-## VALIDATION STRATEGY INTERFACE (STRATEGY)
-###############################################################################
-class ValidationStrategy(ABC):
-    @abstractmethod
-    def validate(self, bitstring: str) -> bool:
-        pass
+__all__ = [
+    "QsharpPlatform",
+    "QsharpJob",
+    "QsharpCircuit",
+]

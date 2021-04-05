@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: March 28, 2021
+##   |  ___/|  _  /    DATE: April 5, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,24 +20,24 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import List, Literal
+from .circuit import QuantumCircuit
+from .cirq import CirqCircuit, CirqJob, CirqPlatform
+from .job import QuantumJob
+from .platform import QuantumPlatform
+from .qiskit import QiskitCircuit, QiskitJob, QiskitPlatform
+from .qsharp import QsharpCircuit, QsharpJob, QsharpPlatform
 
-from ..quantum_platforms import QuantumPlatform
-from . import ProtocolResult, ProtocolStrategy
-
-
-###############################################################################
-## SYCAMORE PROTOCOL
-###############################################################################
-class SycamoreProtocol(ProtocolStrategy):
-    @property
-    @classmethod
-    def ERROR_MSG(cls):
-        return f"{cls.__name__}"  # TODO
-
-    ############################### PUBLIC API ###############################
-    def run(self, platform: QuantumPlatform) -> ProtocolResult:
-        raise NotImplementedError(self.__class__.ERROR_MSG)
-
-    def verify(self) -> Literal[False]:
-        raise NotImplementedError(self.__class__.ERROR_MSG)
+__all__ = [
+    "QuantumPlatform",
+    "QuantumJob",
+    "QuantumCircuit",
+    "CirqPlatform",
+    "CirqJob",
+    "CirqCircuit",
+    "QiskitPlatform",
+    "QiskitJob",
+    "QiskitCircuit",
+    "QsharpPlatform",
+    "QsharpJob",
+    "QsharpCircuit",
+]

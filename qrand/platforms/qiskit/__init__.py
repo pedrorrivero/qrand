@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: March 28, 2021
+##   |  ___/|  _  /    DATE: April 5, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,18 +20,12 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from randomgen import UserBitGenerator
+from .circuit import QiskitCircuit
+from .job import QiskitJob
+from .platform import QiskitPlatform
 
-from .quantum_platforms import QuantumPlatform
-from .quantum_protocols import QuantumProtocol
-
-
-###############################################################################
-## QUANTUM BIT GENERATOR
-###############################################################################
-class QuantumBitGenerator(UserBitGenerator):
-    def __init__(
-        self, platform: QuantumPlatform, protocol: QuantumProtocol
-    ) -> None:
-        self._platform = platform
-        self._protocol = protocol
+__all__ = [
+    "QiskitPlatform",
+    "QiskitJob",
+    "QiskitCircuit",
+]

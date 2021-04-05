@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: March 29, 2021
+##   |  ___/|  _  /    DATE: April 5, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -23,14 +23,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from .._quantum_circuits import QuantumCircuit
-
-###############################################################################
-## EXPOSE IMPLEMENTATIONS
-###############################################################################
-from ._cirq_job import CirqJob
-from ._qiskit_job import QiskitJob
-from ._qsharp_job import QsharpJob
+from . import QuantumCircuit
 
 
 ###############################################################################

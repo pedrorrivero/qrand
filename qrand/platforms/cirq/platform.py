@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: March 29, 2021
+##   |  ___/|  _  /    DATE: April 5, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,37 +20,30 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from abc import ABC, abstractmethod
 from typing import Optional
 
-from ..quantum_protocols import ProtocolResult, QuantumProtocol
-
-###############################################################################
-## EXPOSE IMPLEMENTATIONS
-###############################################################################
-from ._cirq_platform import CirqPlatform
-from ._qiskit_platform import QiskitPlatform
-from ._qsharp_platform import QsharpPlatform
-from ._quantum_circuits import QuantumCircuit
-from ._quantum_jobs import QuantumJob
+from .. import QuantumCircuit, QuantumJob, QuantumPlatform
+from ..platform import QuantumProtocol
 
 
 ###############################################################################
-## QUANTUM PLATFORM INTERFACE (FACADE AND ABSTRACT FACTORY)
+## CIRQ PLATFORM
 ###############################################################################
-class QuantumPlatform(ABC):
-    @abstractmethod
+class CirqPlatform(QuantumPlatform):
+    def __init__(self) -> None:
+        self.ERROR_MSG = f"{self.__class__.__name__}"  # TODO
+        raise NotImplementedError(self.ERROR_MSG)
+
+    ############################### PUBLIC API ###############################
     def create_circuit(
         self, num_qubits: Optional[int] = None
     ) -> QuantumCircuit:
-        pass
+        raise NotImplementedError(self.ERROR_MSG)
 
-    @abstractmethod
     def create_job(
         self, circuit: QuantumCircuit, max_repetitions: Optional[int] = None
     ) -> QuantumJob:
-        pass
+        raise NotImplementedError(self.ERROR_MSG)
 
-    @abstractmethod
     def fetch_random_bits(self, protocol: QuantumProtocol) -> str:
-        pass
+        raise NotImplementedError(self.ERROR_MSG)

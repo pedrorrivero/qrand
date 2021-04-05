@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: March 29, 2021
+##   |  ___/|  _  /    DATE: April 5, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -22,10 +22,8 @@
 
 from typing import Optional
 
-from .._quantum_protocols import QuantumProtocol
-from . import QuantumPlatform
-from ._quantum_circuits import QuantumCircuit
-from ._quantum_jobs import QuantumJob
+from .. import QuantumCircuit, QuantumJob, QuantumPlatform
+from ..platform import QuantumProtocol
 
 
 ###############################################################################

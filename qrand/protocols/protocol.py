@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: March 28, 2021
+##   |  ___/|  _  /    DATE: April 5, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -23,13 +23,9 @@
 from abc import ABC, abstractmethod
 from typing import Literal, Optional
 
-from ..quantum_platforms import QuantumPlatform
-from ..validation_strategies import ValidationStrategy
-
-###############################################################################
-## EXPOSE IMPLEMENTATIONS
-###############################################################################
-from ._protocol_resutls import ProtocolResult, SimpleResult
+from ..platforms import QuantumPlatform
+from ..validation import ValidationStrategy
+from .result import ProtocolResult, SimpleResult
 
 
 ###############################################################################
@@ -38,7 +34,7 @@ from ._protocol_resutls import ProtocolResult, SimpleResult
 class QuantumProtocol(ABC):
     ############################ STRATEGY PATTERN ############################
     @abstractmethod
-    def run(self, platform: QuantumPlatform) -> Optional[ProtocolResult]:
+    def run(self, platform: QuantumPlatform) -> ProtocolResult:
         pass
 
     @abstractmethod
@@ -62,7 +58,7 @@ class QuantumProtocol(ABC):
 class ProtocolStrategy(QuantumProtocol):
     ############################ STRATEGY PATTERN ############################
     @abstractmethod
-    def run(self, platform: QuantumPlatform) -> Optional[ProtocolResult]:
+    def run(self, platform: QuantumPlatform) -> ProtocolResult:
         pass
 
     @abstractmethod
@@ -91,17 +87,23 @@ class ValidationDecorator(QuantumProtocol):
         self._validation_strategy: ValidationStrategy = validation_strategy
 
     ############################ STRATEGY PATTERN ############################
-    def run(self, platform: QuantumPlatform) -> Optional[ProtocolResult]:
-        result: Optional[ProtocolResult] = self.base_protocol.run(platform)
-        return result if result is None or self.validate(result) else None
+    def run(self, platform: QuantumPlatform) -> ProtocolResult:
+        result: ProtocolResult = self.base_protocol.run(platform)
+        if not self._validate_layer(result):
+            result.erase()
+        return result
 
     def verify(self) -> bool:
         return self.base_protocol.verify()
 
     ############################ DECORATOR PATTERN ############################
     def validate(self, result: ProtocolResult) -> bool:
-        validation_token: str = result.validation_token
-        validation: bool = self._validation_strategy.validate(validation_token)
+        valid: bool = self._validate_layer(result)
         if self.base_protocol.base_protocol is None:
-            return validation
-        return validation and self.base_protocol.validate(result)
+            return valid
+        return valid and self.base_protocol.validate(result)
+
+    ############################### PRIVATE API ###############################
+    def _validate_layer(self, result: ProtocolResult) -> bool:
+        validation_token: str = result.validation_token
+        return self._validation_strategy.validate(validation_token)

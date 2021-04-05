@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: March 30, 2021
+##   |  ___/|  _  /    DATE: April 5, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,24 +20,12 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from abc import ABC, abstractmethod
+from .circuit import CirqCircuit
+from .job import CirqJob
+from .platform import CirqPlatform
 
-###############################################################################
-## EXPOSE IMPLEMENTATIONS
-###############################################################################
-from ._simple_result import SimpleResult
-
-
-###############################################################################
-## PROTOCOL RESULT INTERFACE
-###############################################################################
-class ProtocolResult(ABC):
-    @property
-    @abstractmethod
-    def bitstring(self) -> str:
-        pass
-
-    @property
-    @abstractmethod
-    def validation_token(self) -> str:
-        pass
+__all__ = [
+    "CirqPlatform",
+    "CirqJob",
+    "CirqCircuit",
+]

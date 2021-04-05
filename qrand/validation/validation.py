@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: March 29, 2021
+##   |  ___/|  _  /    DATE: April 5, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,27 +20,13 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from . import QuantumCircuit
+from abc import ABC, abstractmethod
 
 
 ###############################################################################
-## CIRQ CIRCUIT
+## VALIDATION STRATEGY INTERFACE (STRATEGY)
 ###############################################################################
-class CirqCircuit(QuantumCircuit):
-    def __init__(self, num_qubits: int) -> None:
-        self.ERROR_MSG = f"{self.__class__.__name__}"  # TODO
-        raise NotImplementedError(self.ERROR_MSG)
-
-    ############################### PUBLIC API ###############################
-    @property
-    def num_qubits(self) -> int:
-        raise NotImplementedError(self.ERROR_MSG)
-
-    def h(self, target_qubit: int) -> None:
-        raise NotImplementedError(self.ERROR_MSG)
-
-    def cx(self, control_qubit: int, target_qubit: int) -> None:
-        raise NotImplementedError(self.ERROR_MSG)
-
-    def measure(self, target_qubit: int) -> None:
-        raise NotImplementedError(self.ERROR_MSG)
+class ValidationStrategy(ABC):
+    @abstractmethod
+    def validate(self, bitstring: str) -> bool:
+        pass

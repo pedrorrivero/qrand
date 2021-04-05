@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: March 29, 2021
+##   |  ___/|  _  /    DATE: April 5, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,27 +20,30 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from . import QuantumCircuit
+from abc import ABC, abstractmethod
 
 
 ###############################################################################
-## QSHARP CIRCUIT
+## QUANTUM CIRCUIT INTERFACE (ADAPTER)
 ###############################################################################
-class QsharpCircuit(QuantumCircuit):
+class QuantumCircuit(ABC):
+    @abstractmethod
     def __init__(self, num_qubits: int) -> None:
-        self.ERROR_MSG = f"{self.__class__.__name__}"  # TODO
-        raise NotImplementedError(self.ERROR_MSG)
+        pass
 
-    ############################### PUBLIC API ###############################
     @property
+    @abstractmethod
     def num_qubits(self) -> int:
-        raise NotImplementedError(self.ERROR_MSG)
+        pass
 
+    @abstractmethod
     def h(self, target_qubit: int) -> None:
-        raise NotImplementedError(self.ERROR_MSG)
+        pass
 
+    @abstractmethod
     def cx(self, control_qubit: int, target_qubit: int) -> None:
-        raise NotImplementedError(self.ERROR_MSG)
+        pass
 
+    @abstractmethod
     def measure(self, target_qubit: int) -> None:
-        raise NotImplementedError(self.ERROR_MSG)
+        pass
