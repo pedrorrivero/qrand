@@ -56,6 +56,15 @@ pre-commit installed at .git/hooks/commit-msg
 ## Documentation
 For this project we adhere to the [numpydoc docstring guide](https://numpydoc.readthedocs.io/en/latest/format.html). If you make any changes to the code, remember updating the docstring wherever relevant.
 
+## Difficulty classes
+All issues in this repo are assigned a Difficulty Class (DC) from 1 to 5. These different levels roughly correspond to:
+
+- `DC-1` → Basic knowledge
+- `DC-2` → Application/user level knowledge
+- `DC-3` → Domain/technology specific knowledge
+- `DC-4` → Multidomain knowledge
+- `DC-5` → System-wide knowledge
+
 
 # Known issues
 ## MacOS (10-13-2020)
