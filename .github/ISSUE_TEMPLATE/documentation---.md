@@ -8,9 +8,7 @@ assignees: ''
 ---
 
 ### What is the nature of the issue?
-- [ ] New content
-- [ ] Outdated/imprecise content
-- [ ] Bug (please describe, e.g. broken link)
+New content, outdated/imprecise content, bug (please describe, e.g. broken link), [...]
 
 ### Are there other related issues or pull requests about this?
 - Issue/PR #1
