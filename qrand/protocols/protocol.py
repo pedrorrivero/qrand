@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: April 5, 2021
+##   |  ___/|  _  /    DATE: April 7, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -42,13 +42,13 @@ class QuantumProtocol(ABC):
         pass
 
     ############################ DECORATOR PATTERN ############################
-    @abstractmethod
-    def validate(self, result: ProtocolResult) -> bool:
-        pass
-
     @property
     @abstractmethod
     def base_protocol(self) -> Optional[QuantumProtocol]:  # noqa: F821
+        pass
+
+    @abstractmethod
+    def validate(self, result: ProtocolResult) -> bool:
         pass
 
 
@@ -66,12 +66,12 @@ class ProtocolStrategy(QuantumProtocol):
         pass
 
     ############################ DECORATOR PATTERN ############################
-    def validate(self, result: ProtocolResult) -> Literal[False]:
-        return False
-
     @property
     def base_protocol(self) -> Literal[None]:
         return None
+
+    def validate(self, result: ProtocolResult) -> Literal[False]:
+        return False
 
 
 ###############################################################################
@@ -84,7 +84,7 @@ class ValidationDecorator(QuantumProtocol):
         validation_strategy: ValidationStrategy,
     ) -> None:
         self.base_protocol: QuantumProtocol = base_protocol
-        self._validation_strategy: ValidationStrategy = validation_strategy
+        self.validation_strategy: ValidationStrategy = validation_strategy
 
     ############################ STRATEGY PATTERN ############################
     def run(self, platform: QuantumPlatform) -> ProtocolResult:
@@ -97,11 +97,28 @@ class ValidationDecorator(QuantumProtocol):
         return self.base_protocol.verify()
 
     ############################ DECORATOR PATTERN ############################
+    @property
+    def base_protocol(self) -> QuantumProtocol:
+        return self._base_protocol
+
+    @base_protocol.setter
+    def base_protocol(self, protocol: QuantumProtocol) -> None:
+        self._base_protocol: QuantumProtocol = protocol
+
     def validate(self, result: ProtocolResult) -> bool:
         valid: bool = self._validate_layer(result)
         if self.base_protocol.base_protocol is None:
             return valid
         return valid and self.base_protocol.validate(result)
+
+    ############################### PUBLIC API ###############################
+    @property
+    def validation_strategy(self) -> ValidationStrategy:
+        return self._validation_strategy
+
+    @validation_strategy.setter
+    def validation_strategy(self, strategy: ValidationStrategy) -> None:
+        self._validation_strategy: ValidationStrategy = strategy
 
     ############################### PRIVATE API ###############################
     def _validate_layer(self, result: ProtocolResult) -> bool:

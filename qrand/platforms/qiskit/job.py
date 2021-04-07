@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: April 5, 2021
+##   |  ___/|  _  /    DATE: April 7, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -21,13 +21,16 @@
 ## limitations under the License.
 
 from typing import List, Optional
+from warnings import warn
 
 from qiskit import QuantumCircuit as QiskitQuantumCircuit
 from qiskit import execute
-from qiskit.providers import Backend, Job
+from qiskit.providers import BackendV1 as Backend
+from qiskit.providers import Job
 from qiskit.result import Counts, Result
 
 from .. import QuantumCircuit, QuantumJob
+from .backend import QiskitBackend
 
 
 ###############################################################################
@@ -38,54 +41,103 @@ class QiskitJob(QuantumJob):
         self,
         circuit: QuantumCircuit,
         backend: Backend,
-        shots: int = 1024,
-        experiments: int = 1,
+        shots: Optional[int] = None,
+        experiments: Optional[int] = None,
     ) -> None:
-        experiments = experiments if experiments > 1 else 1
-        shots = shots if shots > 1 else 1
-        backend_config = backend.configuration().to_dict()
-        max_num_qubits = backend_config["n_qubits"]
-        max_shots = backend_config["max_shots"]
-        max_experiments = backend_config["max_experiments"]
-        if max_num_qubits < circuit.num_qubits:
-            raise RuntimeError(
-                f"Failed to create QiskitJob. Number of qubits in argument \
-                QiskitCircuit unsupported by the provided Backend: \
-                {max_num_qubits}<{circuit.num_qubits}."
-            )
-        self._backend: Backend = backend
-        self._circuit: QuantumCircuit = circuit
+        self.backend: QiskitBackend = backend  # type: ignore
+        self.circuit: QuantumCircuit = circuit
+        self.experiments: int = experiments  # type: ignore
+        self.shots: int = shots  # type: ignore
         self._base_job: Optional[Job] = None
-        self._experiments: int = min(experiments, max_experiments)
-        self._shots: int = min(shots, max_shots)
 
     ############################### PUBLIC API ###############################
+    @property
+    def backend(self) -> QiskitBackend:
+        return self._backend
+
+    @backend.setter
+    def backend(self, backend: Backend) -> None:
+        self._backend = QiskitBackend(backend)
+
     @property
     def circuit(self) -> QuantumCircuit:
         return self._circuit
 
+    @circuit.setter
+    def circuit(self, circuit: QuantumCircuit) -> None:
+        if self.backend.max_num_qubits < circuit.num_qubits:
+            raise RuntimeError(
+                f"Failed to create QiskitJob. Number of qubits in argument \
+                QuantumCircuit unsupported by the provided Backend: \
+                {circuit.num_qubits}>{self.backend.max_num_qubits}."
+            )
+        self._circuit: QuantumCircuit = circuit
+
+    @property
+    def experiments(self) -> int:
+        return self._experiments
+
+    @experiments.setter
+    def experiments(self, experiments: Optional[int]) -> None:
+        experiments = (
+            experiments
+            if experiments and experiments > 1
+            else self.backend.max_experiments
+        )
+        if self.backend.max_experiments < experiments:
+            warn(
+                f"Number of experiments in argument unsupported by the \
+                provided Backend: {experiments}>{self.backend.max_experiments}.\
+                Using max_experiments instead."
+            )
+            experiments = self.backend.max_experiments
+        self._experiments: int = experiments
+
+    @property
+    def shots(self) -> int:
+        return self._shots
+
+    @shots.setter
+    def shots(self, shots: Optional[int]) -> None:
+        shots = shots if shots and shots > 1 else self.backend.max_shots
+        if self.backend.max_shots < shots:
+            warn(
+                f"Number of shots in argument unsupported by the provided \
+                Backend: {shots}>{self.backend.max_shots}. Using max_shots instead."
+            )
+            shots = self.backend.max_shots
+        self._shots: int = shots
+
     @property
     def repetitions(self) -> int:
-        return self._shots * self._experiments
+        return self.shots * self.experiments
 
     def execute(self) -> List[str]:
         circuits: List[QiskitQuantumCircuit] = [
             self.circuit
-        ] * self._experiments
+        ] * self.experiments
         self._base_job = execute(
             circuits,
-            self._backend,
-            shots=self._shots,
-            memory=self._memory,
+            self.backend,
+            shots=self.shots,
+            memory=self._requires_memory,
         )
         result: Result = self._base_job.result()
         return self._parse_result(result)
 
     ############################### PRIVATE API ###############################
+    @property
+    def _requires_memory(self) -> bool:
+        return True if self.shots > 1 else False
+
+    @staticmethod
+    def _reverse_string(string: str) -> str:
+        return string[::-1]
+
     def _parse_result(self, result) -> List[str]:
         measurements: List[str] = []
-        if self._memory:
-            for e in range(self._experiments):
+        if self._requires_memory:
+            for e in range(self.experiments):
                 measurements += result.get_memory(e)
         else:
             cts = result.get_counts()
@@ -99,11 +151,3 @@ class QiskitJob(QuantumJob):
             for q in range(num_qubits):
                 streams[q] += m[q]
         return streams
-
-    @staticmethod
-    def _reverse_string(string: str) -> str:
-        return string[::-1]
-
-    @property
-    def _memory(self) -> bool:
-        return True if self._shots > 1 else False

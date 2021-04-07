@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: March 28, 2021
+##   |  ___/|  _  /    DATE: April 7, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -33,7 +33,8 @@ class HadamardProtocol(ProtocolStrategy):
     ############################### PUBLIC API ###############################
     def run(self, platform: QuantumPlatform) -> ProtocolResult:
         circuit: QuantumCircuit = self._build_quantum_circuit(platform)
-        job: QuantumJob = platform.create_job(circuit)
+        _, repetitions = platform.job_partition
+        job: QuantumJob = platform.create_job(circuit, repetitions)
         output: List[str] = job.execute()
         return self._parse_output(output)
 
@@ -44,7 +45,8 @@ class HadamardProtocol(ProtocolStrategy):
     def _build_quantum_circuit(
         self, platform: QuantumPlatform
     ) -> QuantumCircuit:
-        circuit: QuantumCircuit = platform.create_circuit()
+        num_qubits, _ = platform.job_partition
+        circuit: QuantumCircuit = platform.create_circuit(num_qubits)
         for q in range(circuit.num_qubits):
             circuit.h(q)
             circuit.measure(q)

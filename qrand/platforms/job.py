@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: April 5, 2021
+##   |  ___/|  _  /    DATE: April 7, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -33,6 +33,10 @@ class QuantumJob(ABC):
     @property
     @abstractmethod
     def circuit(self) -> QuantumCircuit:
+        pass
+
+    @circuit.setter
+    def circuit(self, circuit: QuantumCircuit):
         pass
 
     @property

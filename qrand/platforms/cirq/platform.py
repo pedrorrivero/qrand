@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: April 5, 2021
+##   |  ___/|  _  /    DATE: April 7, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,7 +20,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import Optional
+from typing import Optional, Tuple
 
 from .. import QuantumCircuit, QuantumJob, QuantumPlatform
 from ..platform import QuantumProtocol
@@ -35,13 +35,19 @@ class CirqPlatform(QuantumPlatform):
         raise NotImplementedError(self.ERROR_MSG)
 
     ############################### PUBLIC API ###############################
-    def create_circuit(
-        self, num_qubits: Optional[int] = None
-    ) -> QuantumCircuit:
+    @property
+    def job_partition(self) -> Tuple[int, int]:
+        raise NotImplementedError(self.ERROR_MSG)
+
+    @property
+    def max_bits_per_request_allowed(self) -> int:
+        raise NotImplementedError(self.ERROR_MSG)
+
+    def create_circuit(self, num_qubits: int) -> QuantumCircuit:
         raise NotImplementedError(self.ERROR_MSG)
 
     def create_job(
-        self, circuit: QuantumCircuit, max_repetitions: Optional[int] = None
+        self, circuit: QuantumCircuit, repetitions: int
     ) -> QuantumJob:
         raise NotImplementedError(self.ERROR_MSG)
 
