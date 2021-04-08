@@ -156,21 +156,21 @@ class QiskitPlatform(QuantumPlatform):
     ) -> Tuple[int, int]:
         if not bound_A * bound_B > n:
             return bound_A, bound_B
-        flipped: bool = bound_A > bound_B
+        swapped: bool = bound_A > bound_B
         bound_A, bound_B = sorted([bound_A, bound_B])
         final_b: int = bound_B
         final_a: int = n // final_b
         final_delta: int = n - final_a * final_b
-        b: int = final_b - 1
-        a: int = n // b
+        a: int = final_a + 1
+        b: int = n // a
         delta: int = n - a * b
         while a <= bound_A and a <= b and final_delta != 0:
             if delta < final_delta:
                 final_a, final_b, final_delta = a, b, delta
-            b -= 1
-            a = n // b
+            a += 1
+            b = n // a
             delta = n - a * b
-        return (final_b, final_a) if flipped else (final_a, final_b)
+        return (final_b, final_a) if swapped else (final_a, final_b)
 
     @property
     def _qiskit_job_partition(self) -> Tuple[int, int, int]:
