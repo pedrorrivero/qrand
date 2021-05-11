@@ -34,7 +34,7 @@ repos:
     types: [python]
 
 - repo: https://gitlab.com/pycqa/flake8
-  rev: master
+  rev: 3.9.2
   hooks:
   - id: flake8
     name: flake8
@@ -54,7 +54,7 @@ repos:
 
 # commit-msg
 - repo: https://github.com/jorisroovers/gitlint
-  rev: main
+  rev: v0.15.1
   hooks:
   - id: gitlint
     name: gitlint
