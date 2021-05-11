@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: April 7, 2021
+##   |  ___/|  _  /    DATE: April 20, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -23,7 +23,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from . import QuantumCircuit
+from .circuit import QuantumCircuit
 
 
 ###############################################################################

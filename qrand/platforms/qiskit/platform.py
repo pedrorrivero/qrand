@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: April 7, 2021
+##   |  ___/|  _  /    DATE: April 20, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -28,10 +28,12 @@ from qiskit.providers import Provider
 from qiskit.providers.ibmq import IBMQError, least_busy
 from qiskit.providers.models import BackendConfiguration
 
-from .. import QuantumCircuit, QuantumJob, QuantumPlatform
-from ..platform import ProtocolResult, QuantumProtocol
-from . import QiskitCircuit, QiskitJob
+from ..circuit import QuantumCircuit
+from ..job import QuantumJob
+from ..platform import ProtocolResult, QuantumPlatform, QuantumProtocol
 from .backend import QiskitBackend
+from .circuit import QiskitCircuit
+from .job import QiskitJob
 
 ###############################################################################
 ## CUSTOM TYPES

@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: April 5, 2021
+##   |  ___/|  _  /    DATE: April 20, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -25,7 +25,7 @@ from .job import QiskitJob
 from .platform import QiskitPlatform
 
 __all__ = [
-    "QiskitPlatform",
-    "QiskitJob",
     "QiskitCircuit",
+    "QiskitJob",
+    "QiskitPlatform",
 ]

@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: April 20, 2021
+##   |  ___/|  _  /    DATE: May 11, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,37 +20,51 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
+from abc import ABC, abstractmethod
 from typing import Optional, Tuple
 
-from ..circuit import QuantumCircuit
-from ..job import QuantumJob
-from ..platform import QuantumPlatform, QuantumProtocol
+from .circuit import QuantumCircuit
+from .job import QuantumJob
 
 
 ###############################################################################
-## CIRQ PLATFORM
+## QUANTUM PLATFORM BASE INTERFACE (FACADE AND ABSTRACT FACTORY)
 ###############################################################################
-class CirqPlatform(QuantumPlatform):
-    def __init__(self) -> None:
-        self.ERROR_MSG = f"{self.__class__.__name__}"  # TODO
-        raise NotImplementedError(self.ERROR_MSG)
-
-    ############################### PUBLIC API ###############################
+class BaseQuantumPlatform(ABC):
+    ################################ ABSTRACT ################################
     @property
+    @abstractmethod
     def job_partition(self) -> Tuple[int, int]:
-        raise NotImplementedError(self.ERROR_MSG)
+        pass
 
     @property
+    @abstractmethod
     def max_bits_per_request_allowed(self) -> int:
-        raise NotImplementedError(self.ERROR_MSG)
+        pass
 
+    @abstractmethod
     def create_circuit(self, num_qubits: int) -> QuantumCircuit:
-        raise NotImplementedError(self.ERROR_MSG)
+        pass
 
+    @abstractmethod
     def create_job(
         self, circuit: QuantumCircuit, repetitions: int
     ) -> QuantumJob:
-        raise NotImplementedError(self.ERROR_MSG)
+        pass
 
-    def fetch_random_bits(self, protocol: QuantumProtocol) -> str:
-        raise NotImplementedError(self.ERROR_MSG)
+    ################################ CONCRETE ################################
+    @property
+    def max_bits_per_request(self) -> int:
+        try:
+            mbpr = self._max_bits_per_request
+        except AttributeError:
+            mbpr = None
+        max_allowed: int = self.max_bits_per_request_allowed
+        return mbpr if mbpr and 0 < mbpr < max_allowed else max_allowed
+
+    @max_bits_per_request.setter
+    def max_bits_per_request(self, mbpr: Optional[int]) -> None:
+        mbpr = mbpr or 0
+        if not isinstance(mbpr, int):
+            raise TypeError(f"Expected int instance, {type(mbpr)} found")
+        self._max_bits_per_request: Optional[int] = mbpr if mbpr > 0 else None

@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: April 5, 2021
+##   |  ___/|  _  /    DATE: April 20, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -28,16 +28,16 @@ from .qiskit import QiskitCircuit, QiskitJob, QiskitPlatform
 from .qsharp import QsharpCircuit, QsharpJob, QsharpPlatform
 
 __all__ = [
-    "QuantumPlatform",
-    "QuantumJob",
     "QuantumCircuit",
-    "CirqPlatform",
-    "CirqJob",
+    "QuantumJob",
+    "QuantumPlatform",
     "CirqCircuit",
-    "QiskitPlatform",
-    "QiskitJob",
+    "CirqJob",
+    "CirqPlatform",
     "QiskitCircuit",
-    "QsharpPlatform",
-    "QsharpJob",
+    "QiskitJob",
+    "QiskitPlatform",
     "QsharpCircuit",
+    "QsharpJob",
+    "QsharpPlatform",
 ]

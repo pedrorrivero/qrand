@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: April 7, 2021
+##   |  ___/|  _  /    DATE: May 11, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,55 +20,16 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from abc import ABC, abstractmethod
-from typing import Optional, Tuple
+from abc import abstractmethod
 
 from ..protocols import ProtocolResult, QuantumProtocol
-from . import QuantumCircuit, QuantumJob
+from .base_platform import BaseQuantumPlatform
 
 
 ###############################################################################
-## QUANTUM PLATFORM INTERFACE (FACADE AND ABSTRACT FACTORY)
+## QUANTUM PLATFORM INTERFACE (DECORATOR)
 ###############################################################################
-class QuantumPlatform(ABC):
-    ################################ ABSTRACT ################################
-    @property
-    @abstractmethod
-    def job_partition(self) -> Tuple[int, int]:
-        pass
-
-    @property
-    @abstractmethod
-    def max_bits_per_request_allowed(self) -> int:
-        pass
-
-    @abstractmethod
-    def create_circuit(self, num_qubits: int) -> QuantumCircuit:
-        pass
-
-    @abstractmethod
-    def create_job(
-        self, circuit: QuantumCircuit, repetitions: int
-    ) -> QuantumJob:
-        pass
-
+class QuantumPlatform(BaseQuantumPlatform):
     @abstractmethod
     def fetch_random_bits(self, protocol: QuantumProtocol) -> str:
         pass
-
-    ################################ CONCRETE ################################
-    @property
-    def max_bits_per_request(self) -> int:
-        try:
-            mbpr = self._max_bits_per_request
-        except AttributeError:
-            mbpr = None
-        max_allowed: int = self.max_bits_per_request_allowed
-        return mbpr if mbpr and 0 < mbpr < max_allowed else max_allowed
-
-    @max_bits_per_request.setter
-    def max_bits_per_request(self, mbpr: Optional[int]) -> None:
-        mbpr = 0 if mbpr is None else mbpr
-        if not isinstance(mbpr, int):
-            raise TypeError(f"Expected int instance, {type(mbpr)} found")
-        self._max_bits_per_request: Optional[int] = mbpr if mbpr > 0 else None

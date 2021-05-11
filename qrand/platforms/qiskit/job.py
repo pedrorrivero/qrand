@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: April 7, 2021
+##   |  ___/|  _  /    DATE: April 20, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -29,7 +29,8 @@ from qiskit.providers import BackendV1 as Backend
 from qiskit.providers import Job
 from qiskit.result import Counts, Result
 
-from .. import QuantumCircuit, QuantumJob
+from ..circuit import QuantumCircuit
+from ..job import QuantumJob
 from .backend import QiskitBackend
 
 

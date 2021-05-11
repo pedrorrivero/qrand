@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: March 28, 2021
+##   |  ___/|  _  /    DATE: May 11, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -22,8 +22,9 @@
 
 from typing import List, Literal
 
-from ..platforms import QuantumPlatform
-from . import ProtocolResult, ProtocolStrategy
+from ..platforms.base_platform import BaseQuantumPlatform as QuantumPlatform
+from .protocol import ProtocolStrategy
+from .protocol_result import ProtocolResult
 
 
 ###############################################################################

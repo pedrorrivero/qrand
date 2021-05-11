@@ -24,12 +24,20 @@ from qiskit.providers import BackendV1 as Backend
 
 
 ###############################################################################
-## QISKIT BACKEND
+## QISKIT BACKEND (DECORATOR)
 ###############################################################################
 class QiskitBackend(Backend):
     def __init__(self, backend: Backend) -> None:
+        self._base_backend = backend
         super().__init__(backend.configuration(), backend.provider())
         self._options = backend._options
+
+    ############################# IMPLEMENTATION #############################
+    def _default_options(self):
+        return self._base_backend._default_options()
+
+    def run(self, run_input, **options):
+        return self._base_backend.run(run_input, **options)
 
     ############################### PUBLIC API ###############################
     @property

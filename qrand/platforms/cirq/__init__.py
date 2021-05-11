@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: April 5, 2021
+##   |  ___/|  _  /    DATE: May 11, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -25,7 +25,7 @@ from .job import CirqJob
 from .platform import CirqPlatform
 
 __all__ = [
-    "CirqPlatform",
-    "CirqJob",
     "CirqCircuit",
+    "CirqJob",
+    "CirqPlatform",
 ]

@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: April 7, 2021
+##   |  ___/|  _  /    DATE: May 11, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -23,9 +23,9 @@
 from abc import ABC, abstractmethod
 from typing import Literal, Optional
 
-from ..platforms import QuantumPlatform
+from ..platforms.base_platform import BaseQuantumPlatform as QuantumPlatform
 from ..validation import ValidationStrategy
-from .result import ProtocolResult, SimpleResult
+from .protocol_result import ProtocolResult
 
 
 ###############################################################################
@@ -44,7 +44,7 @@ class QuantumProtocol(ABC):
     ############################ DECORATOR PATTERN ############################
     @property
     @abstractmethod
-    def base_protocol(self) -> Optional[QuantumProtocol]:  # noqa: F821
+    def base_protocol(self) -> Optional["QuantumProtocol"]:
         pass
 
     @abstractmethod
