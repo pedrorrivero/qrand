@@ -21,6 +21,7 @@
 ## limitations under the License.
 
 from qiskit.providers import BackendV1 as Backend
+from qiskit.providers import Job, Options
 
 
 ###############################################################################
@@ -28,15 +29,15 @@ from qiskit.providers import BackendV1 as Backend
 ###############################################################################
 class QiskitBackend(Backend):
     def __init__(self, backend: Backend) -> None:
-        self._base_backend = backend
+        self._base_backend: Backend = backend
         super().__init__(backend.configuration(), backend.provider())
-        self._options = backend._options
+        self._options: Options = backend._options
 
     ############################# IMPLEMENTATION #############################
-    def _default_options(self):
+    def _default_options(self) -> Options:
         return self._base_backend._default_options()
 
-    def run(self, run_input, **options):
+    def run(self, run_input, **options) -> Job:
         return self._base_backend.run(run_input, **options)
 
     ############################### PUBLIC API ###############################

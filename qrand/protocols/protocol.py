@@ -53,9 +53,9 @@ class QuantumProtocol(ABC):
 
 
 ###############################################################################
-## PROTOCOL STRATEGY INTERFACE
+## BASE QUANTUM PROTOCOL INTERFACE
 ###############################################################################
-class ProtocolStrategy(QuantumProtocol):
+class BareQuantumProtocol(QuantumProtocol):
     ############################ STRATEGY PATTERN ############################
     @abstractmethod
     def run(self, platform: QuantumPlatform) -> ProtocolResult:

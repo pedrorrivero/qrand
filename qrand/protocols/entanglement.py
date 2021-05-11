@@ -23,14 +23,14 @@
 from typing import List, Literal
 
 from ..platforms.base_platform import BaseQuantumPlatform as QuantumPlatform
-from .protocol import ProtocolStrategy
+from .protocol import BareQuantumProtocol
 from .protocol_result import ProtocolResult
 
 
 ###############################################################################
 ## ENTANGLEMENT PROTOCOL
 ###############################################################################
-class EntanglementProtocol(ProtocolStrategy):
+class EntanglementProtocol(BareQuantumProtocol):
     @property
     @classmethod
     def ERROR_MSG(cls):

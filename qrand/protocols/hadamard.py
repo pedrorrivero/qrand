@@ -25,14 +25,14 @@ from typing import List, Literal
 from ..platforms.base_platform import BaseQuantumPlatform as QuantumPlatform
 from ..platforms.circuit import QuantumCircuit
 from ..platforms.job import QuantumJob
-from .protocol import ProtocolStrategy
+from .protocol import BareQuantumProtocol
 from .protocol_result import ProtocolResult, SimpleResult
 
 
 ###############################################################################
 ## HADAMARD PROTOCOL
 ###############################################################################
-class HadamardProtocol(ProtocolStrategy):
+class HadamardProtocol(BareQuantumProtocol):
     ############################### PUBLIC API ###############################
     def run(self, platform: QuantumPlatform) -> ProtocolResult:
         circuit: QuantumCircuit = self._build_quantum_circuit(platform)

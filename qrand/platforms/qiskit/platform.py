@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: April 20, 2021
+##   |  ___/|  _  /    DATE: May 11, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -81,9 +81,7 @@ class QiskitPlatform(QuantumPlatform):
 
     @backend_filter.setter
     def backend_filter(self, backend_filter: Optional[BackendFilter]) -> None:
-        self._backend_filter = (
-            backend_filter if backend_filter else self.default_backend_filter
-        )
+        self._backend_filter = backend_filter or self.default_backend_filter
 
     @property
     def job_partition(self) -> Tuple[int, int]:

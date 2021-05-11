@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: April 20, 2021
+##   |  ___/|  _  /    DATE: May 11, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -70,7 +70,7 @@ class QiskitJob(QuantumJob):
             raise RuntimeError(
                 f"Failed to create QiskitJob. Number of qubits in argument \
                 QuantumCircuit unsupported by the provided Backend: \
-                {circuit.num_qubits}>{self.backend.max_num_qubits}."
+                {self.backend.max_num_qubits}<{circuit.num_qubits}."
             )
         self._circuit: QuantumCircuit = circuit
 
@@ -88,7 +88,8 @@ class QiskitJob(QuantumJob):
         if self.backend.max_experiments < experiments:
             warn(
                 f"Number of experiments in argument unsupported by the \
-                provided Backend: {experiments}>{self.backend.max_experiments}.\
+                provided Backend: \
+                {self.backend.max_experiments}<{experiments}. \
                 Using max_experiments instead."
             )
             experiments = self.backend.max_experiments
@@ -104,7 +105,8 @@ class QiskitJob(QuantumJob):
         if self.backend.max_shots < shots:
             warn(
                 f"Number of shots in argument unsupported by the provided \
-                Backend: {shots}>{self.backend.max_shots}. Using max_shots instead."
+                Backend: {self.backend.max_shots}<{shots}. Using max_shots \
+                instead."
             )
             shots = self.backend.max_shots
         self._shots: int = shots

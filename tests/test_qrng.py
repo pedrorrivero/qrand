@@ -21,7 +21,7 @@
 ## limitations under the License.
 
 from qrand import QiskitBitGenerator
-from qrand._qrng import Qrng
+from qrand.qrng import Qrng
 
 
 ###############################################################################
