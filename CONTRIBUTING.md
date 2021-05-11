@@ -53,6 +53,8 @@ pre-commit installed at .git/hooks/pre-commit
 pre-commit installed at .git/hooks/commit-msg
 ```
 
+Notice that specific platforms are not installed automatically. You can specify which ones to install by running: `$ poetry install --extras "qiskit"`
+
 ## Documentation
 For this project we adhere to the [numpydoc docstring guide](https://numpydoc.readthedocs.io/en/latest/format.html). If you make any changes to the code, remember updating the docstring wherever relevant.
 
