@@ -10,27 +10,10 @@
 To contribute to this project you will need to install [poetry](https://python-poetry.org/docs/#installation), fork this repo, and clone your copy locally. Then run:
 
 ```sh
-$ poetry install  # Install dependencies
-Using python3 (3.8.2)
-Creating virtualenv qrand in ./.venv
-Installing dependencies from lock file
-
-Package operations: 11 installs, 0 updates, 0 removals
-
-  • Installing appdirs (1.4.4)
-  • Installing distlib (0.3.1)
-  • Installing filelock (3.0.12)
-  • Installing six (1.15.0)
-  • Installing cfgv (3.2.0)
-  • Installing identify (1.5.6)
-  • Installing nodeenv (1.5.0)
-  • Installing pyyaml (5.3.1)
-  • Installing toml (0.10.1)
-  • Installing virtualenv (20.0.34)
-  • Installing pre-commit (2.7.1)
-
-Installing the current project: qrand (0.0.0)
+$ poetry install  [--extras "$COMMA_SEPARATED_EXTRAS"]
 ```
+
+Notice that specific platforms are not installed automatically. You can specify which ones to install through the extras tag.
 
 The resulting virtual environment with all the dependencies is activated as usual. If located [inside the repo](https://python-poetry.org/docs/configuration/#virtualenvsin-project-boolean) (i.e. `poetry config virtualenvs.in-project true` before `poetry install`):
 
@@ -52,8 +35,6 @@ pre-commit installed at .git/hooks/pre-commit
 (.venv) $ pre-commit install --hook-type commit-msg # Install commit-msg hooks
 pre-commit installed at .git/hooks/commit-msg
 ```
-
-Notice that specific platforms are not installed automatically. You can specify which ones to install by running: `$ poetry install --extras "qiskit"`
 
 ## Documentation
 For this project we adhere to the [numpydoc docstring guide](https://numpydoc.readthedocs.io/en/latest/format.html). If you make any changes to the code, remember updating the docstring wherever relevant.
