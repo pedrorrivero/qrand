@@ -41,7 +41,7 @@ line_length = 79
 [tool.poetry]
 name = "qrand"
 version = "0.2.0"
-description = "A quantum random number generator for arbitrary probability distributions"
+description = "A multiprotocol and multiplatform quantum random number generation FOSS framework"
 readme = "README.md"
 homepage = "https://github.com/pedrorrivero/qrand"
 authors = ["Pedro Rivero <pedro.rivero.ramirez@gmail.com>"]

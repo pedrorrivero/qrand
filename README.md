@@ -7,7 +7,7 @@
 
 # qrand
 
-> A quantum random number generator for arbitrary probability distributions
+> A multiprotocol and multiplatform quantum random number generation FOSS framework
 
 Random numbers are everywhere.
 
@@ -40,6 +40,10 @@ print(f"Random Triangular: {gen.triangular(-1, 0, 1)}")
 # ...
 ```
 
+# Authors and Citation
+QRAND is the work of many people who contribute to the project at
+different levels. If you use QRAND, please cite as per the included
+[BibTeX file](QRAND.bib).
 
 # Documentation
 
