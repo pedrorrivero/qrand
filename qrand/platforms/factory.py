@@ -30,7 +30,7 @@ from .job import QuantumJob
 ###############################################################################
 ## QUANTUM PLATFORM BASE INTERFACE (FACADE AND ABSTRACT FACTORY)
 ###############################################################################
-class BaseQuantumPlatform(ABC):
+class QuantumFactory(ABC):
     ################################ ABSTRACT ################################
     @property
     @abstractmethod

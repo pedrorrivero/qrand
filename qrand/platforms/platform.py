@@ -23,13 +23,13 @@
 from abc import abstractmethod
 
 from ..protocols import ProtocolResult, QuantumProtocol
-from .base_platform import BaseQuantumPlatform
+from .factory import QuantumFactory
 
 
 ###############################################################################
 ## QUANTUM PLATFORM INTERFACE (DECORATOR)
 ###############################################################################
-class QuantumPlatform(BaseQuantumPlatform):
+class QuantumPlatform(QuantumFactory):
     @abstractmethod
     def fetch_random_bits(self, protocol: QuantumProtocol) -> str:
         pass

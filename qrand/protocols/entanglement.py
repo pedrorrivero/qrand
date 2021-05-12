@@ -22,7 +22,7 @@
 
 from typing import List, Literal
 
-from ..platforms.base_platform import BaseQuantumPlatform as QuantumPlatform
+from ..platforms.factory import QuantumFactory
 from .protocol import BareQuantumProtocol
 from .protocol_result import ProtocolResult
 
@@ -37,7 +37,7 @@ class EntanglementProtocol(BareQuantumProtocol):
         return f"{cls.__name__}"  # TODO
 
     ############################### PUBLIC API ###############################
-    def run(self, platform: QuantumPlatform) -> ProtocolResult:
+    def run(self, factory: QuantumFactory) -> ProtocolResult:
         raise NotImplementedError(self.__class__.ERROR_MSG)
 
     def verify(self) -> Literal[False]:

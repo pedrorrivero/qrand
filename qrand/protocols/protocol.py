@@ -23,7 +23,7 @@
 from abc import ABC, abstractmethod
 from typing import Literal, Optional
 
-from ..platforms.base_platform import BaseQuantumPlatform as QuantumPlatform
+from ..platforms.factory import QuantumFactory
 from ..validation import ValidationStrategy
 from .protocol_result import ProtocolResult
 
@@ -34,7 +34,7 @@ from .protocol_result import ProtocolResult
 class QuantumProtocol(ABC):
     ############################ STRATEGY PATTERN ############################
     @abstractmethod
-    def run(self, platform: QuantumPlatform) -> ProtocolResult:
+    def run(self, factory: QuantumFactory) -> ProtocolResult:
         pass
 
     @abstractmethod
@@ -58,7 +58,7 @@ class QuantumProtocol(ABC):
 class BareQuantumProtocol(QuantumProtocol):
     ############################ STRATEGY PATTERN ############################
     @abstractmethod
-    def run(self, platform: QuantumPlatform) -> ProtocolResult:
+    def run(self, factory: QuantumFactory) -> ProtocolResult:
         pass
 
     @abstractmethod
@@ -87,8 +87,8 @@ class ValidationDecorator(QuantumProtocol):
         self.validation_strategy: ValidationStrategy = validation_strategy
 
     ############################ STRATEGY PATTERN ############################
-    def run(self, platform: QuantumPlatform) -> ProtocolResult:
-        result: ProtocolResult = self.base_protocol.run(platform)
+    def run(self, factory: QuantumFactory) -> ProtocolResult:
+        result: ProtocolResult = self.base_protocol.run(factory)
         if not self._validate_layer(result):
             result.erase()
         return result

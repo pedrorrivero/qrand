@@ -22,8 +22,8 @@
 
 from typing import List, Literal
 
-from ..platforms.base_platform import BaseQuantumPlatform as QuantumPlatform
 from ..platforms.circuit import QuantumCircuit
+from ..platforms.factory import QuantumFactory
 from ..platforms.job import QuantumJob
 from .protocol import BareQuantumProtocol
 from .protocol_result import ProtocolResult, SimpleResult
@@ -34,10 +34,10 @@ from .protocol_result import ProtocolResult, SimpleResult
 ###############################################################################
 class HadamardProtocol(BareQuantumProtocol):
     ############################### PUBLIC API ###############################
-    def run(self, platform: QuantumPlatform) -> ProtocolResult:
-        circuit: QuantumCircuit = self._build_quantum_circuit(platform)
-        _, repetitions = platform.job_partition
-        job: QuantumJob = platform.create_job(circuit, repetitions)
+    def run(self, factory: QuantumFactory) -> ProtocolResult:
+        circuit: QuantumCircuit = self._build_quantum_circuit(factory)
+        _, repetitions = factory.job_partition
+        job: QuantumJob = factory.create_job(circuit, repetitions)
         output: List[str] = job.execute()
         return self._parse_output(output)
 
@@ -46,10 +46,10 @@ class HadamardProtocol(BareQuantumProtocol):
 
     ############################### PRIVATE API ###############################
     def _build_quantum_circuit(
-        self, platform: QuantumPlatform
+        self, factory: QuantumFactory
     ) -> QuantumCircuit:
-        num_qubits, _ = platform.job_partition
-        circuit: QuantumCircuit = platform.create_circuit(num_qubits)
+        num_qubits, _ = factory.job_partition
+        circuit: QuantumCircuit = factory.create_circuit(num_qubits)
         for q in range(circuit.num_qubits):
             circuit.h(q)
             circuit.measure(q)

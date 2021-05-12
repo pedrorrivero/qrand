@@ -321,7 +321,7 @@ class TestQiskitBitGenerator:
         assert bitgen.state["job_config"]["max_bits_per_request"] == 400
         bitgen.state = {"backend": backend}
         assert not bitgen.state["backend_config"]["simulator"]
-        bitgen.state = {"provider": BasicAer}
+        bitgen.state = {"provider": provider}
         assert bitgen.state["backend_config"]["simulator"]
 
     ########################### PRIVATE PROPERTIES ###########################
