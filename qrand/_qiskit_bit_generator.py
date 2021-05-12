@@ -34,11 +34,10 @@ from .bit_cache import BitCache
 from .quantum_bit_generator import QuantumBitGenerator
 
 ###############################################################################
-## DEPRECATION WARNING
+## DEPRECATION WARNING -> warn(WARNING_MESSAGE, FutureWarning)
 ###############################################################################
 WARNING_MESSAGE = "QiskitBitGenerator will be deprecated in version 1.0.0."
 WARNING_MESSAGE += " Use QuantumBitGenerator and QiskitPlatform instead."
-warn(WARNING_MESSAGE, FutureWarning)
 
 
 ###############################################################################
@@ -117,6 +116,7 @@ class QiskitBitGenerator(QuantumBitGenerator):
         max_bits_per_request: int = 0,
         ISRAW32: bool = False,
     ) -> None:
+        warn(WARNING_MESSAGE, FutureWarning)
         if backend:
             provider = None
         elif provider:
