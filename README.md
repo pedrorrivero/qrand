@@ -1,7 +1,7 @@
 [![Unitary Fund](https://img.shields.io/badge/Supported_By-UNITARY_FUND-FFF000.svg?style=flat)](http://unitary.fund)
 [![YouTube](https://img.shields.io/badge/PR-qrand-FF0000.svg?style=flat&logo=YouTube&logoColor=white)](https://youtu.be/CG7BxuWFpME)
 [![PyPI](https://img.shields.io/pypi/v/qrand?label=PyPI&style=flat&color=3776AB&logo=Python&logoColor=white)](https://pypi.org/project/qrand/)
-[![Coverage](https://img.shields.io/badge/Coverage-97%25-green.svg?style=flat)](http://pytest.org)
+[![Coverage](https://img.shields.io/badge/Coverage-67%25-green.svg?style=flat)](http://pytest.org)
 [![Apache-2.0 License](https://img.shields.io/github/license/pedrorrivero/qrand?label=License&style=flat&color=1D1D1D)](https://github.com/pedrorrivero/qrand/blob/master/LICENSE)
 
 
@@ -15,15 +15,19 @@ Computer algorithms, data encryption, physical simulations, and even the arts us
 
 Luckily, the probabilistic nature of quantum computers makes these devices particularly useful for the task. Nonetheless, most of the current efforts in producing quantum random numbers have been focused on uniform probability distributions. Despite this fact, many applications actually need to sample from more complex distributions (e.g. gaussian, poisson).
 
-This software introduces an interface layer between [NumPy](https://numpy.org/) and [Qiskit](https://qiskit.org/), along with some useful functionality that enables the production of quantum random numbers (QRN) for a wide variety of probability distributions. This is ultimately accomplished by transforming uniform probability distributions produced in IBMQ's quantum devices, through NumPy's random module.
+QRAND introduces an interface layer between [NumPy](https://numpy.org/) and a number of [quantum computing platforms](#Supported_Quantum_Platforms) ---along with other useful functionality--- that enables the efficient production of quantum random numbers (QRN) adhering to a wide variety of probability distributions. This is ultimately accomplished by transforming uniform probability distributions produced in cloud-based real quantum hardware, through NumPy's random module.
 
 ```python3
-from qrand import QiskitBitGenerator
+from qrand import QuantumBitGenerator
+from qrand.platforms import QiskitPlatform
+from qrand.protocols import HadamardProtocol
 from numpy.random import Generator
 from qiskit import IBMQ
 
 provider = IBMQ.load_account()
-bitgen = QiskitBitGenerator(provider)
+platform = QiskitPlatform(provider)
+protocol = HadamardProtocol()
+bitgen = QuantumBitGenerator(platform, protocol)
 gen = Generator(bitgen)
 
 print(f"Random Raw: {bitgen.random_raw()}")
@@ -39,6 +43,9 @@ print(f"Random Std. Normal: {gen.standard_normal()}")
 print(f"Random Triangular: {gen.triangular(-1, 0, 1)}")
 # ...
 ```
+
+## Supported Quantum Platforms
+As of May 2021, only [`Qiskit`](https://qiskit.org/) is supported. However, support for [`Cirq`](https://quantumai.google/cirq) and [`Q#`](https://docs.microsoft.com/en-us/azure/quantum/user-guide/?view=qsharp-preview) is under active development.
 
 ## Authors and Citation
 QRAND is the work of many people who contribute to the project at

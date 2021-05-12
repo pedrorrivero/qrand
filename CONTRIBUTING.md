@@ -13,7 +13,7 @@ To contribute to this project you will need to install [poetry](https://python-p
 $ poetry install  [--extras "$COMMA_SEPARATED_EXTRAS"]
 ```
 
-Notice that specific platforms are not installed automatically. You can specify which ones to install through the extras tag.
+Notice that specific platforms are not installed automatically. You can specify which ones to install through the extras tag (e.g. qiskit, cirq, qsharp).
 
 The resulting virtual environment with all the dependencies is activated as usual. If located [inside the repo](https://python-poetry.org/docs/configuration/#virtualenvsin-project-boolean) (i.e. `poetry config virtualenvs.in-project true` before `poetry install`):
 
