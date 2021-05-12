@@ -40,135 +40,24 @@ print(f"Random Triangular: {gen.triangular(-1, 0, 1)}")
 # ...
 ```
 
-# Authors and Citation
+## Authors and Citation
 QRAND is the work of many people who contribute to the project at
 different levels. If you use QRAND, please cite as per the included
 [BibTeX file](QRAND.bib).
 
-# Documentation
+<!-- ## Documentation -->
 
-## QiskitBitGenerator
-A quantum random bit-generator based on Qiskit, which can interface with NumPy's random module (e.g. to instantiate Generator objects). It implements an efficient strategy to retrieve random bits from IBMQ's quantum backends.
+## Contribution Guidelines
+If you'd like to contribute to QRAND, please take a look at the
+[contribution guidelines](CONTRIBUTING.md). This project adheres to QRAND's [code of conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
 
-On each request to a backend, it retrieves as many bits as possible and stores them in a cache. This way, the number of internet connections leading to overheads is greatly reduced and, while the cache is loaded, random bits can be retrieved "instantaneously". The user can limit the number of bits to retrieve on each request through the `max_bits_per_request` argument.
+We use [GitHub issues](https://github.com/pedrorrivero/qrand/issues) for tracking requests and bugs. Please use Unitary Fund's [Discord](http://discord.unitary.fund/) for discussion and simple questions.
 
-Additionally, it always chooses the least busy backend from the list of available machines. This list can be filtered by the user through the `backend_filter` argument, which defaults to history-enabled non-simulators. If a Qiskit Backend is explicitly passed in as argument, no backend selection will be performed: effectively ignoring any Qiskit Provider object passed. If neither `provider` nor `backend` are passed as inputs, it will default to running Qiskit BasicAer's 'qasm_simulator' locally.
-
-### CLASS ARGUMENTS
-- **provider**: *Optional[Provider] = None* <br/>
-  A Qiskit Provider object to access quantum backends. If `None` it defaults to BasicAer.
-- **backend**: *Optional[Backend] = None* <br/>
-  A Qiskit Backend object to produce random bits. If not `None`, `provider` will be ignored.
-- **backend_filter**: *Optional[BackendFilter] = None* <br/>
-  A Callable that takes in a Qiskit Backend object and returns `True` if it meets certain requirements, `False` otherwise. This is used to filter the list of available backends from which to dynamically choose on each request to the `provider` (if no `backend` is explicitly input). If `None` it defaults to `QiskitBitGenerator.default_backend_filter`.
-- **max_bits_per_request**: *int = 0* <br/>
-  A limit to the number of bits to be retrieved on each request to any Qiskit Backend. If less than one, no bound will be applied and the maximum allowed number of bits will be retrieved.
-- **ISRAW32**: *Final[bool] = False* <br/>
-  Toggle 32-bit BitGenerator mode. If `False` the BitGenerator will be 64-bit. This determines the number of bits returned by NumPy's `random_raw()` method, and the default number of bits to output on `random_uint()` and `random_double()`. Once an object is instantiated, this cannot be overridden.
-
-### STATIC / CLASS METHODS
-- **default_backend_filter** *(b: Backend) -> bool*: <br/>
-  Default backend filter Callable.
-  - ARGUMENTS
-    - *b*: Backend <br/>
-      A Qiskit Backend object.
-  - RETURNS
-    - *out*: bool <br/>
-      `True` if `b` is not a simulator and has memory enabled, `False` otherwise.
-- **get_best_backend** *(cls, provider: Provider, backend_filter: Optional[BackendFilter] = None) -> Backend*: <br/>
-  Returns the least busy backend available to an input provider, and according to certain filter(s).
-  - ARGUMENTS
-    - *provider*: Provider <br/>
-      A Qiskit Provider object to access quantum backends.
-    - *backend_filter*: Optional[BackendFilter] = None <br/>
-      A Callable that takes in a Qiskit Backend object and returns `True` if it meets certain requirements, `False` otherwise. If `None` it defaults to `cls.default_backend_filter`.
-  - RETURNS
-    - *out*: Backend <br/>
-      Least busy backend from the filtered list of available backends.
-
-### PUBLIC METHODS
-- **dump_cache** *(self, flush: bool = False) -> str*: <br/>
-  Returns all the contents stored in the cache.
-  - ARGUMENTS
-    - *flush*: bool = False <br/>
-      If `True` erase the cache after dumping.
-  - RETURNS
-    - *out*: str <br/>
-      The bitstring stored in cache.
-- **flush_cache** *(self) -> bool*: <br/>
-  Erase the cache.
-  - RETURNS
-    - *out*: bool <br/>
-      `True` if succeeds, `False` otherwise.
-- **load_cache** *(self, bitstring: str, flush: bool = False) -> bool*: <br/>
-  Load cache contents from bitstring.
-  - ARGUMENTS
-    - *bitstring*: str <br/>
-      The bitstring to load to cache.
-    - *flush*: bool = False <br/>
-      If `True` erase cache before loading.
-  - RETURNS
-    - *out*: bool <br/>
-      `True` if succeeds, `False` otherwise.
-  - RAISES
-    - *TypeError* <br/>
-      If input bitstring is not str
-    - *ValueError* <br/>
-      If input bitstring is not a valid bitstring
-- **random_bitstring** *(self, n_bits: int = 0) -> str*: <br/>
-  Returns a random bitstring of a given lenght.
-  - ARGUMENTS
-    - *n_bits*: int = 0 <br/>
-      Number of bits to retrieve. If less than one it defaults to the raw number of bits for the instance QiskitBitGenerator (i.e. 32 or 64).
-  - RETURNS
-    - *out*: str <br/>
-      Bitstring of lenght `n_bits`.
-- **random_double** *(self, n: float = 1) -> float*: <br/>
-  Returns a random double from a uniform distribution in the range [0,n). Defaults to [0,1).
-  - ARGUMENTS
-    - *n*: float = 1 <br/>
-      Size of the range [0,n) from which to draw the random number.
-  - RETURNS
-    - *out*: float <br/>
-      Random float in the range [0,n).
-- **random_raw** *(self) -> int*: <br/>
-  Returns a random unsigned int of either 32 or 64 bits.
-  - RETURNS
-    - *out*: int <br/>
-      Unsigned int of either 32 or 64 bits.
-- **random_uint** *(self, n_bits: int = 0) -> int*: <br/>
-  Returns a random unsigned int of a given size in bits.
-  - ARGUMENTS
-    - *n_bits*: int = 0 <br/>
-      Number of bits to retrieve. If less than one it defaults to the raw number of bits for the instance QiskitBitGenerator (i.e. 32 or 64).
-  - RETURNS
-    - *out*: int <br/>
-      Unsigned int of `n_bits` bits.
-- **set_state** *(self, provider: Optional[Provider] = None, backend: Optional[Backend] = None, backend_filter: Optional[BackendFilter] = None, max_bits_per_request: Optional[int] = None) -> bool*: <br/>
-  Override constructor arguments. Any change must be explicitly passed as input (i.e. not `None`).
-  - ARGUMENTS
-    - *provider*: Optional[Provider] = None <br/>
-      Same as constructor.
-    - *backend*: Optional[Backend] = None <br/>
-      Same as constructor.
-    - *backend_filter*: Optional[BackendFilter] = None <br/>
-      Same as constructor.
-    - *max_bits_per_request*: Optional[int] = None <br/>
-      Same as constructor.
-  - RETURNS
-    - *out*: bool <br/>
-      `True` if any changes were made, `False` otherwise.
-
-### PUBLIC PROPERTIES
-- **BITS**: *Final[int]* <br/>
-  Either 32 or 64. The number of bits output by NumPy's `random_raw()` method. Final, it cannot be modified after instantiation through the ISRAW32 argument.
-- **state**: *dict* <br/>
-  Parsed information about the current state of the QiskitBitGenerator.
-
-
-# Acknowledgements
-
+## Acknowledgements
 Parts of this software's source code have been borrowed from the [qRNG](https://github.com/ozanerhansha/qRNG) project, which is licensed under the [GNU GPLv3](https://github.com/ozanerhansha/qRNG/blob/master/LICENSE) license. Copyright notice and specific changes can be found as a docstring wherever this applies.
+
+## License
+[Apache License 2.0](LICENSE)
 
 ---
 (c) Copyright 2021 Pedro Rivero
