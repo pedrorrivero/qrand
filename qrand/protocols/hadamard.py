@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 11, 2021
+##   |  ___/|  _  /    DATE: May 12, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -26,7 +26,7 @@ from ..platforms.circuit import QuantumCircuit
 from ..platforms.factory import QuantumFactory
 from ..platforms.job import QuantumJob
 from .protocol import BareQuantumProtocol
-from .protocol_result import ProtocolResult, SimpleResult
+from .result import ProtocolResult, SimpleResult
 
 
 ###############################################################################

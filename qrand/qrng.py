@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: February 24, 2021
+##   |  ___/|  _  /    DATE: May 12, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -23,8 +23,9 @@
 import math
 import struct
 from typing import Optional
+from warnings import warn
 
-from ._qiskit_bit_generator import QiskitBitGenerator
+from .quantum_bit_generator import QuantumBitGenerator
 
 
 ###############################################################################
@@ -37,8 +38,8 @@ class Qrng:
 
     PARAMETERS
     ----------
-    qiskit_bit_generator: QiskitBitGenerator
-        A QiskitBitGenerator instance object to handle random number production.
+    quantum_bit_generator: QuantumBitGenerator
+        A QuantumBitGenerator instance object to handle random number production.
 
     ATTRIBUTES
     ----------
@@ -57,15 +58,15 @@ class Qrng:
         - Add static type hints
     """
 
-    def __init__(self, qiskit_bit_generator: QiskitBitGenerator):
-        self._qiskit_bit_generator = qiskit_bit_generator
+    def __init__(self, quantum_bit_generator: QuantumBitGenerator):
+        self._quantum_bit_generator = quantum_bit_generator
 
     ############################# PUBLIC METHODS #############################
     def get_bit_string(self, n_bits: int = 0):
         """
         Returns a random bitstring of a given lenght. If less than one it
         defaults to the raw number of bits for its internal
-        qiskit_bit_generator (i.e. 32 or 64).
+        quantum_bit_generator (i.e. 32 or 64).
 
         PARAMETERS
         ----------
@@ -77,7 +78,7 @@ class Qrng:
         out: str
             Bitstring of lenght `n_bits`.
         """
-        return self._qiskit_bit_generator.random_bitstring(n_bits)
+        return self._quantum_bit_generator.random_bitstring(n_bits)
 
     def get_random_complex_polar(
         self, r: float = 1, theta: float = 2 * math.pi
@@ -155,7 +156,7 @@ class Qrng:
             Random float in the range [min,max).
         """
         delta: float = max - min
-        shifted: float = self._qiskit_bit_generator.random_double(delta)
+        shifted: float = self._quantum_bit_generator.random_double(delta)
         return shifted + min
 
     def get_random_float(self, min: float = -1, max: float = +1):
@@ -199,9 +200,9 @@ class Qrng:
         """
         delta: int = max - min
         n_bits: int = math.floor(math.log(delta, 2)) + 1
-        shifted: int = self._qiskit_bit_generator.random_uint(n_bits)
+        shifted: int = self._quantum_bit_generator.random_uint(n_bits)
         while shifted > delta:
-            shifted = self._qiskit_bit_generator.random_uint(n_bits)
+            shifted = self._quantum_bit_generator.random_uint(n_bits)
         return shifted + min
 
     def get_random_int32(self):
@@ -213,7 +214,7 @@ class Qrng:
         out: int
             Random 32 bit unsigned int.
         """
-        return self._qiskit_bit_generator.random_uint(32)
+        return self._quantum_bit_generator.random_uint(32)
 
     def get_random_int64(self):
         """
@@ -224,7 +225,7 @@ class Qrng:
         out: int
             Random 32 bit unsigned int.
         """
-        return self._qiskit_bit_generator.random_uint(64)
+        return self._quantum_bit_generator.random_uint(64)
 
     ############################ PUBLIC PROPERTIES ############################
     @property
@@ -232,6 +233,9 @@ class Qrng:
         """
         The state of the Qrng object.
         """
+        ## DEPRECATION WARNING
+        WARNING_MESSAGE = "state() will be deprecated in version 1.0.0."
+        warn(WARNING_MESSAGE, FutureWarning)
         return {
-            "qiskit_bit_generator": self._qiskit_bit_generator.state,
+            "quantum_bit_generator": self._quantum_bit_generator.state,
         }

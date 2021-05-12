@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 11, 2021
+##   |  ___/|  _  /    DATE: May 12, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -25,7 +25,7 @@ from typing import Literal, Optional
 
 from ..platforms.factory import QuantumFactory
 from ..validation import ValidationStrategy
-from .protocol_result import ProtocolResult
+from .result import ProtocolResult
 
 
 ###############################################################################

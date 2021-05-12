@@ -90,7 +90,8 @@ class QiskitJob(QuantumJob):
                 f"Number of experiments in argument unsupported by the \
                 provided Backend: \
                 {self.backend.max_experiments}<{experiments}. \
-                Using max_experiments instead."
+                Using max_experiments instead.",
+                UserWarning,
             )
             experiments = self.backend.max_experiments
         self._experiments: int = experiments
@@ -106,7 +107,8 @@ class QiskitJob(QuantumJob):
             warn(
                 f"Number of shots in argument unsupported by the provided \
                 Backend: {self.backend.max_shots}<{shots}. Using max_shots \
-                instead."
+                instead.",
+                UserWarning,
             )
             shots = self.backend.max_shots
         self._shots: int = shots

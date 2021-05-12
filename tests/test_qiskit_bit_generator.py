@@ -322,7 +322,7 @@ class TestQiskitBitGenerator:
         bitgen.state = {"backend": backend}
         assert not bitgen.state["backend_config"]["simulator"]
         bitgen.state = {"provider": provider}
-        assert bitgen.state["backend_config"]["simulator"]
+        assert not bitgen.state["backend_config"]["simulator"]
 
     ########################### PRIVATE PROPERTIES ###########################
     def test_backend_config(self):

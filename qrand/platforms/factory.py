@@ -28,7 +28,7 @@ from .job import QuantumJob
 
 
 ###############################################################################
-## QUANTUM PLATFORM BASE INTERFACE (FACADE AND ABSTRACT FACTORY)
+## QUANTUM PLATFORM BASE INTERFACE (ABSTRACT FACTORY)
 ###############################################################################
 class QuantumFactory(ABC):
     ################################ ABSTRACT ################################

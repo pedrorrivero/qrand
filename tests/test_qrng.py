@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: February 24, 2020
+##   |  ___/|  _  /    DATE: May 12, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -137,7 +137,7 @@ class TestBitCache:
         bitcache = {
             "size": 3000,
         }
-        bitgen_state = qrng.state["qiskit_bit_generator"]
+        bitgen_state = qrng.state["quantum_bit_generator"]
         assert bitgen_state["BITS"] == 64
         assert bitgen_state["job_config"] == job_config
         assert bitgen_state["backend_config"] == backend_config

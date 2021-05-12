@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: April 5, 2021
+##   |  ___/|  _  /    DATE: May 12, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -21,17 +21,25 @@
 ## limitations under the License.
 
 import struct
-from typing import Any, Callable, Final, List, Optional, Tuple, Union
+from typing import Any, Callable, Final, List, Optional, Tuple
+from warnings import warn
 
-from numpy import float64, uint32, uint64
 from qiskit import BasicAer, QuantumCircuit, execute
 from qiskit.providers import Backend, Job, Provider
 from qiskit.providers.ibmq import IBMQError, least_busy
 from qiskit.providers.models import BackendConfiguration
 from qiskit.result import Counts, Result
-from randomgen import UserBitGenerator
 
 from .bit_cache import BitCache
+from .quantum_bit_generator import QuantumBitGenerator
+
+###############################################################################
+## DEPRECATION WARNING
+###############################################################################
+WARNING_MESSAGE = "QiskitBitGenerator will be deprecated in version 1.0.0."
+WARNING_MESSAGE += " Use QuantumBitGenerator and QiskitPlatform instead."
+warn(WARNING_MESSAGE, FutureWarning)
+
 
 ###############################################################################
 ## CUSTOM TYPES
@@ -42,7 +50,7 @@ BackendFilter = Callable[[Backend], bool]
 ###############################################################################
 ## QISKIT BIT GENERATOR
 ###############################################################################
-class QiskitBitGenerator(UserBitGenerator):
+class QiskitBitGenerator(QuantumBitGenerator):
     """
     A quantum random bit-generator based on Qiskit, which can interface with
     NumPy's random module (e.g. to instantiate Generator objects). It
@@ -122,9 +130,9 @@ class QiskitBitGenerator(UserBitGenerator):
         self._backend: Backend = backend
         self._backend_filter: Optional[BackendFilter] = backend_filter
         self._set_mbpr(max_bits_per_request)
-        self._ISRAW32: Final[bool] = ISRAW32
+        self._ISRAW32: Final[bool] = ISRAW32  # type: ignore
         self._bitcache: BitCache = BitCache()
-        super().__init__(
+        super(QuantumBitGenerator, self).__init__(
             bits=self.BITS,
             next_raw=self._next_raw,
             next_32=self._next_32,
@@ -187,26 +195,7 @@ class QiskitBitGenerator(UserBitGenerator):
         return least_busy(backends)
 
     ############################# PUBLIC METHODS #############################
-    def dump_cache(self, flush: bool = False) -> str:
-        """
-        Returns all the contents stored in the cache.
-
-        PARAMETERS
-        ----------
-        flush: bool
-            If `True` erase the cache after dumping.
-
-        RETURNS
-        -------
-        out: str
-            The bitstring stored in cache.
-        """
-        bitstring: str = self._bitcache.dump()
-        if flush:
-            self._bitcache.flush()
-        return bitstring
-
-    def flush_cache(self) -> bool:
+    def flush_cache(self) -> bool:  # type: ignore
         """
         Erase the cache.
 
@@ -217,7 +206,9 @@ class QiskitBitGenerator(UserBitGenerator):
         """
         return self._bitcache.flush()
 
-    def load_cache(self, bitstring: str, flush: bool = False) -> bool:
+    def load_cache(  # type: ignore
+        self, bitstring: str, flush: bool = False
+    ) -> bool:
         """
         Load cache contents from bitstring.
 
@@ -265,35 +256,6 @@ class QiskitBitGenerator(UserBitGenerator):
         while self._bitcache.size < n_bits:
             self._fetch_random_bits()
         return self._bitcache.pop(n_bits)
-
-    def random_double(self, n: float = 1) -> float:
-        """
-        Returns a random double from a uniform distribution in the range
-        [0,n). Defaults to [0,1).
-
-        PARAMETERS
-        ----------
-        n: float
-            Size of the range [0,n) from which to draw the random number.
-
-        RETURNS
-        -------
-        out: float
-            Random float in the range [0,n).
-
-        COPYRIGHT NOTICE
-        ----------------
-        Source: https://github.com/ozanerhansha/qRNG
-        License: GNU GENERAL PUBLIC LICENSE VERSION 3
-        Changes:
-            - Add static type hints
-            - Limit range to [0,n) instead of [min,max) and add default
-            - Replace call to original get_random_int64
-        """
-        unpacked = 0x3FF0000000000000 | self.random_uint(64) >> 12
-        packed = struct.pack("Q", unpacked)
-        value: float = struct.unpack("d", packed)[0] - 1.0
-        return value * n
 
     def random_uint(self, n_bits: int = 0) -> int:
         """
@@ -410,15 +372,6 @@ class QiskitBitGenerator(UserBitGenerator):
 
     ############################ PUBLIC PROPERTIES ############################
     @property
-    def BITS(self) -> int:
-        """
-        Either 32 or 64. The number of bits output by NumPy's `random_raw()`
-        method. Final, it cannot be modified after instantiation through the
-        ISRAW32 parameter.
-        """
-        return 32 if self._ISRAW32 else 64
-
-    @property
     def state(self) -> dict:
         """
         Parsed information about the current state of the QiskitBitGenerator.
@@ -525,48 +478,3 @@ class QiskitBitGenerator(UserBitGenerator):
     def _shots(self) -> int:
         n_qubits, shots, experiments = self._job_partition
         return shots
-
-    ############################# NUMPY INTERFACE #############################
-    @property
-    def _next_raw(self) -> Callable[[Any], Union[uint32, uint64]]:
-        """
-        A callable that returns either 64 or 32 random bits. It must accept
-        a single input which is a void pointer to a memory address.
-        """
-        return self._next_32 if self._ISRAW32 else self._next_64
-
-    @property
-    def _next_32(self) -> Callable[[Any], uint32]:
-        """
-        A callable with the same signature as as next_raw that always returns
-        a random numpy 32-bit unsigned int.
-        """
-
-        def next_32(void_p: Any) -> uint32:
-            return uint32(self.random_uint(32))
-
-        return next_32
-
-    @property
-    def _next_64(self) -> Callable[[Any], uint64]:
-        """
-        A callable with the same signature as as next_raw that always returns
-        a random numpy 64-bit unsigned int.
-        """
-
-        def next_64(void_p: Any) -> uint64:
-            return uint64(self.random_uint(64))
-
-        return next_64
-
-    @property
-    def _next_double(self) -> Callable[[Any], float64]:
-        """
-        A callable with the same signature as as next_raw that always return
-        a random double in [0,1).
-        """
-
-        def next_double(void_p: Any) -> float64:
-            return float64(self.random_double(1))
-
-        return next_double
