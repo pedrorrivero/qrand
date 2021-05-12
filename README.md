@@ -56,7 +56,7 @@ different levels. If you use QRAND, please cite as per the included
 
 ## Contribution Guidelines
 If you'd like to contribute to QRAND, please take a look at the
-[contribution guidelines](CONTRIBUTING.md). This project adheres to QRAND's [code of conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
+[contribution guidelines](CONTRIBUTING.md). This project adheres to the following [code of conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
 
 We use [GitHub issues](https://github.com/pedrorrivero/qrand/issues) for tracking requests and bugs. Please use Unitary Fund's [Discord](http://discord.unitary.fund/) for discussion and simple questions.
 
