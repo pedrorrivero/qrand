@@ -7,7 +7,7 @@
 
 # qrand
 
-> A multiprotocol and multiplatform quantum random number generation FOSS framework
+> A multiprotocol and multiplatform quantum random number generation framework
 
 Random numbers are everywhere.
 
@@ -15,7 +15,7 @@ Computer algorithms, data encryption, physical simulations, and even the arts us
 
 Luckily, the probabilistic nature of quantum computers makes these devices particularly useful for the task. Nonetheless, most of the current efforts in producing quantum random numbers have been focused on uniform probability distributions. Despite this fact, many applications actually need to sample from more complex distributions (e.g. gaussian, poisson).
 
-QRAND introduces an interface layer between [NumPy](https://numpy.org/) and a number of [quantum computing platforms](#Supported_Quantum_Platforms) ---along with other useful functionality--- that enables the efficient production of quantum random numbers (QRN) adhering to a wide variety of probability distributions. This is ultimately accomplished by transforming uniform probability distributions produced in cloud-based real quantum hardware, through NumPy's random module.
+QRAND introduces an interface layer between [NumPy](https://numpy.org/) and a number of [quantum computing platforms](#supported-quantum-platforms) —along with other useful functionality— that enables the efficient production of quantum random numbers (QRN) adhering to a wide variety of probability distributions. This is ultimately accomplished by transforming uniform probability distributions produced in cloud-based real quantum hardware, through NumPy's random module.
 
 ```python3
 from qrand import QuantumBitGenerator
