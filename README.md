@@ -11,11 +11,13 @@
 
 Random numbers are everywhere.
 
-Computer algorithms, data encryption, physical simulations, and even the arts use them all the time. There is one problem though: it turns out that they are actually very difficult to produce in large amounts. Classical computers can only implement mathematical tricks to emulate randomness, while measuring it out of physical processes turns out to be too slow.
+Computer algorithms, data encryption, physical simulations, and even the arts use them all the time. There is one problem though: it turns out that they are actually very difficult to produce in large amounts. Classical computers can only implement mathematical tricks to emulate randomness, while measuring it out of physical processes turns out to be too slow. Luckily, the probabilistic nature of quantum computers makes these devices particularly useful for the task.
 
-Luckily, the probabilistic nature of quantum computers makes these devices particularly useful for the task. Nonetheless, most of the current efforts in producing quantum random numbers have been focused on uniform probability distributions. Despite this fact, many applications actually need to sample from more complex distributions (e.g. gaussian, poisson).
+QRAND is a free and open-source framework for quantum random number generation. Thanks to its loosely coupled design, it offers seamlessly compatibility between different [quantum computing platforms](#supported-quantum-platforms) and [QRNG protocols](#implemented-qrng-protocols). Not only that, but it also enables the creation of custom cross-compatible protocols, and a wide range of output formats (e.g. bitstring, int, float, complex, hex, base64).
 
-QRAND introduces an interface layer between [NumPy](https://numpy.org/) and a number of [quantum computing platforms](#supported-quantum-platforms) —along with other useful functionality— that enables the efficient production of quantum random numbers (QRN) adhering to a wide variety of probability distributions. This is ultimately accomplished by transforming uniform probability distributions produced in cloud-based real quantum hardware, through NumPy's random module.
+To boost its efficiency, QRAND makes use of a concurrent cache to reduce the number of internet connections needed for random number generation; and for quality checks, it incorporates a suite of classical entropy validation tests which can be easily plugged into any base protocol.
+
+Additionally, QRAND introduces an interface layer for [NumPy](https://numpy.org/) that enables the efficient production of quantum random numbers (QRN) adhering to a wide variety of probability distributions. This is ultimately accomplished by transforming uniform probability distributions produced in cloud-based real quantum hardware, through NumPy's random module.
 
 ```python3
 from qrand import QuantumBitGenerator
@@ -44,17 +46,20 @@ print(f"Random Triangular: {gen.triangular(-1, 0, 1)}")
 # ...
 ```
 
-## Supported Quantum Platforms
+## Supported quantum platforms
 As of May 2021, only [`Qiskit`](https://qiskit.org/) is supported. However, support for [`Cirq`](https://quantumai.google/cirq) and [`Q#`](https://docs.microsoft.com/en-us/azure/quantum/user-guide/?view=qsharp-preview) is under active development.
 
-## Authors and Citation
+## Implemented QRNG protocols
+As of May 2021, only the basic `HadamardProtocol` is available. We are also working on implementing this [`EntaglementProtocol`](https://www.nature.com/articles/s41598-019-56706-2), as well as a version of [Google's Sycamore routine](https://arxiv.org/abs/1612.05903) (patent permitting).
+
+## Authors and citation
 QRAND is the work of many people who contribute to the project at
 different levels. If you use QRAND, please cite as per the included
 [BibTeX file](QRAND.bib).
 
 <!-- ## Documentation -->
 
-## Contribution Guidelines
+## Contribution guidelines
 If you'd like to contribute to QRAND, please take a look at the
 [contribution guidelines](CONTRIBUTING.md). This project adheres to the following [code of conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
 
