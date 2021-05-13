@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 11, 2021
+##   |  ___/|  _  /    DATE: May 13, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -86,8 +86,8 @@ class QiskitPlatform(QuantumPlatform):
     @property
     def job_partition(self) -> Tuple[int, int]:
         num_qubits, shots, experiments = self._qiskit_job_partition
-        repetitions: int = shots * experiments
-        return num_qubits, repetitions
+        num_measurements: int = shots * experiments
+        return num_qubits, num_measurements
 
     @property
     def max_bits_per_request_allowed(self) -> int:
@@ -130,10 +130,12 @@ class QiskitPlatform(QuantumPlatform):
         return QiskitCircuit(num_qubits)
 
     def create_job(
-        self, circuit: QuantumCircuit, repetitions: int
+        self, circuit: QuantumCircuit, num_measurements: int
     ) -> QuantumJob:
         shots, experiments = self._compute_bounded_factorization(
-            repetitions, self.backend.max_shots, self.backend.max_experiments
+            num_measurements,
+            self.backend.max_shots,
+            self.backend.max_experiments,
         )
         return QiskitJob(circuit, self.backend, shots, experiments)
 
@@ -179,9 +181,9 @@ class QiskitPlatform(QuantumPlatform):
         num_qubits: int = self.backend.max_num_qubits
         max_bits_per_request: int = self.max_bits_per_request
         if max_bits_per_request > num_qubits:
-            repetitions: int = max_bits_per_request // num_qubits
+            num_measurements: int = max_bits_per_request // num_qubits
             shots, experiments = self._compute_bounded_factorization(
-                repetitions,
+                num_measurements,
                 self.backend.max_shots,
                 self.backend.max_experiments,
             )

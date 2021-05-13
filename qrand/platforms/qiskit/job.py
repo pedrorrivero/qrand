@@ -112,7 +112,7 @@ class QiskitJob(QuantumJob):
         self._shots: int = shots
 
     @property
-    def repetitions(self) -> int:
+    def num_measurements(self) -> int:
         return self.shots * self.experiments
 
     def execute(self) -> List[str]:

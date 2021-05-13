@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 11, 2021
+##   |  ___/|  _  /    DATE: May 13, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -44,7 +44,7 @@ class QsharpJob(QuantumJob):
         raise NotImplementedError(self.ERROR_MSG)
 
     @property
-    def repetitions(self) -> int:
+    def num_measurements(self) -> int:
         raise NotImplementedError(self.ERROR_MSG)
 
     def execute(self) -> List[str]:

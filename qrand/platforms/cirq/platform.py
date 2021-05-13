@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 11, 2021
+##   |  ___/|  _  /    DATE: May 13, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -48,7 +48,7 @@ class CirqPlatform(QuantumPlatform):
         raise NotImplementedError(self.ERROR_MSG)
 
     def create_job(
-        self, circuit: QuantumCircuit, repetitions: int
+        self, circuit: QuantumCircuit, num_measurements: int
     ) -> QuantumJob:
         raise NotImplementedError(self.ERROR_MSG)
 
