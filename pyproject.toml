@@ -11,7 +11,7 @@ exclude = '''
 name = "cz_conventional_commits"
 bump_message = "bump: version $current_version → $new_version"
 version_format = "$version"
-version = "0.2.0"
+version = "0.3.0a0"
 version_files = [
     "qrand/__init__.py:__version__",
     "tests/test_qrand.py:__version__",
@@ -40,7 +40,7 @@ line_length = 79
 
 [tool.poetry]
 name = "qrand"
-version = "0.2.0"
+version = "0.3.0a0"
 description = "A multiprotocol and multiplatform quantum random number generation framework"
 readme = "README.md"
 homepage = "https://github.com/pedrorrivero/qrand"
