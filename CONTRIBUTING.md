@@ -36,6 +36,9 @@ pre-commit installed at .git/hooks/pre-commit
 pre-commit installed at .git/hooks/commit-msg
 ```
 
+## Style
+We enforce a specific style of code syntax by using [Black](https://github.com/psf/black). Also, for naming, we follow the usual [Python convention](https://namingconvention.org/python/). Finally, for git commits, we adhere to the [Conventional Commits](https://www.conventionalcommits.org/) standard.
+
 ## Documentation
 For this project we adhere to the [numpydoc docstring guide](https://numpydoc.readthedocs.io/en/latest/format.html). If you make any changes to the code, remember updating the docstring wherever relevant.
 
