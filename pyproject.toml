@@ -62,7 +62,7 @@ qsharp = ["qsharp"]
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.7.1"
-commitizen = "^2.4.1"
+commitizen = "^2.17.0, <2.17.3"
 pytest = "^6.1.1"
 pytest-cov = "^2.10.1"
 black = "^20.8b1"
