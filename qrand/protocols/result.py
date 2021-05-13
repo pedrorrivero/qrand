@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 12, 2021
+##   |  ___/|  _  /    DATE: May 13, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -46,7 +46,7 @@ class ProtocolResult(ABC):
 ###############################################################################
 ## SIMPLE RESULT
 ###############################################################################
-class SimpleResult(ProtocolResult):
+class PlainResult(ProtocolResult):
     def __init__(
         self, bitstring: str, validation_token: Optional[str] = None
     ) -> None:

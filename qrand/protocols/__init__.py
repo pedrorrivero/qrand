@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 12, 2021
+##   |  ___/|  _  /    DATE: May 13, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -23,7 +23,7 @@
 from .entanglement import EntanglementProtocol
 from .hadamard import HadamardProtocol
 from .protocol import BareQuantumProtocol, QuantumProtocol, ValidationDecorator
-from .result import ProtocolResult, SimpleResult
+from .result import PlainResult, ProtocolResult
 from .sycamore import SycamoreProtocol
 
 __all__ = [
@@ -31,7 +31,7 @@ __all__ = [
     "BareQuantumProtocol",
     "ValidationDecorator",
     "ProtocolResult",
-    "SimpleResult",
+    "PlainResult",
     "EntanglementProtocol",
     "HadamardProtocol",
     "SycamoreProtocol",
