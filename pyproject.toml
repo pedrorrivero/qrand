@@ -15,7 +15,8 @@ version = "0.3.0a0"
 version_files = [
     "qrand/__init__.py:__version__",
     "tests/test_qrand.py:__version__",
-    "pyproject.toml:version"
+    "pyproject.toml:version",
+    "QRAND.bib:version"
 ]
 style = [
     ["qmark", "fg:#ff9d00 bold"],

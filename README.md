@@ -3,6 +3,7 @@
 [![PyPI](https://img.shields.io/pypi/v/qrand?label=PyPI&style=flat&color=3776AB&logo=Python&logoColor=white)](https://pypi.org/project/qrand/)
 [![Coverage](https://img.shields.io/badge/Coverage-67%25-green.svg?style=flat)](http://pytest.org)
 [![Apache-2.0 License](https://img.shields.io/github/license/pedrorrivero/qrand?label=License&style=flat&color=1D1D1D)](https://github.com/pedrorrivero/qrand/blob/master/LICENSE)
+[![DOI](https://zenodo.org/badge/303870287.svg)](https://zenodo.org/badge/latestdoi/303870287)
 
 
 # qrand
