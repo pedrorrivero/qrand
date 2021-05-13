@@ -57,6 +57,6 @@ class HadamardProtocol(BareQuantumProtocol):
 
     def _parse_output(self, output: List[str]) -> ProtocolResult:
         bitstring: str = ""
-        for stream in output:
-            bitstring += stream
+        for measurement in output:
+            bitstring += measurement
         return PlainResult(bitstring)
