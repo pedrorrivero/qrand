@@ -147,10 +147,6 @@ class QiskitJob(QuantumJob):
             counts: List[Counts] = [cts] if type(cts) != list else cts
             for c in counts:
                 measurements += [k for k, v in c.items() if v == 1]
-        num_qubits: int = self.circuit.num_qubits
-        streams: List[str] = [""] * num_qubits
         for m in measurements:
             m = self._reverse_string(m)
-            for q in range(num_qubits):
-                streams[q] += m[q]
-        return streams
+        return measurements
