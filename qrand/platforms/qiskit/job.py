@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 11, 2021
+##   |  ___/|  _  /    DATE: May 13, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -68,8 +68,8 @@ class QiskitJob(QuantumJob):
     def circuit(self, circuit: QuantumCircuit) -> None:
         if self.backend.max_num_qubits < circuit.num_qubits:
             raise RuntimeError(
-                f"Failed to create QiskitJob. Number of qubits in argument \
-                QuantumCircuit unsupported by the provided Backend: \
+                f"Failed to assign QiskitCircuit for QiskitJob. Number of \
+                qubits in QiskitCircuit unsupported by the provided Backend: \
                 {self.backend.max_num_qubits}<{circuit.num_qubits}."
             )
         self._circuit: QuantumCircuit = circuit
@@ -87,8 +87,7 @@ class QiskitJob(QuantumJob):
         )
         if self.backend.max_experiments < experiments:
             warn(
-                f"Number of experiments in argument unsupported by the \
-                provided Backend: \
+                f"Number of experiments unsupported by the provided Backend: \
                 {self.backend.max_experiments}<{experiments}. \
                 Using max_experiments instead.",
                 UserWarning,
@@ -105,9 +104,8 @@ class QiskitJob(QuantumJob):
         shots = shots if shots and shots > 1 else self.backend.max_shots
         if self.backend.max_shots < shots:
             warn(
-                f"Number of shots in argument unsupported by the provided \
-                Backend: {self.backend.max_shots}<{shots}. Using max_shots \
-                instead.",
+                f"Number of shots unsupported by the provided Backend: \
+                {self.backend.max_shots}<{shots}. Using max_shots instead.",
                 UserWarning,
             )
             shots = self.backend.max_shots
