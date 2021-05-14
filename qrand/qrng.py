@@ -237,6 +237,8 @@ class Qrng:
         out: bytes
             Random bytes object of length (num_bits + 7) // 8.
         """
+        if num_bits < 1:
+            num_bits = self._quantum_bit_generator.BITS
         uint: int = self._quantum_bit_generator.random_uint(num_bits)
         num_bytes: int = (num_bits + 7) // 8
         return uint.to_bytes(num_bytes, "big")
