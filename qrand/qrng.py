@@ -228,6 +228,11 @@ class Qrng:
         """
         return self._quantum_bit_generator.random_uint(64)
 
+    def get_random_bytes(self, n_bits: int = 0) -> bytes:
+        uint: int = self._quantum_bit_generator.random_uint(n_bits)
+        num_bytes: int = (n_bits + 7) // 8
+        return uint.to_bytes(num_bytes, "big")
+
     def get_random_base64(self, n_bits: int = 0):
         """
         Returns a random base64 encoded string using the n bits generated random bitstring.
@@ -239,9 +244,8 @@ class Qrng:
         out: str
             Random base64 enocoded string.
         """
-        uint: int = self._quantum_bit_generator.random_uint(n_bits)
-        uint_bytes: bytes = uint.to_bytes((n_bits + 7) // 8, "big")
-        return b64encode(uint_bytes)
+        b: bytes = self.get_random_bytes(n_bits)
+        return b64encode(b)
 
     def get_random_base32(self, n_bits: int = 0):
 
@@ -255,9 +259,8 @@ class Qrng:
         out: str
             Random base32 enocoded string.
         """
-        uint: int = self._quantum_bit_generator.random_uint(n_bits)
-        uint_bytes: bytes = uint.to_bytes((n_bits + 7) // 8, "big")
-        return b32encode(uint_bytes)
+        b: bytes = self.get_random_bytes(n_bits)
+        return b32encode(b)
 
     def get_random_hex(self, n_bits: int = 0):
         """
