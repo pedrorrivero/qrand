@@ -99,8 +99,8 @@ class Qrng:
         out: complex
             Random complex in the range [0,r) * exp{ j[0,theta) }.
         """
-        r0: float = r * math.sqrt(self.get_random_float(0, 1))
-        theta0: float = self.get_random_float(0, theta)
+        r0: float = r * math.sqrt(self.get_random_double(0, 1))
+        theta0: float = self.get_random_double(0, theta)
         return r0 * math.cos(theta0) + r0 * math.sin(theta0) * 1j
 
     def get_random_complex_rect(
@@ -131,11 +131,11 @@ class Qrng:
         out: complex
             Random complex in the range [r1,r2) + j[i1,i2).
         """
-        re: float = self.get_random_float(r1, r2)
+        re: float = self.get_random_double(r1, r2)
         if i1 is None or i2 is None:
-            im: float = self.get_random_float(r1, r2)
+            im: float = self.get_random_double(r1, r2)
         else:
-            im = self.get_random_float(i1, i2)
+            im = self.get_random_double(i1, i2)
         return re + im * 1j
 
     def get_random_double(self, min: float = -1, max: float = +1):

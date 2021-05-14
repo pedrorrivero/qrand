@@ -48,15 +48,15 @@ class TestBitCache:
         bitgen.load_cache(cache)
         assert (
             qrng.get_random_complex_polar()
-            == -0.16820993120165456 + 0.7369762251347793j
+            == 0.4713139887723277 + 0.5910090485061033j
         )
         assert (
             qrng.get_random_complex_polar(4)
-            == -1.362136709039319 - 0.6559701073130655j
+            == -1.9263524684802522 - 0.9276824556973191j
         )
         assert (
             qrng.get_random_complex_polar(4, 3.14)
-            == 1.926563627649004 + 0.9272437045189929j
+            == 0.9431657500378959 + 1.1815890375548252j
         )
 
     def test_get_random_complex_rect(self):
@@ -66,15 +66,15 @@ class TestBitCache:
         bitgen.load_cache(cache)
         assert (
             qrng.get_random_complex_rect()
-            == 0.14285707473754883 - 0.4285714626312256j
+            == 0.1428571428571428 - 0.7142857142857144j
         )
         assert (
             qrng.get_random_complex_rect(-4, 4)
-            == -2.8571434020996094 + 0.5714282989501953j
+            == -1.7142857142857153 + 0.5714285714285712j
         )
         assert (
             qrng.get_random_complex_rect(-4, 3, -2, 1)
-            == -2.0000001192092896 - 1.5714287757873535j
+            == -3.0000000000000004 - 1.1428571428571432j
         )
 
     def test_get_random_double(self):
