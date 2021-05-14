@@ -20,9 +20,9 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-import base64
 import math
 import struct
+from base64 import b32encode, b64encode
 from typing import Optional
 from warnings import warn
 
@@ -239,12 +239,9 @@ class Qrng:
         out: str
             Random base64 enocoded string.
         """
-        bin_str: str = self._quantum_bit_generator.random_bitstring(n_bits)
-        mid_val: int = int(bin_str, 2)
-        bin_str_bytes: bytes = mid_val.to_bytes((n_bits + 7) // 8, "big")
-        base64_val: bytes = base64.b64encode(bin_str_bytes)
-
-        return base64_val
+        uint: int = self._quantum_bit_generator.random_uint(n_bits)
+        uint_bytes: bytes = uint.to_bytes((n_bits + 7) // 8, "big")
+        return b64encode(uint_bytes)
 
     def get_random_base32(self, n_bits: int = 0):
 
@@ -258,12 +255,9 @@ class Qrng:
         out: str
             Random base32 enocoded string.
         """
-        bin_str: str = self._quantum_bit_generator.random_bitstring(n_bits)
-        mid_val: int = int(bin_str, 2)
-        bin_str_bytes: bytes = mid_val.to_bytes((n_bits + 7) // 8, "big")
-        base32_val: bytes = base64.b32encode(bin_str_bytes)
-
-        return base32_val
+        uint: int = self._quantum_bit_generator.random_uint(n_bits)
+        uint_bytes: bytes = uint.to_bytes((n_bits + 7) // 8, "big")
+        return b32encode(uint_bytes)
 
     def get_random_hex(self, n_bits: int = 0):
         """
@@ -276,10 +270,8 @@ class Qrng:
         out: str
             Random hex enocoded string.
         """
-        bin_str: str = self._quantum_bit_generator.random_bitstring(n_bits)
-        hex_str: str = hex(int(bin_str, 2))
-
-        return hex_str
+        uint: int = self._quantum_bit_generator.random_unit(n_bits)
+        return hex(uint)
 
     def get_random_octal(self, n_bits: int = 0):
         """
@@ -292,10 +284,8 @@ class Qrng:
         out: str
             Random octal base enocoded string.
         """
-        bin_str: str = self._quantum_bit_generator.random_bitstring(n_bits)
-        oct_str: str = oct(int(bin_str, 2))
-
-        return oct_str
+        uint: int = self._quantum_bit_generator.random_uint(n_bits)
+        return oct(uint)
 
     ############################ PUBLIC PROPERTIES ############################
     @property
