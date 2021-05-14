@@ -21,8 +21,8 @@
 ## limitations under the License.
 
 import math
-import struct
-from base64 import b32decode, b32encode, b64decode, b64encode
+from base64 import b32decode, b64decode
+from struct import pack, unpack
 from typing import Optional
 from warnings import warn
 
@@ -178,8 +178,8 @@ class Qrng:
             Random float in the range [min,max).
         """
         unpacked = 0x3F800000 | self.get_random_int32() >> 9
-        packed = struct.pack("I", unpacked)
-        value = struct.unpack("f", packed)[0] - 1.0
+        packed = pack("I", unpacked)
+        value = unpack("f", packed)[0] - 1.0
         return (max - min) * value + min
 
     def get_random_int(self, min: int = -1, max: int = +1):
