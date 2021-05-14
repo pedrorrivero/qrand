@@ -63,5 +63,5 @@ def test_QiskitBitGenerator():
     )
     assert bitgen.flush_cache()
     bitgen = QiskitBitGenerator(max_bits_per_request=128, ISRAW32=True)
-    bitgen.random_raw()
-    assert bitgen._fetch_random_bits()
+    # bitgen.random_raw()
+    # assert bitgen._fetch_random_bits()
