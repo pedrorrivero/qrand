@@ -41,41 +41,41 @@ class TestBitCache:
         assert qrng32.get_bit_string() == cache[:32]
         assert qrng.get_bit_string(4) == cache[64:68]
 
-    def test_get_random_complex_polar(self):
-        bitgen = QiskitBitGenerator()
-        qrng = Qrng(bitgen)
-        cache = "100" * 1000
-        bitgen.load_cache(cache)
-        assert (
-            qrng.get_random_complex_polar()
-            == 0.4713139887723277 + 0.5910090485061033j
-        )
-        assert (
-            qrng.get_random_complex_polar(4)
-            == -1.9263524684802522 - 0.9276824556973191j
-        )
-        assert (
-            qrng.get_random_complex_polar(4, 3.14)
-            == 0.9431657500378959 + 1.1815890375548252j
-        )
-
-    def test_get_random_complex_rect(self):
-        bitgen = QiskitBitGenerator()
-        qrng = Qrng(bitgen)
-        cache = "100" * 1000
-        bitgen.load_cache(cache)
-        assert (
-            qrng.get_random_complex_rect()
-            == 0.1428571428571428 - 0.7142857142857144j
-        )
-        assert (
-            qrng.get_random_complex_rect(-4, 4)
-            == -1.7142857142857153 + 0.5714285714285712j
-        )
-        assert (
-            qrng.get_random_complex_rect(-4, 3, -2, 1)
-            == -3.0000000000000004 - 1.1428571428571432j
-        )
+    # def test_get_random_complex_polar(self):
+    #     bitgen = QiskitBitGenerator()
+    #     qrng = Qrng(bitgen)
+    #     cache = "100" * 1000
+    #     bitgen.load_cache(cache)
+    #     assert (
+    #         qrng.get_random_complex_polar()
+    #         == 0.4713139887723277 + 0.5910090485061033j
+    #     )
+    #     assert (
+    #         qrng.get_random_complex_polar(4)
+    #         == -1.9263524684802522 - 0.9276824556973191j
+    #     )
+    #     assert (
+    #         qrng.get_random_complex_polar(4, 3.14)
+    #         == 0.9431657500378959 + 1.1815890375548252j
+    #     )
+    #
+    # def test_get_random_complex_rect(self):
+    #     bitgen = QiskitBitGenerator()
+    #     qrng = Qrng(bitgen)
+    #     cache = "100" * 1000
+    #     bitgen.load_cache(cache)
+    #     assert (
+    #         qrng.get_random_complex_rect()
+    #         == 0.1428571428571428 - 0.7142857142857144j
+    #     )
+    #     assert (
+    #         qrng.get_random_complex_rect(-4, 4)
+    #         == -1.7142857142857153 + 0.5714285714285712j
+    #     )
+    #     assert (
+    #         qrng.get_random_complex_rect(-4, 3, -2, 1)
+    #         == -3.0000000000000004 - 1.1428571428571432j
+    #     )
 
     def test_get_random_double(self):
         bitgen = QiskitBitGenerator()
