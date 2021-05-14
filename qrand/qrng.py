@@ -185,6 +185,20 @@ class Qrng:
             im = self.get_random_double(i1, i2)
         return re + im * 1j
 
+    def get_random_decimal(self, num_bits: int = 0) -> str:
+        """
+        Returns a random decimal base encoded string from a num_bits uniform
+        distribution. If less than one it defaults to the raw number of
+        bits for its internal quantum_bit_generator (i.e. 32 or 64).
+
+        RETURNS
+        -------
+        out: str
+            Random decimal base enocoded string.
+        """
+        uint: int = self._quantum_bit_generator.random_uint(num_bits)
+        return f"{uint:d}"
+
     def get_random_double(self, min: float = -1, max: float = +1):
         """
         Returns a random double from a uniform distribution in the range
@@ -301,20 +315,6 @@ class Qrng:
         """
         uint: int = self._quantum_bit_generator.random_uint(num_bits)
         return f"{uint:o}"
-
-    def get_random_decimal(self, num_bits: int = 0) -> str:
-        """
-        Returns a random decimal base encoded string from a num_bits uniform
-        distribution. If less than one it defaults to the raw number of
-        bits for its internal quantum_bit_generator (i.e. 32 or 64).
-
-        RETURNS
-        -------
-        out: str
-            Random decimal base enocoded string.
-        """
-        uint: int = self._quantum_bit_generator.random_uint(num_bits)
-        return f"{uint:d}"
 
     ############################ PUBLIC PROPERTIES ############################
     @property
