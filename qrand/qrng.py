@@ -81,6 +81,52 @@ class Qrng:
         """
         return self._quantum_bit_generator.random_bitstring(num_bits)
 
+    def get_random_base32(self, num_bits: int = 0) -> str:
+
+        """
+        Returns a random base32 encoded string from a num_bits uniform
+        distribution. If less than one it defaults to the raw number of
+        bits for its internal quantum_bit_generator (i.e. 32 or 64).
+
+        RETURNS
+        -------
+        out: str
+            Random base32 enocoded string.
+        """
+        b: bytes = self.get_random_bytes(num_bits)
+        enc: bytes = b32encode(b)
+        return enc.decode("utf-8")
+
+    def get_random_base64(self, num_bits: int = 0) -> str:
+        """
+        Returns a random base64 encoded string from a num_bits uniform
+        distribution. If less than one it defaults to the raw number of
+        bits for its internal quantum_bit_generator (i.e. 32 or 64).
+
+        RETURNS
+        -------
+        out: str
+            Random base64 enocoded string.
+        """
+        b: bytes = self.get_random_bytes(num_bits)
+        enc: bytes = b64encode(b)
+        return enc.decode("utf-8")
+
+    def get_random_bytes(self, num_bits: int = 0) -> bytes:
+        """
+        Returns a bytes object from a num_bits uniform distribution.
+
+        RETURNS
+        -------
+        out: bytes
+            Random bytes object of length (num_bits + 7) // 8.
+        """
+        if num_bits < 1:
+            num_bits = self._quantum_bit_generator.BITS
+        uint: int = self._quantum_bit_generator.random_uint(num_bits)
+        num_bytes: int = (num_bits + 7) // 8
+        return uint.to_bytes(num_bytes, "big")
+
     def get_random_complex_polar(
         self, r: float = 1, theta: float = 2 * math.pi
     ):
@@ -182,6 +228,20 @@ class Qrng:
         value = unpack("f", packed)[0] - 1.0
         return (max - min) * value + min
 
+    def get_random_hex(self, num_bits: int = 0) -> str:
+        """
+        Returns a random hex base encoded string from a num_bits uniform
+        distribution. If less than one it defaults to the raw number of
+        bits for its internal quantum_bit_generator (i.e. 32 or 64).
+
+        RETURNS
+        -------
+        out: str
+            Random hex enocoded string.
+        """
+        uint: int = self._quantum_bit_generator.random_uint(num_bits)
+        return f"{uint:X}"
+
     def get_random_int(self, min: int = -1, max: int = +1):
         """
         Returns a random integer between and including [min, max]. Default
@@ -227,66 +287,6 @@ class Qrng:
             Random 64 bit unsigned int.
         """
         return self._quantum_bit_generator.random_uint(64)
-
-    def get_random_bytes(self, num_bits: int = 0) -> bytes:
-        """
-        Returns a bytes object from a num_bits uniform distribution.
-
-        RETURNS
-        -------
-        out: bytes
-            Random bytes object of length (num_bits + 7) // 8.
-        """
-        if num_bits < 1:
-            num_bits = self._quantum_bit_generator.BITS
-        uint: int = self._quantum_bit_generator.random_uint(num_bits)
-        num_bytes: int = (num_bits + 7) // 8
-        return uint.to_bytes(num_bytes, "big")
-
-    def get_random_base64(self, num_bits: int = 0) -> str:
-        """
-        Returns a random base64 encoded string from a num_bits uniform
-        distribution. If less than one it defaults to the raw number of
-        bits for its internal quantum_bit_generator (i.e. 32 or 64).
-
-        RETURNS
-        -------
-        out: str
-            Random base64 enocoded string.
-        """
-        b: bytes = self.get_random_bytes(num_bits)
-        enc: bytes = b64encode(b)
-        return enc.decode("utf-8")
-
-    def get_random_base32(self, num_bits: int = 0) -> str:
-
-        """
-        Returns a random base32 encoded string from a num_bits uniform
-        distribution. If less than one it defaults to the raw number of
-        bits for its internal quantum_bit_generator (i.e. 32 or 64).
-
-        RETURNS
-        -------
-        out: str
-            Random base32 enocoded string.
-        """
-        b: bytes = self.get_random_bytes(num_bits)
-        enc: bytes = b32encode(b)
-        return enc.decode("utf-8")
-
-    def get_random_hex(self, num_bits: int = 0) -> str:
-        """
-        Returns a random hex base encoded string from a num_bits uniform
-        distribution. If less than one it defaults to the raw number of
-        bits for its internal quantum_bit_generator (i.e. 32 or 64).
-
-        RETURNS
-        -------
-        out: str
-            Random hex enocoded string.
-        """
-        uint: int = self._quantum_bit_generator.random_uint(num_bits)
-        return f"{uint:X}"
 
     def get_random_octal(self, num_bits: int = 0) -> str:
         """
