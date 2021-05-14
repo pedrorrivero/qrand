@@ -28,6 +28,8 @@ from warnings import warn
 
 from .quantum_bit_generator import QuantumBitGenerator
 
+DEPRECATION_WARNING = " will be deprecated in version 1.0.0."
+
 
 ###############################################################################
 ## QRNG
@@ -63,7 +65,7 @@ class Qrng:
         self._quantum_bit_generator = quantum_bit_generator
 
     ############################# PUBLIC METHODS #############################
-    def get_random_bitstring(self, num_bits: int = 0):
+    def get_bit_string(self, num_bits: int = 0):
         """
         Returns a random bitstring of a given lenght. If less than one it
         defaults to the raw number of bits for its internal
@@ -79,10 +81,12 @@ class Qrng:
         out: str
             Bitstring of lenght `num_bits`.
         """
+        ## DEPRECATION WARNING
+        WARNING_MESSAGE = "get_bit_string()" + DEPRECATION_WARNING
+        warn(WARNING_MESSAGE, FutureWarning)
         return self._quantum_bit_generator.random_bitstring(num_bits)
 
     def get_random_base32(self, num_bits: int = 0) -> str:
-
         """
         Returns a random base32 encoded string from a num_bits uniform
         distribution. If less than one it defaults to the raw number of
@@ -111,6 +115,24 @@ class Qrng:
         b: bytes = self.get_random_bytes(num_bits)
         enc: bytes = b64encode(b)
         return enc.decode("utf-8")
+
+    def get_random_bitstring(self, num_bits: int = 0):
+        """
+        Returns a random bitstring of a given lenght. If less than one it
+        defaults to the raw number of bits for its internal
+        quantum_bit_generator (i.e. 32 or 64).
+
+        PARAMETERS
+        ----------
+        num_bits: int, default 0
+            Number of bits to retrieve.
+
+        RETURNS
+        -------
+        out: str
+            Bitstring of lenght `num_bits`.
+        """
+        return self._quantum_bit_generator.random_bitstring(num_bits)
 
     def get_random_bytes(self, num_bits: int = 0) -> bytes:
         """
@@ -340,7 +362,7 @@ class Qrng:
         The state of the Qrng object.
         """
         ## DEPRECATION WARNING
-        WARNING_MESSAGE = "state() will be deprecated in version 1.0.0."
+        WARNING_MESSAGE = "state()" + DEPRECATION_WARNING
         warn(WARNING_MESSAGE, FutureWarning)
         return {
             "quantum_bit_generator": self._quantum_bit_generator.state,
