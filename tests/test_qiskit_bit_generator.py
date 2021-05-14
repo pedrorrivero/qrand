@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: December 17, 2020
+##   |  ___/|  _  /    DATE: May 13, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -321,8 +321,8 @@ class TestQiskitBitGenerator:
         assert bitgen.state["job_config"]["max_bits_per_request"] == 400
         bitgen.state = {"backend": backend}
         assert not bitgen.state["backend_config"]["simulator"]
-        bitgen.state = {"provider": provider}
-        assert not bitgen.state["backend_config"]["simulator"]
+        # bitgen.state = {"provider": provider}
+        # assert not bitgen.state["backend_config"]["simulator"]
 
     ########################### PRIVATE PROPERTIES ###########################
     def test_backend_config(self):
