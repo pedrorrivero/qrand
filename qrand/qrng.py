@@ -21,7 +21,7 @@
 ## limitations under the License.
 
 import math
-from base64 import b32decode, b64decode
+from base64 import b32encode, b64encode
 from struct import pack, unpack
 from typing import Optional
 from warnings import warn
@@ -253,7 +253,8 @@ class Qrng:
             Random base64 enocoded string.
         """
         b: bytes = self.get_random_bytes(num_bits)
-        return b64decode(b).decode("utf-8")
+        enc: bytes = b64encode(b)
+        return enc.decode("utf-8")
 
     def get_random_base32(self, num_bits: int = 0) -> str:
 
@@ -268,7 +269,8 @@ class Qrng:
             Random base32 enocoded string.
         """
         b: bytes = self.get_random_bytes(num_bits)
-        return b32decode(b).decode("utf-8")
+        enc: bytes = b32encode(b)
+        return enc.decode("utf-8")
 
     def get_random_hex(self, num_bits: int = 0) -> str:
         """
