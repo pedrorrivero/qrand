@@ -22,6 +22,7 @@
 
 import math
 import struct
+from base64 import b32decode, b32encode, b64decode, b64encode
 from typing import Optional
 from warnings import warn
 
@@ -226,6 +227,68 @@ class Qrng:
             Random 32 bit unsigned int.
         """
         return self._quantum_bit_generator.random_uint(64)
+
+    def get_random_bytes(self, n_bits: int = 0) -> bytes:
+        uint: int = self._quantum_bit_generator.random_uint(n_bits)
+        num_bytes: int = (n_bits + 7) // 8
+        return uint.to_bytes(num_bytes, "big")
+
+    def get_random_base64(self, n_bits: int = 0) -> str:
+        """
+        Returns a random base64 encoded string using the n bits generated random bitstring.
+        If less than one it defaults to the raw number of bits for its internal
+        quantum_bit_generator (i.e. 32 or 64).
+
+        RETURNS
+        -------
+        out: str
+            Random base64 enocoded string.
+        """
+        b: bytes = self.get_random_bytes(n_bits)
+        return b64decode(b).decode("utf-8")
+
+    def get_random_base32(self, n_bits: int = 0) -> str:
+
+        """
+        Returns a random base32 encoded string using the n bits generated random bitstring.
+        If less than one it defaults to the raw number of bits for its internal
+        quantum_bit_generator (i.e. 32 or 64).
+
+        RETURNS
+        -------
+        out: str
+            Random base32 enocoded string.
+        """
+        b: bytes = self.get_random_bytes(n_bits)
+        return b32decode(b).decode("utf-8")
+
+    def get_random_hex(self, n_bits: int = 0) -> str:
+        """
+        Returns a random hex encoded string using the n bits generated random bitstring.
+        If less than one it defaults to the raw number of bits for its internal
+        quantum_bit_generator (i.e. 32 or 64).
+
+        RETURNS
+        -------
+        out: str
+            Random hex enocoded string.
+        """
+        uint: int = self._quantum_bit_generator.random_uint(n_bits)
+        return f"{uint:X}"
+
+    def get_random_octal(self, n_bits: int = 0) -> str:
+        """
+        Returns a random octal base encoded string using the n bits generated random bitstring.
+        If less than one it defaults to the raw number of bits for its internal
+        quantum_bit_generator (i.e. 32 or 64).
+
+        RETURNS
+        -------
+        out: str
+            Random octal base enocoded string.
+        """
+        uint: int = self._quantum_bit_generator.random_uint(n_bits)
+        return f"{uint:o}"
 
     ############################ PUBLIC PROPERTIES ############################
     @property
