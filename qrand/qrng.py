@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 12, 2021
+##   |  ___/|  _  /    DATE: May 14, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -63,7 +63,7 @@ class Qrng:
         self._quantum_bit_generator = quantum_bit_generator
 
     ############################# PUBLIC METHODS #############################
-    def get_bit_string(self, n_bits: int = 0):
+    def get_bit_string(self, num_bits: int = 0):
         """
         Returns a random bitstring of a given lenght. If less than one it
         defaults to the raw number of bits for its internal
@@ -71,15 +71,15 @@ class Qrng:
 
         PARAMETERS
         ----------
-        n_bits: int, default 0
+        num_bits: int, default 0
             Number of bits to retrieve.
 
         RETURNS
         -------
         out: str
-            Bitstring of lenght `n_bits`.
+            Bitstring of lenght `num_bits`.
         """
-        return self._quantum_bit_generator.random_bitstring(n_bits)
+        return self._quantum_bit_generator.random_bitstring(num_bits)
 
     def get_random_complex_polar(
         self, r: float = 1, theta: float = 2 * math.pi
@@ -200,10 +200,10 @@ class Qrng:
             Random int in the range [min,max].
         """
         delta: int = max - min
-        n_bits: int = math.floor(math.log(delta, 2)) + 1
-        shifted: int = self._quantum_bit_generator.random_uint(n_bits)
+        num_bits: int = math.floor(math.log(delta, 2)) + 1
+        shifted: int = self._quantum_bit_generator.random_uint(num_bits)
         while shifted > delta:
-            shifted = self._quantum_bit_generator.random_uint(n_bits)
+            shifted = self._quantum_bit_generator.random_uint(num_bits)
         return shifted + min
 
     def get_random_int32(self):
@@ -224,70 +224,78 @@ class Qrng:
         RETURNS
         -------
         out: int
-            Random 32 bit unsigned int.
+            Random 64 bit unsigned int.
         """
         return self._quantum_bit_generator.random_uint(64)
 
-    def get_random_bytes(self, n_bits: int = 0) -> bytes:
-        uint: int = self._quantum_bit_generator.random_uint(n_bits)
-        num_bytes: int = (n_bits + 7) // 8
+    def get_random_bytes(self, num_bits: int = 0) -> bytes:
+        """
+        Returns a bytes object from a num_bits uniform distribution.
+
+        RETURNS
+        -------
+        out: bytes
+            Random bytes object of length (num_bits + 7) // 8.
+        """
+        uint: int = self._quantum_bit_generator.random_uint(num_bits)
+        num_bytes: int = (num_bits + 7) // 8
         return uint.to_bytes(num_bytes, "big")
 
-    def get_random_base64(self, n_bits: int = 0) -> str:
+    def get_random_base64(self, num_bits: int = 0) -> str:
         """
-        Returns a random base64 encoded string using the n bits generated random bitstring.
-        If less than one it defaults to the raw number of bits for its internal
-        quantum_bit_generator (i.e. 32 or 64).
+        Returns a random base64 encoded string from a num_bits uniform
+        distribution. If less than one it defaults to the raw number of
+        bits for its internal quantum_bit_generator (i.e. 32 or 64).
 
         RETURNS
         -------
         out: str
             Random base64 enocoded string.
         """
-        b: bytes = self.get_random_bytes(n_bits)
+        b: bytes = self.get_random_bytes(num_bits)
         return b64decode(b).decode("utf-8")
 
-    def get_random_base32(self, n_bits: int = 0) -> str:
+    def get_random_base32(self, num_bits: int = 0) -> str:
 
         """
-        Returns a random base32 encoded string using the n bits generated random bitstring.
-        If less than one it defaults to the raw number of bits for its internal
-        quantum_bit_generator (i.e. 32 or 64).
+        Returns a random base32 encoded string from a num_bits uniform
+        distribution. If less than one it defaults to the raw number of
+        bits for its internal quantum_bit_generator (i.e. 32 or 64).
 
         RETURNS
         -------
         out: str
             Random base32 enocoded string.
         """
-        b: bytes = self.get_random_bytes(n_bits)
+        b: bytes = self.get_random_bytes(num_bits)
         return b32decode(b).decode("utf-8")
 
-    def get_random_hex(self, n_bits: int = 0) -> str:
+    def get_random_hex(self, num_bits: int = 0) -> str:
         """
-        Returns a random hex encoded string using the n bits generated random bitstring.
-        If less than one it defaults to the raw number of bits for its internal
-        quantum_bit_generator (i.e. 32 or 64).
+        Returns a random hex base encoded string from a num_bits uniform
+        distribution. If less than one it defaults to the raw number of
+        bits for its internal quantum_bit_generator (i.e. 32 or 64).
 
         RETURNS
         -------
         out: str
             Random hex enocoded string.
         """
-        uint: int = self._quantum_bit_generator.random_uint(n_bits)
+        uint: int = self._quantum_bit_generator.random_uint(num_bits)
         return f"{uint:X}"
 
-    def get_random_octal(self, n_bits: int = 0) -> str:
+    def get_random_octal(self, num_bits: int = 0) -> str:
         """
-        Returns a random octal base encoded string using the n bits generated random bitstring.
-        If less than one it defaults to the raw number of bits for its internal
-        quantum_bit_generator (i.e. 32 or 64).
+        Returns a random octal base encoded string from a num_bits uniform
+        distribution. If less than one it defaults to the raw number of
+        bits for its internal quantum_bit_generator (i.e. 32 or 64).
 
         RETURNS
         -------
         out: str
             Random octal base enocoded string.
         """
-        uint: int = self._quantum_bit_generator.random_uint(n_bits)
+        uint: int = self._quantum_bit_generator.random_uint(num_bits)
         return f"{uint:o}"
 
     ############################ PUBLIC PROPERTIES ############################
