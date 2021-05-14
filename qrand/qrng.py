@@ -316,6 +316,23 @@ class Qrng:
         uint: int = self._quantum_bit_generator.random_uint(num_bits)
         return f"{uint:o}"
 
+    def get_random_uint(self, num_bits: int = 0) -> int:
+        """
+        Returns a random unsigned int of a given size in bits.
+
+        PARAMETERS
+        ----------
+        num_bits: int
+            Number of bits to retrieve. If less than one it defaults to the raw
+            number of bits for the instance QiskitBitGenerator (i.e. 32 or 64).
+
+        RETURNS
+        -------
+        out: int
+            Unsigned int of `num_bits` bits.
+        """
+        return self._quantum_bit_generator.random_uint(num_bits)
+
     ############################ PUBLIC PROPERTIES ############################
     @property
     def state(self) -> dict:
