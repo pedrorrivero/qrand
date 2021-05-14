@@ -63,7 +63,7 @@ class Qrng:
         self._quantum_bit_generator = quantum_bit_generator
 
     ############################# PUBLIC METHODS #############################
-    def get_bit_string(self, num_bits: int = 0):
+    def get_random_bitstring(self, num_bits: int = 0):
         """
         Returns a random bitstring of a given lenght. If less than one it
         defaults to the raw number of bits for its internal
