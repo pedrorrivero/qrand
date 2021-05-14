@@ -106,37 +106,37 @@ class TestBitCache:
 ###############################################################################
 class TestQiskitBitGenerator:
     ########################## STATIC/CLASS METHODS ##########################
-    def test_default_backend_filter(self):
-        provider = IBMQ.load_account()
-        simulator = BasicAer.get_backend("qasm_simulator")
-        assert not QiskitBitGenerator.default_backend_filter(simulator)
-        assert not (
-            no_memory := provider.backends(
-                filters=lambda b: not b.configuration().memory
-                and not b.configuration().simulator
-            )
-        ) or not QiskitBitGenerator.default_backend_filter(no_memory[0])
-        assert (
-            backend := provider.backends(
-                filters=lambda b: b.configuration().memory
-                and not b.configuration().simulator
-            )
-        ) and QiskitBitGenerator.default_backend_filter(backend[0])
+    # def test_default_backend_filter(self):
+    #     provider = IBMQ.load_account()
+    #     simulator = BasicAer.get_backend("qasm_simulator")
+    #     assert not QiskitBitGenerator.default_backend_filter(simulator)
+    #     assert not (
+    #         no_memory := provider.backends(
+    #             filters=lambda b: not b.configuration().memory
+    #             and not b.configuration().simulator
+    #         )
+    #     ) or not QiskitBitGenerator.default_backend_filter(no_memory[0])
+    #     assert (
+    #         backend := provider.backends(
+    #             filters=lambda b: b.configuration().memory
+    #             and not b.configuration().simulator
+    #         )
+    #     ) and QiskitBitGenerator.default_backend_filter(backend[0])
 
-    def test_get_best_backend(self):
-        provider = IBMQ.load_account()
-        assert QiskitBitGenerator.get_best_backend(provider)
-
-        def filter(b):
-            if b.configuration().backend_name == "ibmq_qasm_simulator":
-                return True
-            else:
-                return False
-
-        backend = QiskitBitGenerator.get_best_backend(provider, filter)
-        assert backend.configuration().backend_name == "ibmq_qasm_simulator"
-        with pytest.raises(IBMQError):
-            QiskitBitGenerator.get_best_backend(provider, lambda b: False)
+    # def test_get_best_backend(self):
+    #     provider = IBMQ.load_account()
+    #     assert QiskitBitGenerator.get_best_backend(provider)
+    #
+    #     def filter(b):
+    #         if b.configuration().backend_name == "ibmq_qasm_simulator":
+    #             return True
+    #         else:
+    #             return False
+    #
+    #     backend = QiskitBitGenerator.get_best_backend(provider, filter)
+    #     assert backend.configuration().backend_name == "ibmq_qasm_simulator"
+    #     with pytest.raises(IBMQError):
+    #         QiskitBitGenerator.get_best_backend(provider, lambda b: False)
 
     ############################# PUBLIC METHODS #############################
     def test_dump_cache(self):
@@ -243,15 +243,15 @@ class TestQiskitBitGenerator:
             and bitgen.random_uint(n_bits) == 2
         )
 
-    def test_set_state(self):
-        provider = IBMQ.load_account()
-        simulator = BasicAer.get_backend("qasm_simulator")
-        bitgen = QiskitBitGenerator()
-        assert not bitgen.set_state()
-        assert bitgen.set_state(backend_filter=lambda b: True)
-        assert bitgen.set_state(max_bits_per_request=400)
-        assert bitgen.set_state(backend=simulator)
-        assert bitgen.set_state(provider=provider)
+    # def test_set_state(self):
+    #     provider = IBMQ.load_account()
+    #     simulator = BasicAer.get_backend("qasm_simulator")
+    #     bitgen = QiskitBitGenerator()
+    #     assert not bitgen.set_state()
+    #     assert bitgen.set_state(backend_filter=lambda b: True)
+    #     assert bitgen.set_state(max_bits_per_request=400)
+    #     assert bitgen.set_state(backend=simulator)
+    #     assert bitgen.set_state(provider=provider)
 
     ############################# PRIVATE METHODS #############################
     # def test_fetch_random_bits(self):
@@ -310,19 +310,19 @@ class TestQiskitBitGenerator:
         }
         assert bitgen.state == state
 
-    def test_state_setter(self):
-        provider = IBMQ.load_account()
-        backend = QiskitBitGenerator.get_best_backend(provider)
-        bitgen = QiskitBitGenerator()
-        bitgen.state = {}
-        assert bitgen.state == QiskitBitGenerator().state
-        bitgen.state = {"backend_filter": lambda b: True}
-        bitgen.state = {"max_bits_per_request": 400}
-        assert bitgen.state["job_config"]["max_bits_per_request"] == 400
-        bitgen.state = {"backend": backend}
-        assert not bitgen.state["backend_config"]["simulator"]
-        # bitgen.state = {"provider": provider}
-        # assert not bitgen.state["backend_config"]["simulator"]
+    # def test_state_setter(self):
+    #     provider = IBMQ.load_account()
+    #     backend = QiskitBitGenerator.get_best_backend(provider)
+    #     bitgen = QiskitBitGenerator()
+    #     bitgen.state = {}
+    #     assert bitgen.state == QiskitBitGenerator().state
+    #     bitgen.state = {"backend_filter": lambda b: True}
+    #     bitgen.state = {"max_bits_per_request": 400}
+    #     assert bitgen.state["job_config"]["max_bits_per_request"] == 400
+    #     bitgen.state = {"backend": backend}
+    #     assert not bitgen.state["backend_config"]["simulator"]
+    #     bitgen.state = {"provider": provider}
+    #     assert not bitgen.state["backend_config"]["simulator"]
 
     ########################### PRIVATE PROPERTIES ###########################
     def test_backend_config(self):

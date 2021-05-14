@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: February 22, 2021
+##   |  ___/|  _  /    DATE: May 14, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -37,9 +37,9 @@ def test_version():
 ## IMPORTS
 ###############################################################################
 def test_QiskitBitGenerator():
-    provider = IBMQ.load_account()
-    bitgen = QiskitBitGenerator(provider)
-    assert not bitgen.state["backend_config"]["simulator"]
+    # provider = IBMQ.load_account()
+    # bitgen = QiskitBitGenerator(provider)
+    # assert not bitgen.state["backend_config"]["simulator"]
     simulator = BasicAer.get_backend("qasm_simulator")
     bitgen = QiskitBitGenerator(backend=simulator)
     assert bitgen.state["backend_config"]["simulator"]
