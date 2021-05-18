@@ -26,13 +26,11 @@ from typing import List, Union
 ###############################################################################
 ## REVERSE ENDIAN
 ###############################################################################
-def reverse_endian(
-    numbers_as_strings: Union[str, List[str]]
-) -> Union[str, List[str]]:
-    single_element: bool = type(numbers_as_strings) is not list
+def reverse_endian(bitstrings: Union[str, List[str]]) -> Union[str, List[str]]:
+    single_element: bool = type(bitstrings) is not list
     if single_element:
-        numbers_as_strings = [numbers_as_strings]  # type: ignore
+        bitstrings = [bitstrings]  # type: ignore
     reversed: List[str] = []
-    for s in numbers_as_strings:
+    for s in bitstrings:
         reversed.append(s[::-1])
     return reversed if not single_element else reversed[0]
