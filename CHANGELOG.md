@@ -1,3 +1,47 @@
+## 0.3.0a2 (2021-05-17)
+
+### Feat
+
+- **helpers**: add reverse_endian
+- **Qrng**: add get_random_uint
+- **Qrng**: add get_random_decimal
+- **Qrng**: add get_random_bytes
+- **Qrng**: add random OCTAL, HEX, BASE32, and BASE64
+
+### Refactor
+
+- **platforms**: update QiskitJob constructor
+- **platforms**: extract QuantumBackend from QuantumJob
+- **Qrng**: rename get_bit_string to get_random_bitstring
+- **Qrng**: order methods alphabetically
+- **Qrng**: order methods alphabetically
+- **Qrng**: clean-up base32, base64, hex and octal
+
+### Fix
+
+- **Qrng**: reimplement get_bit_string with deprecation warning
+- **Qrng**: set default num_bits in get_random_bytes
+- **Qrng**: replace decode for encode in b32 and b64
+- **Qrng**: update output types in base32 and base64
+- **Qrng**: update random complex precision to double
+
+### Perf
+
+- **Qrng**: simplify imports
+
+## 0.3.0a1 (2021-05-13)
+
+### Refactor
+
+- **protocols**: rename stream to measurement
+- **protocols**: rename SimpleResult to PlainResult
+- **platforms**: change job output to list of measurements
+- rename repetitions to num_measurements
+
+### Fix
+
+- **QiskitJob**: update error and warning messages
+
 ## 0.3.0a0 (2021-05-12)
 
 ### Fix

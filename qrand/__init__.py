@@ -23,7 +23,7 @@
 __author__ = "Pedro Rivero"
 __copyright__ = "Copyright (c) 2021 Pedro Rivero"
 __license__ = "Apache-2.0"
-__version__ = "0.3.0a1"
+__version__ = "0.3.0a2"
 
 from ._qiskit_bit_generator import QiskitBitGenerator
 from .qrng import Qrng
