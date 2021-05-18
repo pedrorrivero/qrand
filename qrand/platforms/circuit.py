@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: April 5, 2021
+##   |  ___/|  _  /    DATE: May 18, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -36,8 +36,65 @@ class QuantumCircuit(ABC):
     def num_qubits(self) -> int:
         pass
 
+    ############################## SPECIAL GATES ##############################
+    @abstractmethod
+    def measure(self, target_qubit: int) -> None:
+        pass
+
+    ########################### SINGLE QUBIT GATES ###########################
     @abstractmethod
     def h(self, target_qubit: int) -> None:
+        pass
+
+    @abstractmethod
+    def rx(self, radians: float, target_qubit: int) -> None:
+        pass
+
+    @abstractmethod
+    def ry(self, radians: float, target_qubit: int) -> None:
+        pass
+
+    @abstractmethod
+    def rz(self, radians: float, target_qubit: int) -> None:
+        pass
+
+    @abstractmethod
+    def s(self, target_qubit: int) -> None:
+        pass
+
+    @abstractmethod
+    def t(self, target_qubit: int) -> None:
+        pass
+
+    @abstractmethod
+    def u1(self, theta: float, target_qubit: int) -> None:
+        pass
+
+    @abstractmethod
+    def u2(self, phi: float, lam: float, target_qubit: int) -> None:
+        pass
+
+    @abstractmethod
+    def u3(
+        self, theta: float, phi: float, lam: float, target_qubit: int
+    ) -> None:
+        pass
+
+    @abstractmethod
+    def x(self, target_qubit: int) -> None:
+        pass
+
+    @abstractmethod
+    def y(self, target_qubit: int) -> None:
+        pass
+
+    @abstractmethod
+    def z(self, target_qubit: int) -> None:
+        pass
+
+    ############################# TWO QUBIT GATES #############################
+    @abstractmethod
+    def cs(self, control_qubit: int, target_qubit: int) -> None:
         pass
 
     @abstractmethod
@@ -45,5 +102,48 @@ class QuantumCircuit(ABC):
         pass
 
     @abstractmethod
-    def measure(self, target_qubit: int) -> None:
+    def cz(self, control_qubit: int, target_qubit: int) -> None:
         pass
+
+    @abstractmethod
+    def swap(self, target_qubit_1: int, target_qubit_2: int) -> None:
+        pass
+
+    ############################ THREE QUBIT GATES ############################
+    @abstractmethod
+    def ccx(
+        self, control_qubit_1: int, control_qubit_2: int, target_qubit: int
+    ) -> None:
+        pass
+
+    @abstractmethod
+    def cswap(
+        self, control_qubit_1: int, control_qubit_2: int, target_qubit: int
+    ) -> None:
+        pass
+
+    ############################## ALIAS GATES ##############################
+    def cnot(self, control_qubit: int, target_qubit: int) -> None:
+        self.cx(control_qubit, target_qubit)
+
+    def cphase(self, control_qubit: int, target_qubit: int) -> None:
+        self.cs(control_qubit, target_qubit)
+
+    def fredkin(
+        self, control_qubit_1: int, control_qubit_2: int, target_qubit: int
+    ) -> None:
+        self.cswap(control_qubit_1, control_qubit_2, target_qubit)
+
+    def hadamard(self, target_qubit: int) -> None:
+        self.h(target_qubit)
+
+    def phase(self, target_qubit: int) -> None:
+        self.s(target_qubit)
+
+    def pi8(self, target_qubit: int) -> None:
+        self.t(target_qubit)
+
+    def toffoli(
+        self, control_qubit_1: int, control_qubit_2: int, target_qubit: int
+    ) -> None:
+        self.ccx(control_qubit_1, control_qubit_2, target_qubit)
