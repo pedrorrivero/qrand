@@ -1,3 +1,16 @@
+## 0.3.0a3 (2021-05-18)
+
+### Feat
+
+- **platforms**: new gates for quantum circuits
+
+### Refactor
+
+- **caches**: move BitCache to caches subpackage
+- **protocols**: rename PlaintResult to BasicResult
+- **helpers**: add is_bitstring
+- **reverse_endian**: rename argument
+
 ## 0.3.0a2 (2021-05-17)
 
 ### Feat
