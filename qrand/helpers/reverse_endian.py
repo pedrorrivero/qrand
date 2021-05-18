@@ -20,10 +20,19 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from .bounded_factorization import compute_bounded_factorization
-from .reverse_endian import reverse_endian
+from typing import List, Union
 
-__all__ = [
-    "compute_bounded_factorization",
-    "reverse_endian",
-]
+
+###############################################################################
+## REVERSE ENDIAN
+###############################################################################
+def reverse_endian(
+    numbers_as_strings: Union[str, List[str]]
+) -> Union[str, List[str]]:
+    single_element: bool = type(numbers_as_strings) is not list
+    if single_element:
+        numbers_as_strings = [numbers_as_strings]  # type: ignore
+    reversed: List[str] = []
+    for s in numbers_as_strings:
+        reversed.append(s[::-1])
+    return reversed if not single_element else reversed[0]
