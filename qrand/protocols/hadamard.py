@@ -27,7 +27,7 @@ from ..platforms.circuit import QuantumCircuit
 from ..platforms.factory import QuantumFactory
 from ..platforms.job import QuantumJob
 from .protocol import BareQuantumProtocol
-from .result import PlainResult, ProtocolResult
+from .result import BasicResult, ProtocolResult
 
 
 ###############################################################################
@@ -64,4 +64,4 @@ class HadamardProtocol(BareQuantumProtocol):
         bitstring: str = ""
         for measurement in output:
             bitstring += measurement
-        return PlainResult(bitstring)
+        return BasicResult(bitstring)

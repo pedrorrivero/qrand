@@ -23,7 +23,7 @@
 from .entanglement import EntanglementProtocol
 from .hadamard import HadamardProtocol
 from .protocol import BareQuantumProtocol, QuantumProtocol, ValidationDecorator
-from .result import PlainResult, ProtocolResult
+from .result import BasicResult, ProtocolResult
 from .sycamore import SycamoreProtocol
 
 __all__ = [
@@ -31,7 +31,7 @@ __all__ = [
     "BareQuantumProtocol",
     "ValidationDecorator",
     "ProtocolResult",
-    "PlainResult",
+    "BasicResult",
     "EntanglementProtocol",
     "HadamardProtocol",
     "SycamoreProtocol",

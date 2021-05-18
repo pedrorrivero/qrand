@@ -46,7 +46,7 @@ class ProtocolResult(ABC):
 ###############################################################################
 ## SIMPLE RESULT
 ###############################################################################
-class PlainResult(ProtocolResult):
+class BasicResult(ProtocolResult):
     def __init__(
         self, bitstring: str, validation_token: Optional[str] = None
     ) -> None:
