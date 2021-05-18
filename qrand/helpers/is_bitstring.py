@@ -20,12 +20,30 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from .bounded_factorization import compute_bounded_factorization
-from .is_bitstring import is_bitstring
-from .reverse_endian import reverse_endian
+###############################################################################
+## IS BITSTRING
+###############################################################################
+def is_bitstring(bitstring: str) -> bool:
+    """
+    Returns `True` if the input str is a bitstring, `False` otherwise.
 
-__all__ = [
-    "compute_bounded_factorization",
-    "is_bitstring",
-    "reverse_endian",
-]
+    PARAMETERS
+    ----------
+    bitstring: str
+        The string to check.
+
+    RETURNS
+    -------
+    out: bool
+        `True` if input str is bitstring, `False` otherwise.
+
+    RAISES
+    ------
+    TypeError
+        If input bitstring is not str.
+    """
+    if not isinstance(bitstring, str):
+        raise TypeError(f"Invalid bitstring type '{type(bitstring)}'")
+    b = {"0", "1"}
+    s = set(bitstring)
+    return s.issubset(b)

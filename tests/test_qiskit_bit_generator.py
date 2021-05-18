@@ -36,14 +36,6 @@ from qrand._qiskit_bit_generator import BitCache, QiskitBitGenerator
 ## BIT CACHE
 ###############################################################################
 class TestBitCache:
-    ########################## STATIC/CLASS METHODS ##########################
-    def test_isbitstring(self):
-        bitcache = BitCache()
-        with pytest.raises(TypeError):
-            bitcache.isbitstring(4)
-        assert not bitcache.isbitstring("abc")
-        assert bitcache.isbitstring("100")
-
     ############################# PUBLIC METHODS #############################
     def test_dump(self):
         bitcache = BitCache()

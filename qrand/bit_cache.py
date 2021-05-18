@@ -20,6 +20,9 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
+from .helpers import is_bitstring
+
+
 ###############################################################################
 ## BIT CACHE
 ###############################################################################
@@ -31,33 +34,6 @@ class BitCache:
     def __init__(self) -> None:
         self._cache: str = ""
         self.size: int = 0
-
-    ########################## STATIC/CLASS METHODS ##########################
-    @staticmethod
-    def isbitstring(bitstring: str) -> bool:
-        """
-        Returns `True` if the input str is a bitstring, `False` otherwise.
-
-        PARAMETERS
-        ----------
-        bitstring: str
-            The string to check.
-
-        RETURNS
-        -------
-        out: bool
-            `True` if input str is bitstring, `False` otherwise.
-
-        RAISES
-        ------
-        TypeError
-            If input bitstring is not str.
-        """
-        if not isinstance(bitstring, str):
-            raise TypeError(f"Invalid bitstring type '{type(bitstring)}'")
-        b = {"0", "1"}
-        s = set(bitstring)
-        return s.issubset(b)
 
     ############################# PUBLIC METHODS #############################
     def dump(self) -> str:
@@ -128,12 +104,12 @@ class BitCache:
 
         RAISES
         ------
-        TypeError (isbitstring)
+        TypeError (is_bitstring)
             If input bitstring is not str
         ValueError
             If input bitstring is not a valid bitstring
         """
-        if not BitCache.isbitstring(bitstring):
+        if not is_bitstring(bitstring):
             raise ValueError(f"Invalid bitstring value '{bitstring}'")
         self._cache += bitstring
         self.size += len(bitstring)
