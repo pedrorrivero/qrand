@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 13, 2021
+##   |  ___/|  _  /    DATE: May 17, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -28,9 +28,9 @@ from qiskit.providers import Provider
 from qiskit.providers.ibmq import IBMQError, least_busy
 from qiskit.providers.models import BackendConfiguration
 
-from ..circuit import QuantumCircuit
-from ..job import QuantumJob
-from ..platform import ProtocolResult, QuantumPlatform, QuantumProtocol
+from ...helpers import compute_bounded_factorization
+from ...protocols import ProtocolResult, QuantumProtocol
+from ..platform import QuantumPlatform
 from .backend import QiskitBackend
 from .circuit import QiskitCircuit
 from .job import QiskitJob
@@ -50,21 +50,19 @@ class QiskitPlatform(QuantumPlatform):
         provider: Optional[Provider] = None,
         backend: Optional[Backend] = None,
         backend_filter: Optional[BackendFilter] = None,
-        max_bits_per_request: Optional[int] = None,
     ) -> None:
         if backend:
             provider = None
         elif provider:
-            backend = self.get_best_backend(
+            backend = self._get_best_backend(
                 provider=provider,
                 backend_filter=backend_filter,
             )
         else:
             backend = BasicAer.get_backend("qasm_simulator")
         self.provider: Optional[Provider] = provider
-        self.backend: QiskitBackend = backend  # type: ignore
+        self.backend: Backend = backend
         self.backend_filter: BackendFilter = backend_filter  # type: ignore
-        self.max_bits_per_request: int = max_bits_per_request  # type: ignore
 
     ############################### PUBLIC API ###############################
     @property
@@ -73,7 +71,7 @@ class QiskitPlatform(QuantumPlatform):
 
     @backend.setter
     def backend(self, backend: Backend) -> None:
-        self._backend: QiskitBackend = QiskitBackend(backend)
+        self._backend: Backend = backend
 
     @property
     def backend_filter(self) -> BackendFilter:
@@ -84,34 +82,54 @@ class QiskitPlatform(QuantumPlatform):
         self._backend_filter = backend_filter or self.default_backend_filter
 
     @property
-    def job_partition(self) -> Tuple[int, int]:
-        num_qubits, shots, experiments = self._qiskit_job_partition
-        num_measurements: int = shots * experiments
-        return num_qubits, num_measurements
-
-    @property
-    def max_bits_per_request_allowed(self) -> int:
-        return (
-            self.backend.max_num_qubits
-            * self.backend.max_shots
-            * self.backend.max_experiments
-        )
-
-    @property
     def provider(self) -> Optional[Provider]:
         return self._provider
 
     @provider.setter
     def provider(self, provider: Optional[Provider]) -> None:
-        self._provider = provider
+        self._provider: Provider = provider
 
     @staticmethod
     def default_backend_filter(b: Backend) -> bool:
         config: BackendConfiguration = b.configuration()
         return config.memory and not config.simulator
 
+    def create_circuit(self, num_qubits: int) -> QiskitCircuit:  # type: ignore
+        return QiskitCircuit(num_qubits)
+
+    def create_job(  # type: ignore
+        self,
+        circuit: QiskitCircuit,
+        backend: QiskitBackend,
+        num_measurements: int,
+    ) -> QiskitJob:
+        shots, experiments = compute_bounded_factorization(
+            num_measurements,
+            backend.max_shots,
+            backend.max_experiments,
+        )
+        return QiskitJob(circuit, backend, shots, experiments)
+
+    def fetch_random_bits(
+        self, protocol: QuantumProtocol, max_bits: Optional[int] = None
+    ) -> str:
+        max_bits = max_bits if max_bits and max_bits > 0 else None
+        result: ProtocolResult = protocol.run(self, max_bits)
+        return result.bitstring
+
+    def retrieve_backend(
+        self, max_bits_per_request: Optional[int] = None
+    ) -> QiskitBackend:
+        if self.provider:
+            self.backend = self._get_best_backend(
+                provider=self.provider,
+                backend_filter=self.backend_filter,
+            )
+        return QiskitBackend(self.backend, max_bits_per_request)
+
+    ############################### PRIVATE API ###############################
     @classmethod
-    def get_best_backend(
+    def _get_best_backend(
         cls,
         provider: Provider,
         backend_filter: Optional[BackendFilter] = None,
@@ -125,70 +143,3 @@ class QiskitPlatform(QuantumPlatform):
                 requested provider."
             )
         return least_busy(backends)
-
-    def create_circuit(self, num_qubits: int) -> QuantumCircuit:
-        return QiskitCircuit(num_qubits)
-
-    def create_job(
-        self, circuit: QuantumCircuit, num_measurements: int
-    ) -> QuantumJob:
-        shots, experiments = self._compute_bounded_factorization(
-            num_measurements,
-            self.backend.max_shots,
-            self.backend.max_experiments,
-        )
-        return QiskitJob(circuit, self.backend, shots, experiments)
-
-    def fetch_random_bits(self, protocol: QuantumProtocol) -> str:
-        self.refresh()
-        result: ProtocolResult = protocol.run(self)
-        return result.bitstring
-
-    def refresh(self) -> None:
-        if self.provider:
-            self.backend = self.get_best_backend(
-                provider=self.provider,
-                backend_filter=self.backend_filter,
-            )
-
-    ############################### PRIVATE API ###############################
-    @staticmethod
-    def _compute_bounded_factorization(
-        n: int, bound_A: int, bound_B: int
-    ) -> Tuple[int, int]:
-        if not bound_A * bound_B > n:
-            return bound_A, bound_B
-        swapped: bool = bound_A > bound_B
-        bound_A, bound_B = sorted([bound_A, bound_B])
-        final_b: int = bound_B
-        final_a: int = n // final_b
-        final_delta: int = n - final_a * final_b
-        a: int = final_a + 1
-        b: int = n // a
-        delta: int = n - a * b
-        while a <= bound_A and a <= b and final_delta != 0:
-            if delta < final_delta:
-                final_a, final_b, final_delta = a, b, delta
-            a += 1
-            b = n // a
-            delta = n - a * b
-        return (final_b, final_a) if swapped else (final_a, final_b)
-
-    @property
-    def _qiskit_job_partition(self) -> Tuple[int, int, int]:
-        experiments: int = self.backend.max_experiments
-        shots: int = self.backend.max_shots
-        num_qubits: int = self.backend.max_num_qubits
-        max_bits_per_request: int = self.max_bits_per_request
-        if max_bits_per_request > num_qubits:
-            num_measurements: int = max_bits_per_request // num_qubits
-            shots, experiments = self._compute_bounded_factorization(
-                num_measurements,
-                self.backend.max_shots,
-                self.backend.max_experiments,
-            )
-        elif max_bits_per_request > 0:
-            experiments = 1
-            shots = 1
-            num_qubits = max_bits_per_request
-        return num_qubits, shots, experiments

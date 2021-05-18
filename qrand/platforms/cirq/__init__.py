@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 11, 2021
+##   |  ___/|  _  /    DATE: May 17, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,11 +20,13 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
+from .backend import CirqBackend
 from .circuit import CirqCircuit
 from .job import CirqJob
 from .platform import CirqPlatform
 
 __all__ = [
+    "CirqBackend",
     "CirqCircuit",
     "CirqJob",
     "CirqPlatform",

@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 13, 2021
+##   |  ___/|  _  /    DATE: May 17, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -22,12 +22,13 @@
 
 from typing import List
 
-from ..circuit import QuantumCircuit
 from ..job import QuantumJob
+from .backend import QsharpBackend
+from .circuit import QsharpCircuit
 
 
 ###############################################################################
-## QSHARP JOB
+## CIRQ JOB
 ###############################################################################
 class QsharpJob(QuantumJob):
     def __init__(self) -> None:
@@ -36,11 +37,19 @@ class QsharpJob(QuantumJob):
 
     ############################### PUBLIC API ###############################
     @property
-    def circuit(self) -> QuantumCircuit:
+    def backend(self) -> QsharpBackend:
+        raise NotImplementedError(self.ERROR_MSG)
+
+    @backend.setter
+    def backend(self, backend: QsharpBackend) -> None:
+        raise NotImplementedError(self.ERROR_MSG)
+
+    @property
+    def circuit(self) -> QsharpCircuit:
         raise NotImplementedError(self.ERROR_MSG)
 
     @circuit.setter
-    def circuit(self, circuit: QuantumCircuit) -> None:
+    def circuit(self, circuit: QsharpCircuit) -> None:
         raise NotImplementedError(self.ERROR_MSG)
 
     @property

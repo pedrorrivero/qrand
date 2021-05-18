@@ -20,41 +20,22 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import List
-
-from ..job import QuantumJob
-from .backend import CirqBackend
-from .circuit import CirqCircuit
+from ..backend import QuantumBackend
 
 
 ###############################################################################
-## CIRQ JOB
+## CIRQ BACKEND (DECORATOR)
 ###############################################################################
-class CirqJob(QuantumJob):
+class CirqBackend(QuantumBackend):
     def __init__(self) -> None:
         self.ERROR_MSG = f"{self.__class__.__name__}"  # TODO
         raise NotImplementedError(self.ERROR_MSG)
 
     ############################### PUBLIC API ###############################
     @property
-    def backend(self) -> CirqBackend:
-        raise NotImplementedError(self.ERROR_MSG)
-
-    @backend.setter
-    def backend(self, backend: CirqBackend) -> None:
+    def max_measurements(self) -> int:
         raise NotImplementedError(self.ERROR_MSG)
 
     @property
-    def circuit(self) -> CirqCircuit:
-        raise NotImplementedError(self.ERROR_MSG)
-
-    @circuit.setter
-    def circuit(self, circuit: CirqCircuit) -> None:
-        raise NotImplementedError(self.ERROR_MSG)
-
-    @property
-    def num_measurements(self) -> int:
-        raise NotImplementedError(self.ERROR_MSG)
-
-    def execute(self) -> List[str]:
+    def max_qubits(self) -> int:
         raise NotImplementedError(self.ERROR_MSG)

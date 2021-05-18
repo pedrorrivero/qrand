@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 11, 2021
+##   |  ___/|  _  /    DATE: May 17, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -22,7 +22,7 @@
 
 from abc import abstractmethod
 
-from ..protocols import ProtocolResult, QuantumProtocol
+from ..protocols import QuantumProtocol
 from .factory import QuantumFactory
 
 

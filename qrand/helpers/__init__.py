@@ -20,27 +20,8 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import List, Literal, Optional
+from .bounded_factorization import compute_bounded_factorization
 
-from ..platforms.factory import QuantumFactory
-from .protocol import BareQuantumProtocol
-from .result import ProtocolResult
-
-
-###############################################################################
-## SYCAMORE PROTOCOL
-###############################################################################
-class SycamoreProtocol(BareQuantumProtocol):
-    @property
-    @classmethod
-    def ERROR_MSG(cls):
-        return f"{cls.__name__}"  # TODO
-
-    ############################### PUBLIC API ###############################
-    def run(
-        self, factory: QuantumFactory, max_bits: Optional[int] = None
-    ) -> ProtocolResult:
-        raise NotImplementedError(self.__class__.ERROR_MSG)
-
-    def verify(self) -> Literal[False]:
-        raise NotImplementedError(self.__class__.ERROR_MSG)
+__all__ = [
+    "compute_bounded_factorization",
+]

@@ -20,27 +20,29 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import List, Literal, Optional
-
-from ..platforms.factory import QuantumFactory
-from .protocol import BareQuantumProtocol
-from .result import ProtocolResult
+from typing import Tuple
 
 
 ###############################################################################
-## SYCAMORE PROTOCOL
+## COMPUTE BOUNDED FACTORIZATION
 ###############################################################################
-class SycamoreProtocol(BareQuantumProtocol):
-    @property
-    @classmethod
-    def ERROR_MSG(cls):
-        return f"{cls.__name__}"  # TODO
-
-    ############################### PUBLIC API ###############################
-    def run(
-        self, factory: QuantumFactory, max_bits: Optional[int] = None
-    ) -> ProtocolResult:
-        raise NotImplementedError(self.__class__.ERROR_MSG)
-
-    def verify(self) -> Literal[False]:
-        raise NotImplementedError(self.__class__.ERROR_MSG)
+def compute_bounded_factorization(
+    n: int, bound_A: int, bound_B: int
+) -> Tuple[int, int]:
+    if bound_A * bound_B < n:
+        return bound_A, bound_B
+    swapped: bool = bound_A > bound_B
+    bound_A, bound_B = sorted([bound_A, bound_B])
+    final_b: int = bound_B
+    final_a: int = n // final_b
+    final_delta: int = n - final_a * final_b
+    a: int = final_a + 1
+    b: int = n // a
+    delta: int = n - a * b
+    while a <= bound_A and a <= b and final_delta != 0:
+        if delta < final_delta:
+            final_a, final_b, final_delta = a, b, delta
+        a += 1
+        b = n // a
+        delta = n - a * b
+    return (final_b, final_a) if swapped else (final_a, final_b)

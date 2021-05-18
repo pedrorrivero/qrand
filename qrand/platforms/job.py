@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 13, 2021
+##   |  ___/|  _  /    DATE: May 17, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -23,6 +23,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
+from .backend import QuantumBackend
 from .circuit import QuantumCircuit
 
 
@@ -30,6 +31,15 @@ from .circuit import QuantumCircuit
 ## QUANTUM JOB INTERFACE (ADAPTER)
 ###############################################################################
 class QuantumJob(ABC):
+    @property
+    @abstractmethod
+    def backend(self) -> QuantumBackend:
+        pass
+
+    @backend.setter
+    def backend(self, backend: QuantumBackend):
+        pass
+
     @property
     @abstractmethod
     def circuit(self) -> QuantumCircuit:

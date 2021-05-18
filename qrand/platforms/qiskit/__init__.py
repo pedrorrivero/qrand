@@ -20,11 +20,13 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
+from .backend import QiskitBackend
 from .circuit import QiskitCircuit
 from .job import QiskitJob
 from .platform import QiskitPlatform
 
 __all__ = [
+    "QiskitBackend",
     "QiskitCircuit",
     "QiskitJob",
     "QiskitPlatform",

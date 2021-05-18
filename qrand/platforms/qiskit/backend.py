@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: April 7, 2021
+##   |  ___/|  _  /    DATE: May 17, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,25 +20,31 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
+from typing import Callable, Optional
+
 from qiskit.providers import BackendV1 as Backend
 from qiskit.providers import Job, Options
+
+from ..backend import QuantumBackend
 
 
 ###############################################################################
 ## QISKIT BACKEND (DECORATOR)
 ###############################################################################
-class QiskitBackend(Backend):
-    def __init__(self, backend: Backend) -> None:
+class QiskitBackend(QuantumBackend, Backend):
+    def __init__(
+        self, backend: Backend, max_bits_per_request: Optional[int] = None
+    ) -> None:
         self._base_backend: Backend = backend
-        super().__init__(backend.configuration(), backend.provider())
+        super(QuantumBackend, self).__init__(
+            backend.configuration(), backend.provider()
+        )
         self._options: Options = backend._options
-
-    ############################# IMPLEMENTATION #############################
-    def _default_options(self) -> Options:
-        return self._base_backend._default_options()
-
-    def run(self, run_input, **options) -> Job:
-        return self._base_backend.run(run_input, **options)
+        try:
+            mbpr = backend.max_bits_per_request
+        except AttributeError:
+            mbpr = None
+        self.max_bits_per_request = max_bits_per_request or mbpr
 
     ############################### PUBLIC API ###############################
     @property
@@ -55,7 +61,11 @@ class QiskitBackend(Backend):
         )
 
     @property
-    def max_num_qubits(self) -> int:
+    def max_measurements(self) -> int:
+        return self.max_shots * self.max_experiments
+
+    @property
+    def max_qubits(self) -> int:
         return (
             self.configuration_dict["num_qubits"]
             if self.configuration_dict.__contains__("num_qubits")
@@ -80,3 +90,10 @@ class QiskitBackend(Backend):
             if self.configuration_dict.__contains__("memory")
             else False
         )
+
+    ############################ QISKIT INTERFACE ############################
+    def _default_options(self) -> Options:
+        return self._base_backend._default_options()
+
+    def run(self, run_input, **options) -> Job:
+        return self._base_backend.run(run_input, **options)

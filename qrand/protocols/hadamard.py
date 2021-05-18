@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 13, 2021
+##   |  ___/|  _  /    DATE: May 17, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,8 +20,9 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import List, Literal
+from typing import List, Literal, Optional
 
+from ..platforms.backend import QuantumBackend
 from ..platforms.circuit import QuantumCircuit
 from ..platforms.factory import QuantumFactory
 from ..platforms.job import QuantumJob
@@ -34,10 +35,16 @@ from .result import PlainResult, ProtocolResult
 ###############################################################################
 class HadamardProtocol(BareQuantumProtocol):
     ############################### PUBLIC API ###############################
-    def run(self, factory: QuantumFactory) -> ProtocolResult:
-        circuit: QuantumCircuit = self._build_quantum_circuit(factory)
-        _, num_measurements = factory.job_partition
-        job: QuantumJob = factory.create_job(circuit, num_measurements)
+    def run(
+        self, factory: QuantumFactory, max_bits: Optional[int] = None
+    ) -> ProtocolResult:
+        backend: QuantumBackend = factory.retrieve_backend(max_bits)
+        num_qubits, num_measurements = backend.job_partition
+        circuit: QuantumCircuit = factory.create_circuit(num_qubits)
+        circuit = self._assemble_quantum_circuit(circuit)
+        job: QuantumJob = factory.create_job(
+            circuit, backend, num_measurements
+        )
         output: List[str] = job.execute()
         return self._parse_output(output)
 
@@ -45,11 +52,9 @@ class HadamardProtocol(BareQuantumProtocol):
         return False
 
     ############################### PRIVATE API ###############################
-    def _build_quantum_circuit(
-        self, factory: QuantumFactory
+    def _assemble_quantum_circuit(
+        self, circuit: QuantumCircuit
     ) -> QuantumCircuit:
-        num_qubits, _ = factory.job_partition
-        circuit: QuantumCircuit = factory.create_circuit(num_qubits)
         for q in range(circuit.num_qubits):
             circuit.h(q)
             circuit.measure(q)

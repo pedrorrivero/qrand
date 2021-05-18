@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 13, 2021
+##   |  ___/|  _  /    DATE: May 17, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -25,13 +25,12 @@ from warnings import warn
 
 from qiskit import QuantumCircuit as QiskitQuantumCircuit
 from qiskit import execute
-from qiskit.providers import BackendV1 as Backend
 from qiskit.providers import Job
 from qiskit.result import Counts, Result
 
-from ..circuit import QuantumCircuit
 from ..job import QuantumJob
 from .backend import QiskitBackend
+from .circuit import QiskitCircuit
 
 
 ###############################################################################
@@ -40,13 +39,13 @@ from .backend import QiskitBackend
 class QiskitJob(QuantumJob):
     def __init__(
         self,
-        circuit: QuantumCircuit,
-        backend: Backend,
+        circuit: QiskitCircuit,
+        backend: QiskitBackend,
         shots: Optional[int] = None,
         experiments: Optional[int] = None,
     ) -> None:
-        self.backend: QiskitBackend = backend  # type: ignore
-        self.circuit: QuantumCircuit = circuit
+        self.backend: QiskitBackend = backend
+        self.circuit: QiskitCircuit = circuit
         self.experiments: int = experiments  # type: ignore
         self.shots: int = shots  # type: ignore
         self._base_job: Optional[Job] = None
@@ -57,22 +56,22 @@ class QiskitJob(QuantumJob):
         return self._backend
 
     @backend.setter
-    def backend(self, backend: Backend) -> None:
-        self._backend = QiskitBackend(backend)
+    def backend(self, backend: QiskitBackend) -> None:
+        self._backend: QiskitBackend = backend
 
     @property
-    def circuit(self) -> QuantumCircuit:
+    def circuit(self) -> QiskitCircuit:
         return self._circuit
 
     @circuit.setter
-    def circuit(self, circuit: QuantumCircuit) -> None:
-        if self.backend.max_num_qubits < circuit.num_qubits:
+    def circuit(self, circuit: QiskitCircuit) -> None:
+        if self.backend.max_qubits < circuit.num_qubits:
             raise RuntimeError(
                 f"Failed to assign QiskitCircuit for QiskitJob. Number of \
-                qubits in QiskitCircuit unsupported by the provided Backend: \
-                {self.backend.max_num_qubits}<{circuit.num_qubits}."
+                qubits in QiskitCircuit unsupported by this job's Backend: \
+                {self.backend.max_qubits}<{circuit.num_qubits}."
             )
-        self._circuit: QuantumCircuit = circuit
+        self._circuit: QiskitCircuit = circuit
 
     @property
     def experiments(self) -> int:
@@ -87,7 +86,7 @@ class QiskitJob(QuantumJob):
         )
         if self.backend.max_experiments < experiments:
             warn(
-                f"Number of experiments unsupported by the provided Backend: \
+                f"Number of experiments unsupported by the job's Backend: \
                 {self.backend.max_experiments}<{experiments}. \
                 Using max_experiments instead.",
                 UserWarning,
@@ -104,7 +103,7 @@ class QiskitJob(QuantumJob):
         shots = shots if shots and shots > 1 else self.backend.max_shots
         if self.backend.max_shots < shots:
             warn(
-                f"Number of shots unsupported by the provided Backend: \
+                f"Number of shots unsupported by the job's Backend: \
                 {self.backend.max_shots}<{shots}. Using max_shots instead.",
                 UserWarning,
             )
@@ -134,10 +133,13 @@ class QiskitJob(QuantumJob):
         return True if self.shots > 1 else False
 
     @staticmethod
-    def _reverse_string(string: str) -> str:
-        return string[::-1]
+    def _reverse_endian(numbers_as_strings: List[str]) -> List[str]:
+        reversed: List[str] = []
+        for s in numbers_as_strings:
+            reversed.append(s[::-1])
+        return reversed
 
-    def _parse_result(self, result) -> List[str]:
+    def _parse_result(self, result: Result) -> List[str]:
         measurements: List[str] = []
         if self._requires_memory:
             for e in range(self.experiments):
@@ -147,6 +149,4 @@ class QiskitJob(QuantumJob):
             counts: List[Counts] = [cts] if type(cts) != list else cts
             for c in counts:
                 measurements += [k for k, v in c.items() if v == 1]
-        for m in measurements:
-            m = self._reverse_string(m)
-        return measurements
+        return self._reverse_endian(measurements)

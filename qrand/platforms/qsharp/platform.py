@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 13, 2021
+##   |  ___/|  _  /    DATE: May 17, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -22,9 +22,10 @@
 
 from typing import Tuple
 
-from ..circuit import QuantumCircuit
-from ..job import QuantumJob
 from ..platform import QuantumPlatform, QuantumProtocol
+from .backend import QsharpBackend
+from .circuit import QsharpCircuit
+from .job import QsharpJob
 
 
 ###############################################################################
@@ -44,12 +45,15 @@ class QsharpPlatform(QuantumPlatform):
     def max_bits_per_request_allowed(self) -> int:
         raise NotImplementedError(self.ERROR_MSG)
 
-    def create_circuit(self, num_qubits: int) -> QuantumCircuit:
+    def create_circuit(self, num_qubits: int) -> QsharpCircuit:
         raise NotImplementedError(self.ERROR_MSG)
 
-    def create_job(
-        self, circuit: QuantumCircuit, num_measurements: int
-    ) -> QuantumJob:
+    def create_job(  # type: ignore
+        self,
+        circuit: QsharpCircuit,
+        backend: QsharpBackend,
+        num_measurements: int,
+    ) -> QsharpJob:
         raise NotImplementedError(self.ERROR_MSG)
 
     def fetch_random_bits(self, protocol: QuantumProtocol) -> str:
