@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 12, 2021
+##   |  ___/|  _  /    DATE: May 18, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -26,7 +26,7 @@ from typing import Any, Callable, Final, Union
 from numpy import float64, uint32, uint64
 from randomgen import UserBitGenerator
 
-from .bit_cache import BitCache
+from .caches import BasicCache as BitCache
 from .platforms import QuantumPlatform
 from .protocols import QuantumProtocol
 

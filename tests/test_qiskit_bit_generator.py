@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 13, 2021
+##   |  ___/|  _  /    DATE: May 18, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -47,9 +47,8 @@ class TestBitCache:
         bitcache = BitCache()
         cache = "100" * 100
         bitcache.push(cache)
-        assert (
-            bitcache.flush() and bitcache.size == 0 and bitcache.dump() == ""
-        )
+        bitcache.flush()
+        assert bitcache.size == 0 and bitcache.dump() == ""
 
     def test_pop(self):
         bitcache = BitCache()
@@ -59,7 +58,7 @@ class TestBitCache:
             bitcache.pop(0)
         with pytest.raises(ValueError):
             bitcache.pop(-1)
-        with pytest.raises(ValueError):
+        with pytest.raises(RuntimeError):
             bitcache.pop(len(cache) + 1)
         assert (
             bitcache.pop(3) == "100"
@@ -79,11 +78,8 @@ class TestBitCache:
             bitcache.push(0)
         with pytest.raises(ValueError):
             bitcache.push("abc")
-        assert (
-            bitcache.push(cache)
-            and bitcache._cache == cache
-            and bitcache.size == len(cache)
-        )
+        bitcache.push(cache)
+        assert bitcache._cache == cache and bitcache.size == len(cache)
 
     ############################ PUBLIC PROPERTIES ############################
     def test_state(self):
@@ -146,11 +142,8 @@ class TestQiskitBitGenerator:
         bitgen = QiskitBitGenerator()
         cache = "100" * 100
         bitgen.load_cache(cache)
-        assert (
-            bitgen.flush_cache()
-            and bitgen._bitcache.size == 0
-            and bitgen._bitcache._cache == ""
-        )
+        bitgen.flush_cache()
+        assert bitgen._bitcache.size == 0 and bitgen._bitcache._cache == ""
 
     def test_load_cache(self):
         bitgen = QiskitBitGenerator()
@@ -159,15 +152,15 @@ class TestQiskitBitGenerator:
             bitgen.load_cache(0)
         with pytest.raises(ValueError):
             bitgen.load_cache("abc")
+        bitgen.load_cache(cache)
+        bitgen.load_cache(cache)
         assert (
-            bitgen.load_cache(cache)
-            and bitgen.load_cache(cache)
-            and bitgen._bitcache.size == 2 * len(cache)
+            bitgen._bitcache.size == 2 * len(cache)
             and bitgen._bitcache._cache == cache + cache
         )
+        bitgen.load_cache(cache, flush=True)
         assert (
-            bitgen.load_cache(cache, flush=True)
-            and bitgen._bitcache.size == len(cache)
+            bitgen._bitcache.size == len(cache)
             and bitgen._bitcache._cache == cache
         )
 

@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: April 5, 2021
+##   |  ___/|  _  /    DATE: May 18, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,22 +20,42 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from .helpers import is_bitstring
+from warnings import warn
+
+from ..helpers import is_bitstring
+from .cache import BitCache
+
+DEPRECATION_WARNING = " will be deprecated in version 1.0.0."
 
 
 ###############################################################################
-## BIT CACHE
+## BASIC CACHE
 ###############################################################################
-class BitCache:
+class BasicCache(BitCache):
     """
     BitCache first in, first out (FIFO) data structure.
     """
 
     def __init__(self) -> None:
         self._cache: str = ""
-        self.size: int = 0
 
-    ############################# PUBLIC METHODS #############################
+    ############################### PUBLIC API ###############################
+    @property
+    def size(self) -> int:
+        """
+        The number of bits currently stored in the BitCache.
+        """
+        return len(self._cache)
+
+    @property
+    def state(self) -> dict:
+        """
+        The state of the BitCache object.
+        """
+        WARNING_MESSAGE = "state()" + DEPRECATION_WARNING
+        warn(WARNING_MESSAGE, FutureWarning)
+        return {"size": self.size}
+
     def dump(self) -> str:
         """
         Outputs all the contents in the cache without erasing.
@@ -47,18 +67,11 @@ class BitCache:
         """
         return self._cache
 
-    def flush(self) -> bool:
+    def flush(self) -> None:
         """
         Erases the cache.
-
-        RETURNS
-        -------
-        out: bool
-            `True` if succeeds, `False` otherwise.
         """
         self._cache = ""
-        self.size = 0
-        return True
 
     def pop(self, n: int) -> str:
         """
@@ -82,13 +95,12 @@ class BitCache:
         if n < 1:
             raise ValueError("Input number of bits must be greater than zero")
         elif n > self.size:
-            raise ValueError("Insufficient cache size")
+            raise RuntimeError("Insufficient cache size")
         bitstring: str = self._cache[:n]
         self._cache = self._cache[n:]
-        self.size -= n if n < self.size else self.size
         return bitstring
 
-    def push(self, bitstring: str) -> bool:
+    def push(self, bitstring: str) -> None:
         """
         Inserts bitstring at the end of the cache.
 
@@ -96,11 +108,6 @@ class BitCache:
         ----------
         bitstring: str
             The bitstring to insert.
-
-        RETURNS
-        -------
-        out: bool
-            `True` if succeeds, `False` otherwise.
 
         RAISES
         ------
@@ -112,13 +119,3 @@ class BitCache:
         if not is_bitstring(bitstring):
             raise ValueError(f"Invalid bitstring value '{bitstring}'")
         self._cache += bitstring
-        self.size += len(bitstring)
-        return True
-
-    ############################ PUBLIC PROPERTIES ############################
-    @property
-    def state(self) -> dict:
-        """
-        The state of the BitCache object.
-        """
-        return {"size": self.size}

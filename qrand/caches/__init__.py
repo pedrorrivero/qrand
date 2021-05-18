@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: March 27, 2021
+##   |  ___/|  _  /    DATE: May 18, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,13 +20,10 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from abc import ABC, abstractmethod
+from .basic import BasicCache
+from .cache import BitCache
 
-
-###############################################################################
-## BIT CACHE INTERFACE
-###############################################################################
-class BitCache(ABC):
-    @abstractmethod
-    def _do_something(self):
-        pass
+__all__ = [
+    "BitCache",
+    "BasicCache",
+]

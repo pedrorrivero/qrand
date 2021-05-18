@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 14, 2021
+##   |  ___/|  _  /    DATE: May 18, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -45,7 +45,7 @@ def test_QiskitBitGenerator():
     assert bitgen.state["backend_config"]["simulator"]
     gen = Generator(bitgen)
     cache = "100" * 1000
-    assert bitgen.load_cache(cache)
+    bitgen.load_cache(cache)
     assert (
         bitgen.random_raw() == 10540996613548315209
         and bitgen.random_bitstring()
@@ -61,7 +61,7 @@ def test_QiskitBitGenerator():
         and gen.standard_normal() == -0.24679872730094507
         and gen.triangular(-1, 0, 1) == 0.07417990022744847
     )
-    assert bitgen.flush_cache()
+    bitgen.flush_cache()
     bitgen = QiskitBitGenerator(max_bits_per_request=128, ISRAW32=True)
     # bitgen.random_raw()
     # assert bitgen._fetch_random_bits()

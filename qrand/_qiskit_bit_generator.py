@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 12, 2021
+##   |  ___/|  _  /    DATE: May 18, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -30,7 +30,7 @@ from qiskit.providers.ibmq import IBMQError, least_busy
 from qiskit.providers.models import BackendConfiguration
 from qiskit.result import Counts, Result
 
-from .bit_cache import BitCache
+from .caches import BasicCache as BitCache
 from .quantum_bit_generator import QuantumBitGenerator
 
 ###############################################################################
@@ -195,7 +195,7 @@ class QiskitBitGenerator(QuantumBitGenerator):
         return least_busy(backends)
 
     ############################# PUBLIC METHODS #############################
-    def flush_cache(self) -> bool:  # type: ignore
+    def flush_cache(self) -> None:
         """
         Erase the cache.
 
@@ -204,11 +204,9 @@ class QiskitBitGenerator(QuantumBitGenerator):
         out: bool
             `True` if succeeds, `False` otherwise.
         """
-        return self._bitcache.flush()
+        self._bitcache.flush()
 
-    def load_cache(  # type: ignore
-        self, bitstring: str, flush: bool = False
-    ) -> bool:
+    def load_cache(self, bitstring: str, flush: bool = False) -> None:
         """
         Load cache contents from bitstring.
 
@@ -232,8 +230,8 @@ class QiskitBitGenerator(QuantumBitGenerator):
             If input bitstring is not a valid bitstring
         """
         if flush:
-            return self._bitcache.flush() and self._bitcache.push(bitstring)
-        return self._bitcache.push(bitstring)
+            self._bitcache.flush()
+        self._bitcache.push(bitstring)
 
     def random_bitstring(self, n_bits: int = 0) -> str:
         """
@@ -383,7 +381,7 @@ class QiskitBitGenerator(QuantumBitGenerator):
             "dynamic_backend": {
                 "filter": "Custom" if self._backend_filter else "Default",
             },
-            "bitcache": self._bitcache.state,
+            "bitcache": {"size": self._bitcache.size},
         }
         if not self._provider:
             s.pop("dynamic_backend")
