@@ -28,7 +28,6 @@ from qiskit.providers import Provider
 from qiskit.providers.ibmq import IBMQError, least_busy
 from qiskit.providers.models import BackendConfiguration
 
-from ...helpers import compute_bounded_factorization
 from ...protocols import ProtocolResult, QuantumProtocol
 from ..platform import QuantumPlatform
 from .backend import QiskitBackend
@@ -101,14 +100,9 @@ class QiskitPlatform(QuantumPlatform):
         self,
         circuit: QiskitCircuit,
         backend: QiskitBackend,
-        num_measurements: int,
+        num_measurements: Optional[int],
     ) -> QiskitJob:
-        shots, experiments = compute_bounded_factorization(
-            num_measurements,
-            backend.max_shots,
-            backend.max_experiments,
-        )
-        return QiskitJob(circuit, backend, shots, experiments)
+        return QiskitJob(circuit, backend, num_measurements)
 
     def fetch_random_bits(
         self, protocol: QuantumProtocol, max_bits: Optional[int] = None

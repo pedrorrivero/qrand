@@ -20,7 +20,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import Tuple
+from typing import Optional, Tuple
 
 from ..platform import QuantumPlatform, QuantumProtocol
 from .backend import CirqBackend
@@ -37,14 +37,6 @@ class CirqPlatform(QuantumPlatform):
         raise NotImplementedError(self.ERROR_MSG)
 
     ############################### PUBLIC API ###############################
-    @property
-    def job_partition(self) -> Tuple[int, int]:
-        raise NotImplementedError(self.ERROR_MSG)
-
-    @property
-    def max_bits_per_request_allowed(self) -> int:
-        raise NotImplementedError(self.ERROR_MSG)
-
     def create_circuit(self, num_qubits: int) -> CirqCircuit:
         raise NotImplementedError(self.ERROR_MSG)
 
@@ -52,9 +44,14 @@ class CirqPlatform(QuantumPlatform):
         self,
         circuit: CirqCircuit,
         backend: CirqBackend,
-        num_measurements: int,
+        num_measurements: Optional[int] = None,
     ) -> CirqJob:
         raise NotImplementedError(self.ERROR_MSG)
 
     def fetch_random_bits(self, protocol: QuantumProtocol) -> str:
+        raise NotImplementedError(self.ERROR_MSG)
+
+    def retrieve_backend(
+        self, max_bits_per_request: Optional[int] = None
+    ) -> CirqBackend:
         raise NotImplementedError(self.ERROR_MSG)

@@ -41,7 +41,7 @@ class QuantumFactory(ABC):
         self,
         circuit: QuantumCircuit,
         backend: QuantumBackend,
-        num_measurements: int,
+        num_measurements: Optional[int] = None,
     ) -> QuantumJob:
         pass
 

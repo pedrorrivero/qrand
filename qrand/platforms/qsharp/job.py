@@ -20,7 +20,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import List
+from typing import List, Optional
 
 from ..job import QuantumJob
 from .backend import QsharpBackend
@@ -28,7 +28,7 @@ from .circuit import QsharpCircuit
 
 
 ###############################################################################
-## CIRQ JOB
+## QSHARP JOB
 ###############################################################################
 class QsharpJob(QuantumJob):
     def __init__(self) -> None:
@@ -54,6 +54,10 @@ class QsharpJob(QuantumJob):
 
     @property
     def num_measurements(self) -> int:
+        raise NotImplementedError(self.ERROR_MSG)
+
+    @num_measurements.setter
+    def num_measurements(self, num_measurements: Optional[int]) -> None:
         raise NotImplementedError(self.ERROR_MSG)
 
     def execute(self) -> List[str]:

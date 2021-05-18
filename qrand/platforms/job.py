@@ -21,7 +21,7 @@
 ## limitations under the License.
 
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Optional
 
 from .backend import QuantumBackend
 from .circuit import QuantumCircuit
@@ -37,7 +37,7 @@ class QuantumJob(ABC):
         pass
 
     @backend.setter
-    def backend(self, backend: QuantumBackend):
+    def backend(self, backend: QuantumBackend) -> None:
         pass
 
     @property
@@ -46,12 +46,16 @@ class QuantumJob(ABC):
         pass
 
     @circuit.setter
-    def circuit(self, circuit: QuantumCircuit):
+    def circuit(self, circuit: QuantumCircuit) -> None:
         pass
 
     @property
     @abstractmethod
     def num_measurements(self) -> int:
+        pass
+
+    @num_measurements.setter
+    def num_measurements(self, num_measurements: Optional[int]) -> None:
         pass
 
     @abstractmethod

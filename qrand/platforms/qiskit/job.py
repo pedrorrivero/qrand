@@ -28,6 +28,7 @@ from qiskit import execute
 from qiskit.providers import Job
 from qiskit.result import Counts, Result
 
+from ...helpers import compute_bounded_factorization, reverse_endian
 from ..job import QuantumJob
 from .backend import QiskitBackend
 from .circuit import QiskitCircuit
@@ -41,13 +42,11 @@ class QiskitJob(QuantumJob):
         self,
         circuit: QiskitCircuit,
         backend: QiskitBackend,
-        shots: Optional[int] = None,
-        experiments: Optional[int] = None,
+        num_measurements: Optional[int] = None,
     ) -> None:
         self.backend: QiskitBackend = backend
         self.circuit: QiskitCircuit = circuit
-        self.experiments: int = experiments  # type: ignore
-        self.shots: int = shots  # type: ignore
+        self.num_measurements: int = num_measurements  # type: ignore
         self._base_job: Optional[Job] = None
 
     ############################### PUBLIC API ###############################
@@ -74,54 +73,40 @@ class QiskitJob(QuantumJob):
         self._circuit: QiskitCircuit = circuit
 
     @property
-    def experiments(self) -> int:
-        return self._experiments
-
-    @experiments.setter
-    def experiments(self, experiments: Optional[int]) -> None:
-        experiments = (
-            experiments
-            if experiments and experiments > 1
-            else self.backend.max_experiments
-        )
-        if self.backend.max_experiments < experiments:
-            warn(
-                f"Number of experiments unsupported by the job's Backend: \
-                {self.backend.max_experiments}<{experiments}. \
-                Using max_experiments instead.",
-                UserWarning,
-            )
-            experiments = self.backend.max_experiments
-        self._experiments: int = experiments
-
-    @property
-    def shots(self) -> int:
-        return self._shots
-
-    @shots.setter
-    def shots(self, shots: Optional[int]) -> None:
-        shots = shots if shots and shots > 1 else self.backend.max_shots
-        if self.backend.max_shots < shots:
-            warn(
-                f"Number of shots unsupported by the job's Backend: \
-                {self.backend.max_shots}<{shots}. Using max_shots instead.",
-                UserWarning,
-            )
-            shots = self.backend.max_shots
-        self._shots: int = shots
-
-    @property
     def num_measurements(self) -> int:
-        return self.shots * self.experiments
+        return self._shots * self._experiments
+
+    @num_measurements.setter
+    def num_measurements(self, num_measurements: Optional[int]) -> None:
+        num_measurements = (
+            num_measurements
+            if num_measurements
+            and type(num_measurements) is int
+            and 0 < num_measurements
+            else self.backend.max_measurements
+        )
+        if self.backend.max_measurements < num_measurements:
+            warn(
+                f"Number of measurements unsupported by the job's Backend: \
+                {self.backend.max_measurements}<{num_measurements}. \
+                Using max_measurements instead.",
+                UserWarning,
+            )
+            num_measurements = self.backend.max_measurements
+        self._shots, self._experiments = compute_bounded_factorization(
+            num_measurements,
+            self.backend.max_shots,
+            self.backend.max_experiments,
+        )
 
     def execute(self) -> List[str]:
         circuits: List[QiskitQuantumCircuit] = [
             self.circuit
-        ] * self.experiments
+        ] * self._experiments
         self._base_job = execute(
             circuits,
             self.backend,
-            shots=self.shots,
+            shots=self._shots,
             memory=self._requires_memory,
         )
         result: Result = self._base_job.result()
@@ -129,24 +114,43 @@ class QiskitJob(QuantumJob):
 
     ############################### PRIVATE API ###############################
     @property
-    def _requires_memory(self) -> bool:
-        return True if self.shots > 1 else False
+    def _experiments(self) -> int:
+        return self.__experiments
 
-    @staticmethod
-    def _reverse_endian(numbers_as_strings: List[str]) -> List[str]:
-        reversed: List[str] = []
-        for s in numbers_as_strings:
-            reversed.append(s[::-1])
-        return reversed
+    @_experiments.setter
+    def _experiments(self, experiments: Optional[int]) -> None:
+        self.__experiments: int = (
+            experiments
+            if type(experiments) is int
+            and 0 < experiments < self.backend.max_experiments  # type: ignore
+            else self.backend.max_experiments
+        )
+
+    @property
+    def _requires_memory(self) -> bool:
+        return True if self._shots > 1 else False
+
+    @property
+    def _shots(self) -> int:
+        return self.__shots
+
+    @_shots.setter
+    def _shots(self, shots: Optional[int]) -> None:
+        self.__shots: int = (
+            shots
+            if type(shots) is int
+            and 0 < shots < self.backend.max_shots  # type: ignore
+            else self.backend.max_shots
+        )
 
     def _parse_result(self, result: Result) -> List[str]:
         measurements: List[str] = []
         if self._requires_memory:
-            for e in range(self.experiments):
+            for e in range(self._experiments):
                 measurements += result.get_memory(e)
         else:
             cts = result.get_counts()
             counts: List[Counts] = [cts] if type(cts) != list else cts
             for c in counts:
                 measurements += [k for k, v in c.items() if v == 1]
-        return self._reverse_endian(measurements)
+        return reverse_endian(measurements)  # type: ignore
