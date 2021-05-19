@@ -35,6 +35,50 @@ from .protocols import QuantumProtocol
 ## QUANTUM BIT GENERATOR (FACADE)
 ###############################################################################
 class QuantumBitGenerator(UserBitGenerator):
+    """
+    A quantum random bit-generator which can interface with NumPy's random
+    module.
+
+    Parameters
+    ----------
+    platform: QuantumPlatform
+        The quantum platform that will be used for QRNG.
+    protocol: QuantumProtocol
+        The quantum protocol that will be used for QRNG.
+    ISRAW32: bool, default: False
+        Toggle 32-bit BitGenerator mode. If `False` the mode will be 64-bit.
+        This determines the default number of output BITS. Final: once an
+        object is instantiated, it cannot be overridden.
+
+    Attributes
+    ----------
+    BITS: int
+        The default number of output bits: either 32 or 64.
+    platform: QuantumPlatform
+        The quantum platform used for QRNG.
+    protocol: QuantumProtocol
+        The quantum protocol used for QRNG.
+
+    Methods
+    -------
+    dump_cache(flush: bool = False) -> str
+        Returns all the contents stored in the cache.
+    flush_cache() -> None:
+        Erase the cache.
+    load_cache(bitstring: str, flush: bool = False) -> None:
+        Load cache from bitstring.
+    random_bitstring(num_bits: int = 0) -> str:
+        Returns a random bitstring of a given lenght.
+    random_double(n: float = 1) -> float:
+        Returns a random double from a uniform distribution in the range [0,n).
+    random_uint(num_bits: int = 0) -> int:
+        Returns a random unsigned int of a given size in bits.
+
+    Notes
+    -----
+    It implements an efficient strategy to retrieve random bits from IBMQ's quantum backends.
+    """
+
     def __init__(
         self,
         platform: QuantumPlatform,
@@ -57,14 +101,28 @@ class QuantumBitGenerator(UserBitGenerator):
     @property
     def BITS(self) -> int:
         """
-        Either 32 or 64. The number of bits output by NumPy's `random_raw()`
-        method. Final, it cannot be modified after instantiation through the
-        ISRAW32 parameter.
+        The default number of output bits: either 32 or 64.
+
+        Final: it cannot be modified after instantiation through the ISRAW32 parameter. This is required by NumPy (e.g. `random_raw()` method).
         """
         return 32 if self._ISRAW32 else 64
 
     @property
+    def _bitcache(self) -> BitCache:
+        """
+        The cache to store retrieved random bits.
+        """
+        return self.__bitcache
+
+    @_bitcache.setter
+    def _bitcache(self, bitcache: BitCache) -> None:
+        self.__bitcache = bitcache
+
+    @property
     def platform(self) -> QuantumPlatform:
+        """
+        The quantum platform used for QRNG.
+        """
         return self._platform
 
     @platform.setter
@@ -73,6 +131,9 @@ class QuantumBitGenerator(UserBitGenerator):
 
     @property
     def protocol(self) -> QuantumProtocol:
+        """
+        The quantum protocol used for QRNG.
+        """
         return self._protocol
 
     @protocol.setter
@@ -83,15 +144,15 @@ class QuantumBitGenerator(UserBitGenerator):
         """
         Returns all the contents stored in the cache.
 
-        PARAMETERS
+        Parameters
         ----------
-        flush: bool
+        flush: bool, default: False
             If `True` erase the cache after dumping.
 
-        RETURNS
+        Returns
         -------
         out: str
-            The bitstring stored in cache.
+            The complete bitstring stored in cache.
         """
         bitstring: str = self._bitcache.dump()
         if flush:
@@ -101,36 +162,19 @@ class QuantumBitGenerator(UserBitGenerator):
     def flush_cache(self) -> None:
         """
         Erase the cache.
-
-        RETURNS
-        -------
-        out: bool
-            `True` if succeeds, `False` otherwise.
         """
         self._bitcache.flush()
 
     def load_cache(self, bitstring: str, flush: bool = False) -> None:
         """
-        Load cache contents from bitstring.
+        Load cache from bitstring.
 
-        PARAMETERS
+        Parameters
         ----------
         bitstring: str
             The bitstring to load to cache.
-        flush: bool
+        flush: bool, default: False
             If `True` erase cache before loading.
-
-        RETURNS
-        -------
-        out: bool
-            `True` if succeeds, `False` otherwise.
-
-        RAISES
-        ------
-        TypeError (push)
-            If input bitstring is not str
-        ValueError (push)
-            If input bitstring is not a valid bitstring
         """
         if flush:
             self._bitcache.flush()
@@ -138,16 +182,15 @@ class QuantumBitGenerator(UserBitGenerator):
 
     def random_bitstring(self, num_bits: int = 0) -> str:
         """
-        Returns a random bitstring of a given lenght. If less than one it
-        defaults to the raw number of bits for the instance QiskitBitGenerator
-        (i.e. 32 or 64).
+        Returns a random bitstring of a given lenght.
 
-        PARAMETERS
+        Parameters
         ----------
-        num_bits: int
-            Number of bits to retrieve.
+        num_bits: int, default: 0
+            Number of bits to retrieve. If less than one it defaults to the raw
+            number of BITS for the instance QuantumBitGenerator (i.e. 32 or 64).
 
-        RETURNS
+        Returns
         -------
         out: str
             Bitstring of lenght `num_bits`.
@@ -161,20 +204,21 @@ class QuantumBitGenerator(UserBitGenerator):
     def random_double(self, n: float = 1) -> float:
         """
         Returns a random double from a uniform distribution in the range
-        [0,n). Defaults to [0,1).
+        [0,n).
 
-        PARAMETERS
+        Parameters
         ----------
-        n: float
+        n: float, default: 1
             Size of the range [0,n) from which to draw the random number.
 
-        RETURNS
+        Returns
         -------
         out: float
             Random float in the range [0,n).
 
+        Notes
+        -----
         COPYRIGHT NOTICE
-        ----------------
         Source: https://github.com/ozanerhansha/qRNG
         License: GNU GENERAL PUBLIC LICENSE VERSION 3
         Changes:
@@ -191,13 +235,13 @@ class QuantumBitGenerator(UserBitGenerator):
         """
         Returns a random unsigned int of a given size in bits.
 
-        PARAMETERS
+        Parameters
         ----------
-        num_bits: int
+        num_bits: int, default: 0
             Number of bits to retrieve. If less than one it defaults to the raw
-            number of bits for the instance QiskitBitGenerator (i.e. 32 or 64).
+            number of BITS for the instance QuantumBitGenerator (i.e. 32 or 64).
 
-        RETURNS
+        Returns
         -------
         out: int
             Unsigned int of `num_bits` bits.
@@ -208,9 +252,20 @@ class QuantumBitGenerator(UserBitGenerator):
 
     ############################### PRIVATE API ###############################
     def _build_cache(self) -> BitCache:
+        """
+        Build new BitCache.
+
+        Returns
+        -------
+        out: BitCache
+            New BasicCache instance.
+        """
         return BasicCache()
 
     def _refill_cache(self) -> None:
+        """
+        Refill cache by fetching new random bits.
+        """
         bitstring: str = self.platform.fetch_random_bits(self.protocol)
         self._bitcache.push(bitstring)
 
@@ -218,8 +273,7 @@ class QuantumBitGenerator(UserBitGenerator):
     @property
     def _next_raw(self) -> Callable[[Any], Union[uint32, uint64]]:
         """
-        A callable that returns either 64 or 32 random bits. It must accept
-        a single input which is a void pointer to a memory address.
+        A callable that returns either 64 or 32 random bits. It must accept a single input which is a void pointer to a memory address.
         """
         return self._next_32 if self._ISRAW32 else self._next_64
 
