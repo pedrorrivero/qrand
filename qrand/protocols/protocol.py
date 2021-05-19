@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 17, 2021
+##   |  ___/|  _  /    DATE: May 19, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -87,7 +87,7 @@ class ValidationDecorator(QuantumProtocol):
         base_protocol: QuantumProtocol,
         validation_strategy: ValidationStrategy,
     ) -> None:
-        self.base_protocol: QuantumProtocol = base_protocol
+        self._base_protocol: QuantumProtocol = base_protocol
         self.validation_strategy: ValidationStrategy = validation_strategy
 
     ############################ STRATEGY PATTERN ############################
@@ -107,13 +107,9 @@ class ValidationDecorator(QuantumProtocol):
     def base_protocol(self) -> QuantumProtocol:
         return self._base_protocol
 
-    @base_protocol.setter
-    def base_protocol(self, protocol: QuantumProtocol) -> None:
-        self._base_protocol: QuantumProtocol = protocol
-
     def validate(self, result: ProtocolResult) -> bool:
         valid: bool = self._validate_layer(result)
-        if self.base_protocol.base_protocol is None:
+        if type(self.base_protocol) is BareQuantumProtocol:
             return valid
         return valid and self.base_protocol.validate(result)
 
@@ -129,4 +125,4 @@ class ValidationDecorator(QuantumProtocol):
     ############################### PRIVATE API ###############################
     def _validate_layer(self, result: ProtocolResult) -> bool:
         validation_token: str = result.validation_token
-        return self._validation_strategy.validate(validation_token)
+        return self.validation_strategy.validate(validation_token)
