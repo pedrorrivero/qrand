@@ -444,7 +444,7 @@ class QiskitBitGenerator(QuantumBitGenerator):
             and backend_config["n_qubits"]
             else 1
         )
-        max_bits_per_request: int = self._max_bits_per_request
+        max_bits_per_request: int = self._max_bits_per_request or 0
         if max_bits_per_request > n_qubits:
             experiments = min(
                 experiments,

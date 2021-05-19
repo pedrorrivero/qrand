@@ -107,11 +107,6 @@ class QiskitPlatform(QuantumPlatform):
     def fetch_random_bits(
         self, protocol: QuantumProtocol, max_bits: Optional[int] = None
     ) -> str:
-        max_bits = (
-            max_bits
-            if max_bits and type(max_bits) is int and max_bits > 0
-            else None
-        )
         result: ProtocolResult = protocol.run(self, max_bits)
         return result.bitstring
 
