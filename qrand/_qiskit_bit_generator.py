@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 18, 2021
+##   |  ___/|  _  /    DATE: May 19, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -22,7 +22,6 @@
 
 import struct
 from typing import Any, Callable, Final, List, Optional, Tuple
-from warnings import warn
 
 from qiskit import BasicAer, QuantumCircuit, execute
 from qiskit.providers import Backend, Job, Provider
@@ -31,14 +30,8 @@ from qiskit.providers.models import BackendConfiguration
 from qiskit.result import Counts, Result
 
 from .caches import BasicCache as BitCache
+from .errors import raise_deprecation_warning
 from .quantum_bit_generator import QuantumBitGenerator
-
-###############################################################################
-## DEPRECATION WARNING -> warn(WARNING_MESSAGE, FutureWarning)
-###############################################################################
-WARNING_MESSAGE = "QiskitBitGenerator will be deprecated in version 1.0.0."
-WARNING_MESSAGE += " Use QuantumBitGenerator and QiskitPlatform instead."
-
 
 ###############################################################################
 ## CUSTOM TYPES
@@ -116,7 +109,11 @@ class QiskitBitGenerator(QuantumBitGenerator):
         max_bits_per_request: int = 0,
         ISRAW32: bool = False,
     ) -> None:
-        warn(WARNING_MESSAGE, FutureWarning)
+        raise_deprecation_warning(
+            "QiskitBitGenerator",
+            "1.0.0",
+            "QuantumBitGenerator and QiskitPlatform",
+        )
         if backend:
             provider = None
         elif provider:

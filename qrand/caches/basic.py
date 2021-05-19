@@ -20,12 +20,9 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from warnings import warn
-
+from ..errors import raise_deprecation_warning
 from ..helpers import is_bitstring
 from .cache import BitCache
-
-DEPRECATION_WARNING = " will be deprecated in version 1.0.0."
 
 
 ###############################################################################
@@ -52,8 +49,7 @@ class BasicCache(BitCache):
         """
         The state of the BitCache object.
         """
-        WARNING_MESSAGE = "state()" + DEPRECATION_WARNING
-        warn(WARNING_MESSAGE, FutureWarning)
+        raise_deprecation_warning("state", "1.0.0")
         return {"size": self.size}
 
     def dump(self) -> str:

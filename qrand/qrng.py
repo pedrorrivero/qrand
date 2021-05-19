@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 14, 2021
+##   |  ___/|  _  /    DATE: May 19, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -24,11 +24,9 @@ import math
 from base64 import b32encode, b64encode
 from struct import pack, unpack
 from typing import Optional
-from warnings import warn
 
+from .errors import raise_deprecation_warning
 from .quantum_bit_generator import QuantumBitGenerator
-
-DEPRECATION_WARNING = " will be deprecated in version 1.0.0."
 
 
 ###############################################################################
@@ -81,9 +79,9 @@ class Qrng:
         out: str
             Bitstring of lenght `num_bits`.
         """
-        ## DEPRECATION WARNING
-        WARNING_MESSAGE = "get_bit_string()" + DEPRECATION_WARNING
-        warn(WARNING_MESSAGE, FutureWarning)
+        raise_deprecation_warning(
+            "get_bit_string", "1.0.0", "get_random_bitstring"
+        )
         return self._quantum_bit_generator.random_bitstring(num_bits)
 
     def get_random_base32(self, num_bits: int = 0) -> str:
@@ -361,9 +359,7 @@ class Qrng:
         """
         The state of the Qrng object.
         """
-        ## DEPRECATION WARNING
-        WARNING_MESSAGE = "state()" + DEPRECATION_WARNING
-        warn(WARNING_MESSAGE, FutureWarning)
+        raise_deprecation_warning("state", "1.0.0")
         return {
             "quantum_bit_generator": self._quantum_bit_generator.state,
         }
