@@ -78,7 +78,7 @@ class QuantumBitGenerator(UserBitGenerator):
 
     Notes
     -----
-    It implements an efficient strategy to retrieve random bits from IBMQ's quantum backends.
+    It implements an efficient strategy to retrieve random bits from the cloud quantum backends. Namely, on every conection, it retrieves as many bits as possible and stores them in a cache. This way, the total number of internet connections is greatly reduced.
     """
 
     def __init__(
