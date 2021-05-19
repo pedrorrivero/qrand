@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 18, 2021
+##   |  ___/|  _  /    DATE: May 19, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -26,7 +26,7 @@ from typing import Any, Callable, Final, Union
 from numpy import float64, uint32, uint64
 from randomgen import UserBitGenerator
 
-from .caches import BasicCache as BitCache
+from .caches import BasicCache, BitCache
 from .platforms import QuantumPlatform
 from .protocols import QuantumProtocol
 
@@ -44,7 +44,7 @@ class QuantumBitGenerator(UserBitGenerator):
         self.platform: QuantumPlatform = platform
         self.protocol: QuantumProtocol = protocol
         self._ISRAW32: Final[bool] = ISRAW32
-        self._bitcache: BitCache = BitCache()
+        self._bitcache: BitCache = self._build_cache()
         super().__init__(
             bits=self.BITS,
             next_raw=self._next_raw,
@@ -207,6 +207,9 @@ class QuantumBitGenerator(UserBitGenerator):
         return int(self.random_bitstring(num_bits), 2)
 
     ############################### PRIVATE API ###############################
+    def _build_cache(self) -> BitCache:
+        return BasicCache()
+
     def _refill_cache(self) -> None:
         bitstring: str = self.platform.fetch_random_bits(self.protocol)
         self._bitcache.push(bitstring)
