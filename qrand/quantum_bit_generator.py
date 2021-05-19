@@ -54,6 +54,8 @@ class QuantumBitGenerator(UserBitGenerator):
     ----------
     BITS: int
         The default number of output bits: either 32 or 64.
+    bitcache: BitCache
+        The cache to store retrieved random bits.
     platform: QuantumPlatform
         The quantum platform used for QRNG.
     protocol: QuantumProtocol
@@ -108,15 +110,11 @@ class QuantumBitGenerator(UserBitGenerator):
         return 32 if self._ISRAW32 else 64
 
     @property
-    def _bitcache(self) -> BitCache:
+    def bitcache(self) -> BitCache:
         """
         The cache to store retrieved random bits.
         """
-        return self.__bitcache
-
-    @_bitcache.setter
-    def _bitcache(self, bitcache: BitCache) -> None:
-        self.__bitcache = bitcache
+        return self._bitcache
 
     @property
     def platform(self) -> QuantumPlatform:
@@ -154,16 +152,16 @@ class QuantumBitGenerator(UserBitGenerator):
         out: str
             The complete bitstring stored in cache.
         """
-        bitstring: str = self._bitcache.dump()
+        bitstring: str = self.bitcache.dump()
         if flush:
-            self._bitcache.flush()
+            self.bitcache.flush()
         return bitstring
 
     def flush_cache(self) -> None:
         """
         Erase the cache.
         """
-        self._bitcache.flush()
+        self.bitcache.flush()
 
     def load_cache(self, bitstring: str, flush: bool = False) -> None:
         """
@@ -177,8 +175,8 @@ class QuantumBitGenerator(UserBitGenerator):
             If `True` erase cache before loading.
         """
         if flush:
-            self._bitcache.flush()
-        self._bitcache.push(bitstring)
+            self.bitcache.flush()
+        self.bitcache.push(bitstring)
 
     def random_bitstring(self, num_bits: int = 0) -> str:
         """
@@ -197,9 +195,9 @@ class QuantumBitGenerator(UserBitGenerator):
         """
         if num_bits < 1:
             num_bits = self.BITS
-        while self._bitcache.size < num_bits:
+        while self.bitcache.size < num_bits:
             self._refill_cache()
-        return self._bitcache.pop(num_bits)
+        return self.bitcache.pop(num_bits)
 
     def random_double(self, n: float = 1) -> float:
         """
@@ -267,7 +265,7 @@ class QuantumBitGenerator(UserBitGenerator):
         Refill cache by fetching new random bits.
         """
         bitstring: str = self.platform.fetch_random_bits(self.protocol)
-        self._bitcache.push(bitstring)
+        self.bitcache.push(bitstring)
 
     ############################# NUMPY INTERFACE #############################
     @property
