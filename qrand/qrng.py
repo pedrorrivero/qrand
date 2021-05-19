@@ -344,7 +344,7 @@ class Qrng:
         ----------
         num_bits: int
             Number of bits to retrieve. If less than one it defaults to the raw
-            number of bits for the instance QiskitBitGenerator (i.e. 32 or 64).
+            number of bits for the instance QuantumBitGenerator (i.e. 32 or 64).
 
         RETURNS
         -------
