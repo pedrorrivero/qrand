@@ -48,7 +48,9 @@ class CirqPlatform(QuantumPlatform):
     ) -> CirqJob:
         raise NotImplementedError(self.ERROR_MSG)
 
-    def fetch_random_bits(self, protocol: QuantumProtocol) -> str:
+    def fetch_random_bits(
+        self, protocol: QuantumProtocol, max_bits: Optional[int] = None
+    ) -> str:
         raise NotImplementedError(self.ERROR_MSG)
 
     def retrieve_backend(

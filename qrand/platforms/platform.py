@@ -21,6 +21,7 @@
 ## limitations under the License.
 
 from abc import abstractmethod
+from typing import Optional
 
 from ..protocols import QuantumProtocol
 from .factory import QuantumFactory
@@ -31,5 +32,7 @@ from .factory import QuantumFactory
 ###############################################################################
 class QuantumPlatform(QuantumFactory):
     @abstractmethod
-    def fetch_random_bits(self, protocol: QuantumProtocol) -> str:
+    def fetch_random_bits(
+        self, protocol: QuantumProtocol, max_bits: Optional[int] = None
+    ) -> str:
         pass
