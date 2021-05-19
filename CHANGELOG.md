@@ -1,3 +1,21 @@
+## 0.3.0a4 (2021-05-19)
+
+### Refactor
+
+- **ValidationDecorator**: remove validation_strategy setter
+- **platforms**: extract max_bits_per_request from QuantumBackend
+- **QuantumBitGenerator**: introduce BitCache interface
+
+### Feat
+
+- **QuantumBitGenerator**: add max_bits_per_request attribute
+- **QuantumBitGenerator**: add bitcache attribute
+- **errors**: add raise_deprecation_warning
+
+### Fix
+
+- **platforms**: update QuantumPlatform fetch_random_bits signature
+
 ## 0.3.0a3 (2021-05-18)
 
 ### Feat
