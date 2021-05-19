@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 17, 2021
+##   |  ___/|  _  /    DATE: May 19, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -32,19 +32,12 @@ from ..backend import QuantumBackend
 ## QISKIT BACKEND (DECORATOR)
 ###############################################################################
 class QiskitBackend(QuantumBackend, Backend):
-    def __init__(
-        self, backend: Backend, max_bits_per_request: Optional[int] = None
-    ) -> None:
+    def __init__(self, backend: Backend) -> None:
         self._base_backend: Backend = backend
         super(QuantumBackend, self).__init__(
             backend.configuration(), backend.provider()
         )
         self._options: Options = backend._options
-        try:
-            mbpr = backend.max_bits_per_request
-        except AttributeError:
-            mbpr = None
-        self.max_bits_per_request = max_bits_per_request or mbpr
 
     ############################### PUBLIC API ###############################
     @property

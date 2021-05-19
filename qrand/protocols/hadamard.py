@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 17, 2021
+##   |  ___/|  _  /    DATE: May 19, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,14 +20,15 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import List, Literal, Optional
+from typing import List, Literal, Optional, Tuple
 
+from ..helpers import compute_bounded_factorization
 from ..platforms.backend import QuantumBackend
 from ..platforms.circuit import QuantumCircuit
 from ..platforms.factory import QuantumFactory
 from ..platforms.job import QuantumJob
 from .protocol import BareQuantumProtocol
-from .result import BasicResult, ProtocolResult
+from .result import BasicResult
 
 
 ###############################################################################
@@ -37,9 +38,11 @@ class HadamardProtocol(BareQuantumProtocol):
     ############################### PUBLIC API ###############################
     def run(
         self, factory: QuantumFactory, max_bits: Optional[int] = None
-    ) -> ProtocolResult:
-        backend: QuantumBackend = factory.retrieve_backend(max_bits)
-        num_qubits, num_measurements = backend.job_partition
+    ) -> BasicResult:
+        backend: QuantumBackend = factory.retrieve_backend()
+        num_qubits, num_measurements = self._job_partition(
+            max_bits, backend.max_qubits, backend.max_measurements
+        )
         circuit: QuantumCircuit = factory.create_circuit(num_qubits)
         circuit = self._assemble_quantum_circuit(circuit)
         job: QuantumJob = factory.create_job(
@@ -52,15 +55,25 @@ class HadamardProtocol(BareQuantumProtocol):
         return False
 
     ############################### PRIVATE API ###############################
-    def _assemble_quantum_circuit(
-        self, circuit: QuantumCircuit
-    ) -> QuantumCircuit:
+    @staticmethod
+    def _assemble_quantum_circuit(circuit: QuantumCircuit) -> QuantumCircuit:
         for q in range(circuit.num_qubits):
             circuit.h(q)
             circuit.measure(q)
         return circuit
 
-    def _parse_output(self, output: List[str]) -> ProtocolResult:
+    @staticmethod
+    def _job_partition(
+        bits: Optional[int], max_qubits: int, max_measurements: int
+    ) -> Tuple[int, int]:
+        return (
+            compute_bounded_factorization(bits, max_qubits, max_measurements)
+            if bits and type(bits) is int and bits > 0
+            else (max_qubits, max_measurements)
+        )
+
+    @staticmethod
+    def _parse_output(output: List[str]) -> BasicResult:
         bitstring: str = ""
         for measurement in output:
             bitstring += measurement

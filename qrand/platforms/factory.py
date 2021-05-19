@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 17, 2021
+##   |  ___/|  _  /    DATE: May 19, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -46,7 +46,5 @@ class QuantumFactory(ABC):
         pass
 
     @abstractmethod
-    def retrieve_backend(
-        self, max_bits_per_request: Optional[int] = None
-    ) -> QuantumBackend:
+    def retrieve_backend(self) -> QuantumBackend:
         pass

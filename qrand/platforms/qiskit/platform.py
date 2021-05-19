@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 17, 2021
+##   |  ___/|  _  /    DATE: May 19, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -107,19 +107,21 @@ class QiskitPlatform(QuantumPlatform):
     def fetch_random_bits(
         self, protocol: QuantumProtocol, max_bits: Optional[int] = None
     ) -> str:
-        max_bits = max_bits if max_bits and max_bits > 0 else None
+        max_bits = (
+            max_bits
+            if max_bits and type(max_bits) is int and max_bits > 0
+            else None
+        )
         result: ProtocolResult = protocol.run(self, max_bits)
         return result.bitstring
 
-    def retrieve_backend(
-        self, max_bits_per_request: Optional[int] = None
-    ) -> QiskitBackend:
+    def retrieve_backend(self) -> QiskitBackend:
         if self.provider:
             self.backend = self._get_best_backend(
                 provider=self.provider,
                 backend_filter=self.backend_filter,
             )
-        return QiskitBackend(self.backend, max_bits_per_request)
+        return QiskitBackend(self.backend)
 
     ############################### PRIVATE API ###############################
     @classmethod

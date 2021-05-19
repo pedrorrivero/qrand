@@ -21,9 +21,6 @@
 ## limitations under the License.
 
 from abc import ABC, abstractmethod
-from typing import Optional, Tuple
-
-from ..helpers import compute_bounded_factorization
 
 
 ###############################################################################
@@ -40,26 +37,3 @@ class QuantumBackend(ABC):
     @abstractmethod
     def max_qubits(self) -> int:
         pass
-
-    ################################ CONCRETE ################################
-    @property
-    def job_partition(self) -> Tuple[int, int]:
-        return compute_bounded_factorization(
-            self.max_bits_per_request, self.max_qubits, self.max_measurements
-        )
-
-    @property
-    def max_bits_per_request(self) -> int:
-        try:
-            mbpr = self._max_bits_per_request
-        except AttributeError:
-            mbpr = None
-        max_allowed: int = self.max_qubits * self.max_measurements
-        return mbpr if mbpr and 0 < mbpr < max_allowed else max_allowed
-
-    @max_bits_per_request.setter
-    def max_bits_per_request(self, mbpr: Optional[int]) -> None:
-        mbpr = mbpr or 0
-        if not isinstance(mbpr, int):
-            raise TypeError(f"Expected int instance, {type(mbpr)} found")
-        self._max_bits_per_request: Optional[int] = mbpr if mbpr > 0 else None

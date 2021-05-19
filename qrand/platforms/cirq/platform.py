@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 17, 2021
+##   |  ___/|  _  /    DATE: May 19, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -53,7 +53,5 @@ class CirqPlatform(QuantumPlatform):
     ) -> str:
         raise NotImplementedError(self.ERROR_MSG)
 
-    def retrieve_backend(
-        self, max_bits_per_request: Optional[int] = None
-    ) -> CirqBackend:
+    def retrieve_backend(self) -> CirqBackend:
         raise NotImplementedError(self.ERROR_MSG)
