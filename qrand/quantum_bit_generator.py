@@ -181,13 +181,13 @@ class QuantumBitGenerator(UserBitGenerator):
             self.bitcache.flush()
         self.bitcache.push(bitstring)
 
-    def random_bitstring(self, num_bits: int = 0) -> str:
+    def random_bitstring(self, num_bits: Optional[int] = None) -> str:
         """
         Returns a random bitstring of a given lenght.
 
         Parameters
         ----------
-        num_bits: int, default: 0
+        num_bits: int, optional
             Number of bits to retrieve. If less than one it defaults to the raw
             number of BITS for the instance QuantumBitGenerator (i.e. 32 or 64).
 
@@ -196,8 +196,11 @@ class QuantumBitGenerator(UserBitGenerator):
         out: str
             Bitstring of lenght `num_bits`.
         """
-        if num_bits < 1:
-            num_bits = self.BITS
+        num_bits = (
+            num_bits
+            if num_bits and type(num_bits) is int and num_bits > 0
+            else self.BITS
+        )
         while self.bitcache.size < num_bits:
             self._refill_cache()
         return self.bitcache.pop(num_bits)
@@ -232,13 +235,13 @@ class QuantumBitGenerator(UserBitGenerator):
         value: float = unpack("d", packed)[0] - 1.0
         return value * n
 
-    def random_uint(self, num_bits: int = 0) -> int:
+    def random_uint(self, num_bits: Optional[int] = None) -> int:
         """
         Returns a random unsigned int of a given size in bits.
 
         Parameters
         ----------
-        num_bits: int, default: 0
+        num_bits: int, optional
             Number of bits to retrieve. If less than one it defaults to the raw
             number of BITS for the instance QuantumBitGenerator (i.e. 32 or 64).
 
@@ -247,8 +250,11 @@ class QuantumBitGenerator(UserBitGenerator):
         out: int
             Unsigned int of `num_bits` bits.
         """
-        if num_bits < 1:
-            num_bits = self.BITS
+        num_bits = (
+            num_bits
+            if num_bits and type(num_bits) is int and num_bits > 0
+            else self.BITS
+        )
         return int(self.random_bitstring(num_bits), 2)
 
     ############################### PRIVATE API ###############################

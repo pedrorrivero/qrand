@@ -230,7 +230,7 @@ class QiskitBitGenerator(QuantumBitGenerator):
             self._bitcache.flush()
         self._bitcache.push(bitstring)
 
-    def random_bitstring(self, n_bits: int = 0) -> str:
+    def random_bitstring(self, n_bits: int = 0) -> str:  # type: ignore
         """
         Returns a random bitstring of a given lenght. If less than one it
         defaults to the raw number of bits for the instance QiskitBitGenerator
@@ -252,7 +252,7 @@ class QiskitBitGenerator(QuantumBitGenerator):
             self._fetch_random_bits()
         return self._bitcache.pop(n_bits)
 
-    def random_uint(self, n_bits: int = 0) -> int:
+    def random_uint(self, n_bits: int = 0) -> int:  # type: ignore
         """
         Returns a random unsigned int of a given size in bits.
 
