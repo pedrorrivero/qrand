@@ -93,7 +93,7 @@ class QiskitPlatform(QuantumPlatform):
         config: BackendConfiguration = b.configuration()
         return config.memory and not config.simulator
 
-    def create_circuit(self, num_qubits: int) -> QiskitCircuit:  # type: ignore
+    def create_circuit(self, num_qubits: int) -> QiskitCircuit:
         return QiskitCircuit(num_qubits)
 
     def create_job(  # type: ignore

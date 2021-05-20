@@ -121,8 +121,9 @@ class QiskitJob(QuantumJob):
     def _experiments(self, experiments: Optional[int]) -> None:
         self.__experiments: int = (
             experiments
-            if type(experiments) is int
-            and 0 < experiments < self.backend.max_experiments  # type: ignore
+            if experiments
+            and type(experiments) is int
+            and 0 < experiments < self.backend.max_experiments
             else self.backend.max_experiments
         )
 
@@ -138,8 +139,9 @@ class QiskitJob(QuantumJob):
     def _shots(self, shots: Optional[int]) -> None:
         self.__shots: int = (
             shots
-            if type(shots) is int
-            and 0 < shots < self.backend.max_shots  # type: ignore
+            if shots
+            and type(shots) is int
+            and 0 < shots < self.backend.max_shots
             else self.backend.max_shots
         )
 
