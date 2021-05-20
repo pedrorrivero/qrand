@@ -188,8 +188,8 @@ class QuantumBitGenerator(UserBitGenerator):
         Parameters
         ----------
         num_bits: int, optional
-            Number of bits to retrieve. If less than one it defaults to the raw
-            number of BITS for the instance QuantumBitGenerator (i.e. 32 or 64).
+            Number of bits to retrieve. It defaults to the raw number of BITS
+            for the instance QuantumBitGenerator (i.e. 32 or 64).
 
         Returns
         -------
@@ -242,8 +242,8 @@ class QuantumBitGenerator(UserBitGenerator):
         Parameters
         ----------
         num_bits: int, optional
-            Number of bits to retrieve. If less than one it defaults to the raw
-            number of BITS for the instance QuantumBitGenerator (i.e. 32 or 64).
+            Number of bits to retrieve. It defaults to the raw number of BITS
+            for the instance QuantumBitGenerator (i.e. 32 or 64).
 
         Returns
         -------
