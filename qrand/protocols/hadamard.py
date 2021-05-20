@@ -54,9 +54,9 @@ class HadamardProtocol(BareQuantumProtocol):
 
     def run(self, factory: QuantumFactory) -> BasicResult:
         backend: QuantumBackend = factory.retrieve_backend()
-        num_qubits, num_measurements = self._job_partition(backend)
+        num_qubits, num_measurements = self._partition_job(backend)
         circuit: QuantumCircuit = factory.create_circuit(num_qubits)
-        circuit = self._assemble_quantum_circuit(circuit)
+        self._assemble_quantum_circuit(circuit)
         job: QuantumJob = factory.create_job(
             circuit, backend, num_measurements
         )
@@ -68,11 +68,10 @@ class HadamardProtocol(BareQuantumProtocol):
 
     ############################### PRIVATE API ###############################
     @staticmethod
-    def _assemble_quantum_circuit(circuit: QuantumCircuit) -> QuantumCircuit:
+    def _assemble_quantum_circuit(circuit: QuantumCircuit) -> None:
         for q in range(circuit.num_qubits):
             circuit.h(q)
             circuit.measure(q)
-        return circuit
 
     @staticmethod
     def _parse_output(output: List[str]) -> BasicResult:
@@ -81,7 +80,7 @@ class HadamardProtocol(BareQuantumProtocol):
             bitstring += measurement
         return BasicResult(bitstring)
 
-    def _job_partition(self, backend: QuantumBackend) -> Tuple[int, int]:
+    def _partition_job(self, backend: QuantumBackend) -> Tuple[int, int]:
         return (
             compute_bounded_factorization(
                 self.max_bits, backend.max_qubits, backend.max_measurements
