@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 17, 2021
+##   |  ___/|  _  /    DATE: May 20, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -29,6 +29,7 @@ from typing import Tuple
 def compute_bounded_factorization(
     n: int, bound_A: int, bound_B: int
 ) -> Tuple[int, int]:
+    _validate_arguments(n, bound_A, bound_B)
     if bound_A * bound_B < n:
         return bound_A, bound_B
     swapped: bool = bound_A > bound_B
@@ -46,3 +47,10 @@ def compute_bounded_factorization(
         b = n // a
         delta = n - a * b
     return (final_b, final_a) if swapped else (final_a, final_b)
+
+
+def _validate_arguments(n: int, bound_A: int, bound_B: int) -> None:
+    if not (type(n) is int and type(bound_A) is int and type(bound_B) is int):
+        raise TypeError("Input arguments must be natural numbers.")
+    if not (n > 0 and bound_A > 0 and bound_B > 0):
+        raise ValueError("Input arguments must be natural numbers.")
