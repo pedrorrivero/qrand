@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 19, 2021
+##   |  ___/|  _  /    DATE: May 20, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,7 +20,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import Optional, Tuple
+from typing import Optional
 
 from ..platform import QuantumPlatform, QuantumProtocol
 from .backend import CirqBackend
@@ -48,9 +48,7 @@ class CirqPlatform(QuantumPlatform):
     ) -> CirqJob:
         raise NotImplementedError(self.ERROR_MSG)
 
-    def fetch_random_bits(
-        self, protocol: QuantumProtocol, max_bits: Optional[int] = None
-    ) -> str:
+    def fetch_random_bits(self, protocol: QuantumProtocol) -> str:
         raise NotImplementedError(self.ERROR_MSG)
 
     def retrieve_backend(self) -> CirqBackend:

@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 19, 2021
+##   |  ___/|  _  /    DATE: May 20, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,7 +20,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import Callable, List, Optional, Tuple
+from typing import Callable, List, Optional
 
 from qiskit import BasicAer
 from qiskit.providers import BackendV1 as Backend
@@ -104,10 +104,8 @@ class QiskitPlatform(QuantumPlatform):
     ) -> QiskitJob:
         return QiskitJob(circuit, backend, num_measurements)
 
-    def fetch_random_bits(
-        self, protocol: QuantumProtocol, max_bits: Optional[int] = None
-    ) -> str:
-        result: ProtocolResult = protocol.run(self, max_bits)
+    def fetch_random_bits(self, protocol: QuantumProtocol) -> str:
+        result: ProtocolResult = protocol.run(self)
         return result.bitstring
 
     def retrieve_backend(self) -> QiskitBackend:

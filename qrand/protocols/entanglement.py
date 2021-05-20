@@ -20,7 +20,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import List, Literal, Optional
+from typing import Literal
 
 from ..platforms.factory import QuantumFactory
 from .protocol import BareQuantumProtocol
@@ -37,9 +37,7 @@ class EntanglementProtocol(BareQuantumProtocol):
         return f"{cls.__name__}"  # TODO
 
     ############################### PUBLIC API ###############################
-    def run(
-        self, factory: QuantumFactory, max_bits: Optional[int] = None
-    ) -> ProtocolResult:
+    def run(self, factory: QuantumFactory) -> ProtocolResult:
         raise NotImplementedError(self.__class__.ERROR_MSG)
 
     def verify(self) -> Literal[False]:

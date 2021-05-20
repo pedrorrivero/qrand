@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 19, 2021
+##   |  ___/|  _  /    DATE: May 20, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -45,8 +45,6 @@ class QuantumBitGenerator(UserBitGenerator):
         The quantum platform that will be used for QRNG.
     protocol: QuantumProtocol
         The quantum protocol that will be used for QRNG.
-    max_bits_per_request: int, optional
-        The maximum number of bits that will be retrieved per request.
     ISRAW32: bool, default: False
         Toggle 32-bit BitGenerator mode. If `False` the mode will be 64-bit.
         This determines the default number of output BITS. Final: once an
@@ -58,8 +56,6 @@ class QuantumBitGenerator(UserBitGenerator):
         The default number of output bits: either 32 or 64.
     bitcache: BitCache
         The cache to store retrieved random bits.
-    max_bits_per_request: int, optional
-        The maximum number of bits retrieved per request.
     platform: QuantumPlatform
         The quantum platform used for QRNG.
     protocol: QuantumProtocol
@@ -82,19 +78,20 @@ class QuantumBitGenerator(UserBitGenerator):
 
     Notes
     -----
-    It implements an efficient strategy to retrieve random bits from the cloud quantum backends. Namely, on every conection, it retrieves as many bits as possible and stores them in a cache. This way, the total number of internet connections is greatly reduced.
+    It implements an efficient strategy to retrieve random bits from the cloud
+    quantum backends. Namely, on every conection, it retrieves as many bits as
+    possible and stores them in a cache. This way, the total number of internet
+    connections is greatly reduced.
     """
 
     def __init__(
         self,
         platform: QuantumPlatform,
         protocol: QuantumProtocol,
-        max_bits_per_request: Optional[int] = None,
         ISRAW32: bool = False,
     ) -> None:
         self.platform: QuantumPlatform = platform
         self.protocol: QuantumProtocol = protocol
-        self.max_bits_per_request: Optional[int] = max_bits_per_request
         self._ISRAW32: Final[bool] = ISRAW32
         self._bitcache: BitCache = self._build_cache()
         super().__init__(
@@ -121,18 +118,6 @@ class QuantumBitGenerator(UserBitGenerator):
         The cache to store retrieved random bits.
         """
         return self._bitcache
-
-    @property
-    def max_bits_per_request(self) -> Optional[int]:
-        """
-        The maximum number of bits retrieved per request.
-        """
-        return self._max_bits_per_request
-
-    @max_bits_per_request.setter
-    def max_bits_per_request(self, mbpr: Optional[int]) -> None:
-        mbpr = mbpr if mbpr and type(mbpr) is int and mbpr > 0 else None
-        self._max_bits_per_request: Optional[int] = mbpr
 
     @property
     def platform(self) -> QuantumPlatform:
@@ -282,9 +267,7 @@ class QuantumBitGenerator(UserBitGenerator):
         """
         Refill cache by fetching new random bits.
         """
-        bitstring: str = self.platform.fetch_random_bits(
-            self.protocol, self.max_bits_per_request
-        )
+        bitstring: str = self.platform.fetch_random_bits(self.protocol)
         self.bitcache.push(bitstring)
 
     ############################# NUMPY INTERFACE #############################

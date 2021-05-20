@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 19, 2021
+##   |  ___/|  _  /    DATE: May 20, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -34,9 +34,7 @@ from .result import ProtocolResult
 class QuantumProtocol(ABC):
     ############################ STRATEGY PATTERN ############################
     @abstractmethod
-    def run(
-        self, factory: QuantumFactory, max_bits: Optional[int] = None
-    ) -> ProtocolResult:
+    def run(self, factory: QuantumFactory) -> ProtocolResult:
         pass
 
     @abstractmethod
@@ -60,9 +58,7 @@ class QuantumProtocol(ABC):
 class BareQuantumProtocol(QuantumProtocol):
     ############################ STRATEGY PATTERN ############################
     @abstractmethod
-    def run(
-        self, factory: QuantumFactory, max_bits: Optional[int] = None
-    ) -> ProtocolResult:
+    def run(self, factory: QuantumFactory) -> ProtocolResult:
         pass
 
     @abstractmethod
@@ -91,10 +87,8 @@ class ValidationDecorator(QuantumProtocol):
         self.validation_strategy: ValidationStrategy = validation_strategy
 
     ############################ STRATEGY PATTERN ############################
-    def run(
-        self, factory: QuantumFactory, max_bits: Optional[int] = None
-    ) -> ProtocolResult:
-        result: ProtocolResult = self.base_protocol.run(factory, max_bits)
+    def run(self, factory: QuantumFactory) -> ProtocolResult:
+        result: ProtocolResult = self.base_protocol.run(factory)
         if not self._validate_layer(result):
             result.erase()
         return result

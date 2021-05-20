@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 17, 2021
+##   |  ___/|  _  /    DATE: May 20, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -32,7 +32,5 @@ from .factory import QuantumFactory
 ###############################################################################
 class QuantumPlatform(QuantumFactory):
     @abstractmethod
-    def fetch_random_bits(
-        self, protocol: QuantumProtocol, max_bits: Optional[int] = None
-    ) -> str:
+    def fetch_random_bits(self, protocol: QuantumProtocol) -> str:
         pass

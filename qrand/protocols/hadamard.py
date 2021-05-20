@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 19, 2021
+##   |  ___/|  _  /    DATE: May 20, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -35,14 +35,26 @@ from .result import BasicResult
 ## HADAMARD PROTOCOL
 ###############################################################################
 class HadamardProtocol(BareQuantumProtocol):
+    def __init__(self, max_bits: Optional[int] = None) -> None:
+        self.max_bits = max_bits
+
     ############################### PUBLIC API ###############################
-    def run(
-        self, factory: QuantumFactory, max_bits: Optional[int] = None
-    ) -> BasicResult:
-        backend: QuantumBackend = factory.retrieve_backend()
-        num_qubits, num_measurements = self._job_partition(
-            max_bits, backend.max_qubits, backend.max_measurements
+    @property
+    def max_bits(self) -> Optional[int]:
+        return self._max_bits
+
+    @max_bits.setter
+    def max_bits(self, max_bits: Optional[int]) -> None:
+        max_bits = (
+            max_bits
+            if max_bits and type(max_bits) is int and max_bits > 0
+            else None
         )
+        self._max_bits: Optional[int] = max_bits
+
+    def run(self, factory: QuantumFactory) -> BasicResult:
+        backend: QuantumBackend = factory.retrieve_backend()
+        num_qubits, num_measurements = self._job_partition(backend)
         circuit: QuantumCircuit = factory.create_circuit(num_qubits)
         circuit = self._assemble_quantum_circuit(circuit)
         job: QuantumJob = factory.create_job(
@@ -63,18 +75,17 @@ class HadamardProtocol(BareQuantumProtocol):
         return circuit
 
     @staticmethod
-    def _job_partition(
-        bits: Optional[int], max_qubits: int, max_measurements: int
-    ) -> Tuple[int, int]:
-        return (
-            compute_bounded_factorization(bits, max_qubits, max_measurements)
-            if bits and type(bits) is int and bits > 0
-            else (max_qubits, max_measurements)
-        )
-
-    @staticmethod
     def _parse_output(output: List[str]) -> BasicResult:
         bitstring: str = ""
         for measurement in output:
             bitstring += measurement
         return BasicResult(bitstring)
+
+    def _job_partition(self, backend: QuantumBackend) -> Tuple[int, int]:
+        return (
+            compute_bounded_factorization(
+                self.max_bits, backend.max_qubits, backend.max_measurements
+            )
+            if self.max_bits
+            else (backend.max_qubits, backend.max_measurements)
+        )
