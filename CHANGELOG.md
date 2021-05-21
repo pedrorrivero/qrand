@@ -1,3 +1,16 @@
+## 0.3.0a5 (2021-05-20)
+
+### Refactor
+
+- **platforms**: remove unnecessary type ignore tags
+- **QuantumBitGenerator**: random bitstring and uint signature
+- **HadamardProtocol**: update private API signatures
+- restrict max_bits attribute to protocols
+
+### Feat
+
+- **compute_bounded_factorization**: add argument validation
+
 ## 0.3.0a4 (2021-05-19)
 
 ### Refactor
