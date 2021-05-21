@@ -62,7 +62,17 @@ class Qrng:
     def __init__(self, quantum_bit_generator: QuantumBitGenerator):
         self._quantum_bit_generator = quantum_bit_generator
 
-    ############################# PUBLIC METHODS #############################
+    ############################### PUBLIC API ###############################
+    @property
+    def state(self) -> dict:
+        """
+        The state of the Qrng object.
+        """
+        raise_deprecation_warning("state", "1.0.0")
+        return {
+            "quantum_bit_generator": self._quantum_bit_generator.state,
+        }
+
     def get_bit_string(self, num_bits: int = 0):
         """
         Returns a random bitstring of a given lenght. If less than one it
@@ -352,14 +362,3 @@ class Qrng:
             Unsigned int of `num_bits` bits.
         """
         return self._quantum_bit_generator.random_uint(num_bits)
-
-    ############################ PUBLIC PROPERTIES ############################
-    @property
-    def state(self) -> dict:
-        """
-        The state of the Qrng object.
-        """
-        raise_deprecation_warning("state", "1.0.0")
-        return {
-            "quantum_bit_generator": self._quantum_bit_generator.state,
-        }
