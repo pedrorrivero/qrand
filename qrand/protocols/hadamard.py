@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 20, 2021
+##   |  ___/|  _  /    DATE: May 24, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -60,8 +60,8 @@ class HadamardProtocol(BareQuantumProtocol):
         job: QuantumJob = factory.create_job(
             circuit, backend, num_measurements
         )
-        output: List[str] = job.execute()
-        return self._parse_output(output)
+        measurements: List[str] = job.execute()
+        return self._parse_measurements(measurements)
 
     def verify(self) -> Literal[False]:
         return False
@@ -74,10 +74,10 @@ class HadamardProtocol(BareQuantumProtocol):
             circuit.measure(q)
 
     @staticmethod
-    def _parse_output(output: List[str]) -> BasicResult:
+    def _parse_measurements(measurements: List[str]) -> BasicResult:
         bitstring: str = ""
-        for measurement in output:
-            bitstring += measurement
+        for m in measurements:
+            bitstring += m
         return BasicResult(bitstring)
 
     def _partition_job(self, backend: QuantumBackend) -> Tuple[int, int]:
