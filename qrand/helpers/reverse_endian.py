@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 17, 2021
+##   |  ___/|  _  /    DATE: May 24, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -26,11 +26,11 @@ from typing import List, Union
 ###############################################################################
 ## REVERSE ENDIAN
 ###############################################################################
-def reverse_endian(bitstrings: Union[str, List[str]]) -> Union[str, List[str]]:
-    single_element: bool = type(bitstrings) is not list
+def reverse_endian(numerals: Union[str, List[str]]) -> Union[str, List[str]]:
+    single_element: bool = type(numerals) is not list
     if single_element:
-        bitstrings = [bitstrings]  # type: ignore
+        numerals = [numerals]  # type: ignore
     reversed: List[str] = []
-    for s in bitstrings:
-        reversed.append(s[::-1])
+    for n in numerals:
+        reversed.append(n[::-1])
     return reversed if not single_element else reversed[0]
