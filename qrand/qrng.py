@@ -266,11 +266,26 @@ class Qrng:
         -------
         out: float
             Random float in the range [min,max).
+
+        Notes
+        -----
+        Implementation based on the single-precision floating-point format
+        (FP32) [1]_.
+
+        References
+        ----------
+        .. [1] Wikipedia contributors, "Single-precision floating-point
+            format," Wikipedia, The Free Encyclopedia, https://en.wikipedia.org/
+            w/index.php?title=Single-precision_floating-
+            point_format&oldid=1024960263 (accessed May 25, 2021).
         """
-        unpacked = 0x3F800000 | self.get_random_int32() >> 9
-        packed = pack("I", unpacked)
-        value = unpack("f", packed)[0] - 1.0
-        return (max - min) * value + min
+        min, max = float(min), float(max)
+        bits_as_uint: int = (
+            0x3F800000 | self._quantum_bit_generator.random_uint(32 - 9)
+        )
+        to_bytes: bytes = pack(">I", bits_as_uint)
+        standard_value: float = unpack(">f", to_bytes)[0] - 1.0
+        return (max - min) * standard_value + min
 
     def get_random_hex(self, num_bits: int = 0) -> str:
         """
