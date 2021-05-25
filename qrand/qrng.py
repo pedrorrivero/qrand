@@ -60,9 +60,27 @@ class Qrng:
     """
 
     def __init__(self, quantum_bit_generator: QuantumBitGenerator):
-        self._quantum_bit_generator = quantum_bit_generator
+        self.quantum_bit_generator = quantum_bit_generator
 
     ############################### PUBLIC API ###############################
+    @property
+    def quantum_bit_generator(self) -> QuantumBitGenerator:
+        return self._quantum_bit_generator
+
+    @quantum_bit_generator.setter
+    def quantum_bit_generator(
+        self, quantum_bit_generator: QuantumBitGenerator
+    ) -> None:
+        if not isinstance(quantum_bit_generator, QuantumBitGenerator):
+            raise TypeError(
+                f"Invalid quantum_bit_generator type \
+                '{type(quantum_bit_generator)}'. \
+                Expected instance of QuantumBitGenerator"
+            )
+        self._quantum_bit_generator: QuantumBitGenerator = (
+            quantum_bit_generator
+        )
+
     @property
     def state(self) -> dict:
         """
@@ -70,7 +88,7 @@ class Qrng:
         """
         raise_deprecation_warning("state", "1.0.0")
         return {
-            "quantum_bit_generator": self._quantum_bit_generator.state,
+            "quantum_bit_generator": self.quantum_bit_generator.state,
         }
 
     def get_bit_string(self, num_bits: int = 0):
@@ -92,7 +110,7 @@ class Qrng:
         raise_deprecation_warning(
             "get_bit_string", "1.0.0", "get_random_bitstring"
         )
-        return self._quantum_bit_generator.random_bitstring(num_bits)
+        return self.quantum_bit_generator.random_bitstring(num_bits)
 
     def get_random_base32(self, num_bits: int = 0) -> str:
         """
@@ -140,7 +158,7 @@ class Qrng:
         out: str
             Bitstring of lenght `num_bits`.
         """
-        return self._quantum_bit_generator.random_bitstring(num_bits)
+        return self.quantum_bit_generator.random_bitstring(num_bits)
 
     def get_random_bytes(self, num_bits: int = 0) -> bytes:
         """
@@ -152,8 +170,8 @@ class Qrng:
             Random bytes object of length (num_bits + 7) // 8.
         """
         if num_bits < 1:
-            num_bits = self._quantum_bit_generator.BITS
-        uint: int = self._quantum_bit_generator.random_uint(num_bits)
+            num_bits = self.quantum_bit_generator.BITS
+        uint: int = self.quantum_bit_generator.random_uint(num_bits)
         num_bytes: int = (num_bits + 7) // 8
         return uint.to_bytes(num_bytes, "big")
 
@@ -226,7 +244,7 @@ class Qrng:
         out: str
             Random decimal base enocoded string.
         """
-        uint: int = self._quantum_bit_generator.random_uint(num_bits)
+        uint: int = self.quantum_bit_generator.random_uint(num_bits)
         return f"{uint:d}"
 
     def get_random_double(self, min: float = -1, max: float = +1):
@@ -247,7 +265,7 @@ class Qrng:
             Random float in the range [min,max).
         """
         delta: float = max - min
-        shifted: float = self._quantum_bit_generator.random_double(delta)
+        shifted: float = self.quantum_bit_generator.random_double(delta)
         return shifted + min
 
     def get_random_float(self, min: float = -1, max: float = +1):
@@ -281,7 +299,7 @@ class Qrng:
         """
         min, max = float(min), float(max)
         bits_as_uint: int = (
-            0x3F800000 | self._quantum_bit_generator.random_uint(32 - 9)
+            0x3F800000 | self.quantum_bit_generator.random_uint(32 - 9)
         )
         to_bytes: bytes = pack(">I", bits_as_uint)
         standard_value: float = unpack(">f", to_bytes)[0] - 1.0
@@ -298,7 +316,7 @@ class Qrng:
         out: str
             Random hex enocoded string.
         """
-        uint: int = self._quantum_bit_generator.random_uint(num_bits)
+        uint: int = self.quantum_bit_generator.random_uint(num_bits)
         return f"{uint:X}"
 
     def get_random_int(self, min: int = -1, max: int = +1):
@@ -320,9 +338,9 @@ class Qrng:
         """
         delta: int = max - min
         num_bits: int = math.floor(math.log(delta, 2)) + 1
-        shifted: int = self._quantum_bit_generator.random_uint(num_bits)
+        shifted: int = self.quantum_bit_generator.random_uint(num_bits)
         while shifted > delta:
-            shifted = self._quantum_bit_generator.random_uint(num_bits)
+            shifted = self.quantum_bit_generator.random_uint(num_bits)
         return shifted + min
 
     def get_random_int32(self):
@@ -334,7 +352,7 @@ class Qrng:
         out: int
             Random 32 bit unsigned int.
         """
-        return self._quantum_bit_generator.random_uint(32)
+        return self.quantum_bit_generator.random_uint(32)
 
     def get_random_int64(self):
         """
@@ -345,7 +363,7 @@ class Qrng:
         out: int
             Random 64 bit unsigned int.
         """
-        return self._quantum_bit_generator.random_uint(64)
+        return self.quantum_bit_generator.random_uint(64)
 
     def get_random_octal(self, num_bits: int = 0) -> str:
         """
@@ -358,7 +376,7 @@ class Qrng:
         out: str
             Random octal base enocoded string.
         """
-        uint: int = self._quantum_bit_generator.random_uint(num_bits)
+        uint: int = self.quantum_bit_generator.random_uint(num_bits)
         return f"{uint:o}"
 
     def get_random_uint(self, num_bits: int = 0) -> int:
@@ -376,4 +394,4 @@ class Qrng:
         out: int
             Unsigned int of `num_bits` bits.
         """
-        return self._quantum_bit_generator.random_uint(num_bits)
+        return self.quantum_bit_generator.random_uint(num_bits)
