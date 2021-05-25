@@ -222,18 +222,20 @@ class QuantumBitGenerator(UserBitGenerator):
 
         Notes
         -----
-        COPYRIGHT NOTICE
-        Source: https://github.com/ozanerhansha/qRNG
-        License: GNU GENERAL PUBLIC LICENSE VERSION 3
-        Changes:
-            - Add static type hints
-            - Limit range to [0,n) instead of [min,max) and add default
-            - Replace call to original get_random_int64
+        Implementation based on the double-precision floating-point format
+        (FP64) [1]_.
+
+        References
+        ----------
+        .. [1] Wikipedia contributors, "Double-precision floating-point
+            format," Wikipedia, The Free Encyclopedia, https://en.wikipedia.org/
+            w/index.php?title=Double-precision_floating-
+            point_format&oldid=1024750735 (accessed May 25, 2021).
         """
-        unpacked = 0x3FF0000000000000 | self.random_uint(64) >> 12
-        packed = pack("Q", unpacked)
-        value: float = unpack("d", packed)[0] - 1.0
-        return value * n
+        bits_as_uint: int = 0x3FF0000000000000 | self.random_uint(64 - 12)
+        to_bytes: bytes = pack(">Q", bits_as_uint)
+        standard_value: float = unpack(">d", to_bytes)[0] - 1.0
+        return standard_value * float(n)
 
     def random_uint(self, num_bits: Optional[int] = None) -> int:
         """
@@ -255,7 +257,7 @@ class QuantumBitGenerator(UserBitGenerator):
             if num_bits and type(num_bits) is int and num_bits > 0
             else self.BITS
         )
-        return int(self.random_bitstring(num_bits), 2)
+        return int(self.random_bitstring(num_bits), base=2)
 
     ############################### PRIVATE API ###############################
     def _build_cache(self) -> BitCache:
