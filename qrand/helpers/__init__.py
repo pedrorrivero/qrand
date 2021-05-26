@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 18, 2021
+##   |  ___/|  _  /    DATE: May 25, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -22,10 +22,24 @@
 
 from .bounded_factorization import compute_bounded_factorization
 from .is_bitstring import is_bitstring
+from .numeral_bases import (
+    alphabet_decode,
+    alphabet_encode,
+    decode_base32,
+    decode_base64,
+    encode_base32,
+    encode_base64,
+)
 from .reverse_endian import reverse_endian
 
 __all__ = [
     "compute_bounded_factorization",
     "is_bitstring",
+    "alphabet_decode",
+    "alphabet_encode",
+    "decode_base32",
+    "decode_base64",
+    "encode_base32",
+    "encode_base64",
     "reverse_endian",
 ]

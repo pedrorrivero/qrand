@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 18, 2021
+##   |  ___/|  _  /    DATE: May 25, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -43,7 +43,9 @@ def is_bitstring(bitstring: str) -> bool:
         If input bitstring is not str.
     """
     if not isinstance(bitstring, str):
-        raise TypeError(f"Invalid bitstring type '{type(bitstring)}'")
+        raise TypeError(
+            f"Invalid bitstring type '{type(bitstring)}'. Expected str."
+        )
     b = {"0", "1"}
     s = set(bitstring)
     return s.issubset(b)

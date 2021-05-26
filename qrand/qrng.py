@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 19, 2021
+##   |  ___/|  _  /    DATE: May 25, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -21,56 +21,123 @@
 ## limitations under the License.
 
 import math
-from base64 import b32encode, b64encode
 from struct import pack, unpack
 from typing import Optional
 
 from .errors import raise_deprecation_warning
+from .helpers import encode_base32, encode_base64
 from .quantum_bit_generator import QuantumBitGenerator
 
 
 ###############################################################################
-## QRNG
+## QRNG (OBJECT WRAPPER)
 ###############################################################################
 class Qrng:
     """
-    An integrated implementation of the QRNG PyPI package which makes use of
-    QRAND's enhanced random bit generation and caching capabilities.
+    A quantum random number generator.
 
-    PARAMETERS
+    It extends the functionality of QRAND's QuantumBitGenerator class by
+    wrapping it at the class level. Taking advantage of all its enhanced
+    quantum random bit generation capabilities as well.
+
+    Parameters
     ----------
     quantum_bit_generator: QuantumBitGenerator
-        A QuantumBitGenerator instance object to handle random number production.
+        A QuantumBitGenerator instance object to handle random number
+        production.
 
-    ATTRIBUTES
+    Attributes
     ----------
-    state: dict
-        The state of the Qrng object.
+    quantum_bit_generator: QuantumBitGenerator
+        A QuantumBitGenerator instance object to handle random number
+        production.
 
-    COPYRIGHT NOTICE
-    ----------------
-    Source: https://github.com/ozanerhansha/qRNG
+    Methods
+    -------
+    get_random_base32(num_bits: Optional[int] = None) -> str:
+        Returns a random base32 encoded numeral string from a `num_bits`
+        uniform distribution.
+    get_random_base64(num_bits: Optional[int] = None) -> str:
+        Returns a random base64 encoded numeral string from a `num_bits`
+        uniform distribution.
+    get_random_bitstring(num_bits: Optional[int] = None) -> str:
+        Returns a random bitstring from a `num_bits` uniform distribution.
+    get_random_bytes(num_bytes: Optional[int] = None) -> bytes:
+        Returns a bytes object from a `num_bytes` uniform distribution.
+    get_random_complex_polar(
+        r: float = 1, theta: float = 2 * math.pi
+    ) -> complex:
+        Returns a random complex in rectangular form from a given polar range.
+        If no max radius give, 1 is used. If no max angle given, 2pi used.
+    get_random_complex_rect(
+        r1: float = -1,
+        r2: float = +1,
+        i1: Optional[float] = None,
+        i2: Optional[float] = None,
+    ) -> complex:
+        Returns a random complex with both real and imaginary parts from the
+        given ranges. Default real range [-1,1). If no imaginary range
+        specified, real range used.
+    get_random_decimal(num_bits: Optional[int] = None) -> str:
+        Returns a random decimal base encoded numeral string from a `num_bits`
+        uniform distribution.
+    get_random_double(min: float = -1, max: float = +1) -> float:
+        Returns a random double from a uniform distribution in the range
+        [min,max). Default range [-1,1).
+    get_random_float(min: float = -1, max: float = +1) -> float:
+        Returns a random float from a uniform distribution in the range
+        [min,max). Default range [-1,1).
+    get_random_hex(num_bits: Optional[int] = None) -> str:
+        Returns a random hex base encoded numeral string from a `num_bits`
+        uniform distribution.
+    get_random_int(min: int = -1, max: int = +1) -> int:
+        Returns a random integer between and including [min, max]. Default
+        range [-1,1].
+    get_random_int32() -> int:
+        Returns a random 32 bit unsigned integer from a uniform distribution.
+    get_random_int64() -> int:
+        Returns a random 64 bit unsigned integer from a uniform distribution.
+    get_random_octal(num_bits: Optional[int] = None) -> str:
+        Returns a random octal base encoded numeral string from a `num_bits`
+        uniform distribution.
+    get_random_uint(num_bits: Optional[int] = None) -> int:
+        Returns a random unsigned int from a `num_bits` uniform distribution.
+
+    Notes
+    -----
+    COPYRIGHT ACKNOWLEDGEMENT
+    Source: https://github.com/ozaner/qRNG/tree/v1.0.0
     License: GNU GENERAL PUBLIC LICENSE VERSION 3
     Changes:
         - Delete IBMQ log-in logic
         - Replace random bit generation and caching logic
         - Add default parameter values
+        - Upgrade complex precision to double
         - Rename internal variables
         - Add static type hints
+        - Fix endianness for bit manipulation.
+        - Add additional features
     """
 
     def __init__(self, quantum_bit_generator: QuantumBitGenerator):
+        raise_deprecation_warning("This version of Qrng", "1.0.0")
         self.quantum_bit_generator = quantum_bit_generator
 
     ############################### PUBLIC API ###############################
     @property
     def quantum_bit_generator(self) -> QuantumBitGenerator:
+        """
+        A QuantumBitGenerator instance object to handle random number
+        production.
+        """
+        raise_deprecation_warning("quantum_bit_generator", "1.0.0")
         return self._quantum_bit_generator
 
     @quantum_bit_generator.setter
     def quantum_bit_generator(
         self, quantum_bit_generator: QuantumBitGenerator
     ) -> None:
+        raise_deprecation_warning("quantum_bit_generator", "1.0.0")
         if not isinstance(quantum_bit_generator, QuantumBitGenerator):
             raise TypeError(
                 f"Invalid quantum_bit_generator type \
@@ -91,105 +158,115 @@ class Qrng:
             "quantum_bit_generator": self.quantum_bit_generator.state,
         }
 
-    def get_bit_string(self, num_bits: int = 0):
+    def get_bit_string(self, num_bits: Optional[int] = None) -> str:
         """
-        Returns a random bitstring of a given lenght. If less than one it
-        defaults to the raw number of bits for its internal
-        quantum_bit_generator (i.e. 32 or 64).
+        Returns a random bitstring from a `num_bits` uniform distribution.
 
-        PARAMETERS
+        Parameters
         ----------
-        num_bits: int, default 0
+        num_bits: int, default: BITS (i.e. 32 or 64)
             Number of bits to retrieve.
 
-        RETURNS
+        Returns
         -------
         out: str
-            Bitstring of lenght `num_bits`.
+            Random bitstring of length `num_bits`.
         """
         raise_deprecation_warning(
             "get_bit_string", "1.0.0", "get_random_bitstring"
         )
         return self.quantum_bit_generator.random_bitstring(num_bits)
 
-    def get_random_base32(self, num_bits: int = 0) -> str:
+    def get_random_base32(self, num_bits: Optional[int] = None) -> str:
         """
-        Returns a random base32 encoded string from a num_bits uniform
-        distribution. If less than one it defaults to the raw number of
-        bits for its internal quantum_bit_generator (i.e. 32 or 64).
+        Returns a random base32 encoded numeral string from a `num_bits`
+        uniform distribution.
 
-        RETURNS
-        -------
-        out: str
-            Random base32 enocoded string.
-        """
-        b: bytes = self.get_random_bytes(num_bits)
-        enc: bytes = b32encode(b)
-        return enc.decode("utf-8")
-
-    def get_random_base64(self, num_bits: int = 0) -> str:
-        """
-        Returns a random base64 encoded string from a num_bits uniform
-        distribution. If less than one it defaults to the raw number of
-        bits for its internal quantum_bit_generator (i.e. 32 or 64).
-
-        RETURNS
-        -------
-        out: str
-            Random base64 enocoded string.
-        """
-        b: bytes = self.get_random_bytes(num_bits)
-        enc: bytes = b64encode(b)
-        return enc.decode("utf-8")
-
-    def get_random_bitstring(self, num_bits: int = 0):
-        """
-        Returns a random bitstring of a given lenght. If less than one it
-        defaults to the raw number of bits for its internal
-        quantum_bit_generator (i.e. 32 or 64).
-
-        PARAMETERS
+        Parameters
         ----------
-        num_bits: int, default 0
+        num_bits: int, default: BITS (i.e. 32 or 64)
             Number of bits to retrieve.
 
-        RETURNS
+        Returns
         -------
         out: str
-            Bitstring of lenght `num_bits`.
+            Random base32 encoded numeral string.
+        """
+        uint: int = self.get_random_uint(num_bits)
+        return encode_base32(uint)
+
+    def get_random_base64(self, num_bits: Optional[int] = None) -> str:
+        """
+        Returns a random base64 encoded numeral string from a `num_bits`
+        uniform distribution.
+
+        Parameters
+        ----------
+        num_bits: int, default: BITS (i.e. 32 or 64)
+            Number of bits to retrieve.
+
+        Returns
+        -------
+        out: str
+            Random base64 encoded numeral string.
+        """
+        uint: int = self.get_random_uint(num_bits)
+        return encode_base64(uint)
+
+    def get_random_bitstring(self, num_bits: Optional[int] = None) -> str:
+        """
+        Returns a random bitstring from a `num_bits` uniform distribution.
+
+        Parameters
+        ----------
+        num_bits: int, default: BITS (i.e. 32 or 64)
+            Number of bits to retrieve.
+
+        Returns
+        -------
+        out: str
+            Random bitstring of length `num_bits`.
         """
         return self.quantum_bit_generator.random_bitstring(num_bits)
 
-    def get_random_bytes(self, num_bits: int = 0) -> bytes:
+    def get_random_bytes(self, num_bytes: Optional[int] = None) -> bytes:
         """
-        Returns a bytes object from a num_bits uniform distribution.
+        Returns a bytes object from a `num_bytes` uniform distribution.
 
-        RETURNS
+        Parameters
+        ----------
+        num_bytes: int, default: BITS/8 (i.e. 4 or 8)
+            Number of bytes to randomly produce.
+
+        Returns
         -------
         out: bytes
-            Random bytes object of length (num_bits + 7) // 8.
+            Random bytes object of size `num_bytes`.
         """
-        if num_bits < 1:
-            num_bits = self.quantum_bit_generator.BITS
+        num_bits: int = (
+            num_bytes * 8
+            if num_bytes and type(num_bytes) is int and num_bytes > 0
+            else self.quantum_bit_generator.BITS
+        )
+        num_bytes = num_bits // 8
         uint: int = self.quantum_bit_generator.random_uint(num_bits)
-        num_bytes: int = (num_bits + 7) // 8
         return uint.to_bytes(num_bytes, "big")
 
     def get_random_complex_polar(
         self, r: float = 1, theta: float = 2 * math.pi
-    ):
+    ) -> complex:
         """
         Returns a random complex in rectangular form from a given polar range.
         If no max radius give, 1 is used. If no max angle given, 2pi used.
 
-        PARAMETERS
+        Parameters
         ----------
         r: float, default 1
             Real lower bound for the random number.
         theta: float, default 2pi
             Real strict upper bound for the random number.
 
-        RETURNS
+        Returns
         -------
         out: complex
             Random complex in the range [0,r) * exp{ j[0,theta) }.
@@ -204,13 +281,13 @@ class Qrng:
         r2: float = +1,
         i1: Optional[float] = None,
         i2: Optional[float] = None,
-    ):
+    ) -> complex:
         """
         Returns a random complex with both real and imaginary parts from the
         given ranges. Default real range [-1,1). If no imaginary range
         specified, real range used.
 
-        PARAMETERS
+        Parameters
         ----------
         r1: float, default -1
             Real lower bound for the random number.
@@ -221,7 +298,7 @@ class Qrng:
         i2: float, default None
             Imaginary strict upper bound for the random number.
 
-        RETURNS
+        Returns
         -------
         out: complex
             Random complex in the range [r1,r2) + j[i1,i2).
@@ -233,54 +310,59 @@ class Qrng:
             im = self.get_random_double(i1, i2)
         return re + im * 1j
 
-    def get_random_decimal(self, num_bits: int = 0) -> str:
+    def get_random_decimal(self, num_bits: Optional[int] = None) -> str:
         """
-        Returns a random decimal base encoded string from a num_bits uniform
-        distribution. If less than one it defaults to the raw number of
-        bits for its internal quantum_bit_generator (i.e. 32 or 64).
+        Returns a random decimal base encoded numeral string from a `num_bits`
+        uniform distribution.
 
-        RETURNS
+        Parameters
+        ----------
+        num_bits: int, default: BITS (i.e. 32 or 64)
+            Number of bits to retrieve.
+
+        Returns
         -------
         out: str
-            Random decimal base enocoded string.
+            Random decimal base encoded numeral string.
         """
         uint: int = self.quantum_bit_generator.random_uint(num_bits)
         return f"{uint:d}"
 
-    def get_random_double(self, min: float = -1, max: float = +1):
+    def get_random_double(self, min: float = -1, max: float = +1) -> float:
         """
         Returns a random double from a uniform distribution in the range
         [min,max). Default range [-1,1).
 
-        PARAMETERS
+        Parameters
         ----------
         min: float, default -1
             Lower bound for the random number.
         max: float, default +1
             Strict upper bound for the random number.
 
-        RETURNS
+        Returns
         -------
         out: float
             Random float in the range [min,max).
         """
+        min, max = float(min), float(max)
         delta: float = max - min
         shifted: float = self.quantum_bit_generator.random_double(delta)
         return shifted + min
 
-    def get_random_float(self, min: float = -1, max: float = +1):
+    def get_random_float(self, min: float = -1, max: float = +1) -> float:
         """
         Returns a random float from a uniform distribution in the range
         [min,max). Default range [-1,1).
 
-        PARAMETERS
+        Parameters
         ----------
         min: float, default -1
             Lower bound for the random number.
         max: float, default +1
             Strict upper bound for the random number.
 
-        RETURNS
+        Returns
         -------
         out: float
             Random float in the range [min,max).
@@ -305,33 +387,37 @@ class Qrng:
         standard_value: float = unpack(">f", to_bytes)[0] - 1.0
         return (max - min) * standard_value + min
 
-    def get_random_hex(self, num_bits: int = 0) -> str:
+    def get_random_hex(self, num_bits: Optional[int] = None) -> str:
         """
-        Returns a random hex base encoded string from a num_bits uniform
-        distribution. If less than one it defaults to the raw number of
-        bits for its internal quantum_bit_generator (i.e. 32 or 64).
+        Returns a random hex base encoded numeral string from a `num_bits`
+        uniform distribution.
 
-        RETURNS
+        Parameters
+        ----------
+        num_bits: int, default: BITS (i.e. 32 or 64)
+            Number of bits to retrieve.
+
+        Returns
         -------
         out: str
-            Random hex enocoded string.
+            Random hex base encoded numeral string.
         """
         uint: int = self.quantum_bit_generator.random_uint(num_bits)
         return f"{uint:X}"
 
-    def get_random_int(self, min: int = -1, max: int = +1):
+    def get_random_int(self, min: int = -1, max: int = +1) -> int:
         """
         Returns a random integer between and including [min, max]. Default
         range [-1,1].
 
-        PARAMETERS
+        Parameters
         ----------
         min: int, default -1
             Lower bound for the random int.
         max: int, default +1
             Upper bound for the random int.
 
-        RETURNS
+        Returns
         -------
         out: int
             Random int in the range [min,max].
@@ -343,55 +429,58 @@ class Qrng:
             shifted = self.quantum_bit_generator.random_uint(num_bits)
         return shifted + min
 
-    def get_random_int32(self):
+    def get_random_int32(self) -> int:
         """
         Returns a random 32 bit unsigned integer from a uniform distribution.
 
-        RETURNS
+        Returns
         -------
         out: int
             Random 32 bit unsigned int.
         """
         return self.quantum_bit_generator.random_uint(32)
 
-    def get_random_int64(self):
+    def get_random_int64(self) -> int:
         """
-        Returns a random 32 bit unsigned integer from a uniform distribution.
+        Returns a random 64 bit unsigned integer from a uniform distribution.
 
-        RETURNS
+        Returns
         -------
         out: int
             Random 64 bit unsigned int.
         """
         return self.quantum_bit_generator.random_uint(64)
 
-    def get_random_octal(self, num_bits: int = 0) -> str:
+    def get_random_octal(self, num_bits: Optional[int] = None) -> str:
         """
-        Returns a random octal base encoded string from a num_bits uniform
-        distribution. If less than one it defaults to the raw number of
-        bits for its internal quantum_bit_generator (i.e. 32 or 64).
+        Returns a random octal base encoded numeral string from a `num_bits`
+        uniform distribution.
 
-        RETURNS
+        Parameters
+        ----------
+        num_bits: int, default: BITS (i.e. 32 or 64)
+            Number of bits to retrieve.
+
+        Returns
         -------
         out: str
-            Random octal base enocoded string.
+            Random octal base encoded numeral string.
         """
         uint: int = self.quantum_bit_generator.random_uint(num_bits)
         return f"{uint:o}"
 
-    def get_random_uint(self, num_bits: int = 0) -> int:
+    def get_random_uint(self, num_bits: Optional[int] = None) -> int:
         """
-        Returns a random unsigned int of a given size in bits.
+        Returns a random unsigned int from a `num_bits` uniform distribution.
 
-        PARAMETERS
+        Parameters
         ----------
-        num_bits: int
-            Number of bits to retrieve. If less than one it defaults to the raw
-            number of bits for the instance QuantumBitGenerator (i.e. 32 or 64).
+        num_bits: int, default: BITS (i.e. 32 or 64)
+            Number of bits to retrieve.
 
-        RETURNS
+        Returns
         -------
         out: int
-            Unsigned int of `num_bits` bits.
+            Random unsigned int of size `num_bits`.
         """
         return self.quantum_bit_generator.random_uint(num_bits)

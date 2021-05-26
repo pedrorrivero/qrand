@@ -183,18 +183,17 @@ class QuantumBitGenerator(UserBitGenerator):
 
     def random_bitstring(self, num_bits: Optional[int] = None) -> str:
         """
-        Returns a random bitstring of a given lenght.
+        Returns a random bitstring from a `num_bits` uniform distribution.
 
         Parameters
         ----------
-        num_bits: int, optional
-            Number of bits to retrieve. It defaults to the raw number of BITS
-            for the instance QuantumBitGenerator (i.e. 32 or 64).
+        num_bits: int, default: BITS (i.e. 32 or 64)
+            Number of bits to retrieve.
 
         Returns
         -------
         out: str
-            Bitstring of lenght `num_bits`.
+            Random bitstring of length `num_bits`.
         """
         num_bits = (
             num_bits
@@ -239,18 +238,17 @@ class QuantumBitGenerator(UserBitGenerator):
 
     def random_uint(self, num_bits: Optional[int] = None) -> int:
         """
-        Returns a random unsigned int of a given size in bits.
+        Returns a random unsigned int from a `num_bits` uniform distribution.
 
         Parameters
         ----------
-        num_bits: int, optional
-            Number of bits to retrieve. It defaults to the raw number of BITS
-            for the instance QuantumBitGenerator (i.e. 32 or 64).
+        num_bits: int, default: BITS (i.e. 32 or 64)
+            Number of bits to retrieve.
 
         Returns
         -------
         out: int
-            Unsigned int of `num_bits` bits.
+            Random unsigned int of size `num_bits`.
         """
         return int(self.random_bitstring(num_bits), base=2)
 
@@ -277,7 +275,8 @@ class QuantumBitGenerator(UserBitGenerator):
     @property
     def _next_raw(self) -> Callable[[Any], Union[uint32, uint64]]:
         """
-        A callable that returns either 64 or 32 random bits. It must accept a single input which is a void pointer to a memory address.
+        A callable that returns either 64 or 32 random bits. It must accept a
+        single input which is a void pointer to a memory address.
         """
         return self._next_32 if self._ISRAW32 else self._next_64
 
