@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 20, 2021
+##   |  ___/|  _  /    DATE: May 25, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -69,11 +69,11 @@ class QuantumBitGenerator(UserBitGenerator):
         Erase the cache.
     load_cache(bitstring: str, flush: bool = False) -> None:
         Load cache from bitstring.
-    random_bitstring(num_bits: int = 0) -> str:
+    random_bitstring(num_bits: Optional[int] = None) -> str:
         Returns a random bitstring of a given lenght.
     random_double(n: float = 1) -> float:
         Returns a random double from a uniform distribution in the range [0,n).
-    random_uint(num_bits: int = 0) -> int:
+    random_uint(num_bits: Optional[int] = None) -> int:
         Returns a random unsigned int of a given size in bits.
 
     Notes
@@ -252,11 +252,6 @@ class QuantumBitGenerator(UserBitGenerator):
         out: int
             Unsigned int of `num_bits` bits.
         """
-        num_bits = (
-            num_bits
-            if num_bits and type(num_bits) is int and num_bits > 0
-            else self.BITS
-        )
         return int(self.random_bitstring(num_bits), base=2)
 
     ############################### PRIVATE API ###############################
