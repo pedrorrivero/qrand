@@ -71,7 +71,7 @@ class QuantumBitGenerator(UserBitGenerator):
         Load cache from bitstring.
     random_bitstring(num_bits: Optional[int] = None) -> str:
         Returns a random bitstring of a given lenght.
-    random_double(n: float = 1) -> float:
+    random_double(max: float = 1, min: float = 0) -> float:
         Returns a random double from a uniform distribution in the range [0,n).
     random_uint(num_bits: Optional[int] = None) -> int:
         Returns a random unsigned int of a given size in bits.
@@ -204,15 +204,17 @@ class QuantumBitGenerator(UserBitGenerator):
             self._refill_cache()
         return self.bitcache.pop(num_bits)
 
-    def random_double(self, n: float = 1) -> float:
+    def random_double(self, max: float = 1, min: float = 0) -> float:
         """
         Returns a random double from a uniform distribution in the range
         [0,n).
 
         Parameters
         ----------
-        n: float, default: 1
-            Size of the range [0,n) from which to draw the random number.
+        max: float, default: 1
+            Strict upper bound for the random number.
+        min: float, default: 0
+            Lower bound for the random number.
 
         Returns
         -------
@@ -231,10 +233,11 @@ class QuantumBitGenerator(UserBitGenerator):
             w/index.php?title=Double-precision_floating-
             point_format&oldid=1024750735 (accessed May 25, 2021).
         """
+        min, max = float(min), float(max)
         bits_as_uint: int = 0x3FF0000000000000 | self.random_uint(64 - 12)
         to_bytes: bytes = pack(">Q", bits_as_uint)
         standard_value: float = unpack(">d", to_bytes)[0] - 1.0
-        return standard_value * float(n)
+        return (max - min) * standard_value + min
 
     def random_uint(self, num_bits: Optional[int] = None) -> int:
         """
@@ -312,6 +315,6 @@ class QuantumBitGenerator(UserBitGenerator):
         """
 
         def next_double(void_p: Any) -> float64:
-            return float64(self.random_double(1))
+            return float64(self.random_double(1, 0))
 
         return next_double
