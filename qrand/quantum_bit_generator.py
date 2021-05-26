@@ -128,6 +128,10 @@ class QuantumBitGenerator(UserBitGenerator):
 
     @platform.setter
     def platform(self, p: QuantumPlatform) -> None:
+        if not isinstance(p, QuantumPlatform):
+            raise TypeError(
+                f"Invalid platform type '{type(p)}'. Expected QuantumPlatform."
+            )
         self._platform = p
 
     @property
@@ -139,6 +143,10 @@ class QuantumBitGenerator(UserBitGenerator):
 
     @protocol.setter
     def protocol(self, p: QuantumProtocol) -> None:
+        if not isinstance(p, QuantumProtocol):
+            raise TypeError(
+                f"Invalid protocol type '{type(p)}'. Expected QuantumProtocol."
+            )
         self._protocol = p
 
     def dump_cache(self, flush: bool = False) -> str:
@@ -197,7 +205,7 @@ class QuantumBitGenerator(UserBitGenerator):
         """
         num_bits = (
             num_bits
-            if num_bits and type(num_bits) is int and num_bits > 0
+            if isinstance(num_bits, int) and num_bits > 0
             else self.BITS
         )
         while self.bitcache.size < num_bits:

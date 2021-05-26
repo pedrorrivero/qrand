@@ -50,7 +50,11 @@ def compute_bounded_factorization(
 
 
 def _validate_arguments(n: int, bound_A: int, bound_B: int) -> None:
-    if not (type(n) is int and type(bound_A) is int and type(bound_B) is int):
+    if not (
+        isinstance(n, int)
+        and isinstance(bound_A, int)
+        and isinstance(bound_B, int)
+    ):
         raise TypeError("Input arguments must be natural numbers.")
     if not (n > 0 and bound_A > 0 and bound_B > 0):
         raise ValueError("Input arguments must be natural numbers.")

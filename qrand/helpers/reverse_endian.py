@@ -27,7 +27,7 @@ from typing import List, Union
 ## REVERSE ENDIAN
 ###############################################################################
 def reverse_endian(numerals: Union[str, List[str]]) -> Union[str, List[str]]:
-    single_element: bool = type(numerals) is not list
+    single_element: bool = isinstance(numerals, list)
     if single_element:
         numerals = [numerals]  # type: ignore
     reversed: List[str] = []

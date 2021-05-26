@@ -46,9 +46,7 @@ class HadamardProtocol(BareQuantumProtocol):
     @max_bits.setter
     def max_bits(self, max_bits: Optional[int]) -> None:
         max_bits = (
-            max_bits
-            if max_bits and type(max_bits) is int and max_bits > 0
-            else None
+            max_bits if isinstance(max_bits, int) and max_bits > 0 else None
         )
         self._max_bits: Optional[int] = max_bits
 

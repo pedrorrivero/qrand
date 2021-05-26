@@ -191,7 +191,7 @@ class Qrng(QuantumBitGenerator):
         """
         num_bits: int = (
             num_bytes * 8
-            if num_bytes and type(num_bytes) is int and num_bytes > 0
+            if isinstance(num_bytes, int) and num_bytes > 0
             else self.BITS
         )
         num_bytes = num_bits // 8
