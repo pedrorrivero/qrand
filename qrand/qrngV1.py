@@ -24,7 +24,7 @@ import math
 from struct import pack, unpack
 from typing import Optional
 
-from .helpers import encode_base32, encode_base64
+from .helpers import alphabet_encode, encode_base32, encode_base64
 from .quantum_bit_generator import QuantumBitGenerator
 
 
@@ -91,6 +91,10 @@ class Qrng(QuantumBitGenerator):
     get_random_octal(num_bits: Optional[int] = None) -> str:
         Returns a random octal base encoded numeral string from a `num_bits`
         uniform distribution.
+    def get_random_string(
+        num_bits: Optional[int] = None, alphabet: Optional[str] = None
+    ) -> str:
+        Returns a random string with `num_bits` of entropy.
     get_random_uint(num_bits: Optional[int] = None) -> int:
         Returns a random unsigned int from a `num_bits` uniform distribution.
 
@@ -401,6 +405,27 @@ class Qrng(QuantumBitGenerator):
         """
         uint: int = self.random_uint(num_bits)
         return f"{uint:o}"
+
+    def get_random_string(
+        self, num_bits: Optional[int] = None, alphabet: Optional[str] = None
+    ) -> str:
+        """
+        Returns a random string with `num_bits` of entropy.
+
+        Parameters
+        ----------
+        num_bits: int, default: BITS (i.e. 32 or 64)
+            Number of bits to retrieve.
+        alphabet: str, default: `qrand.helpers.ALPHABET  (len=84)
+            A string containig the characters to be used for the output.
+
+        Returns
+        -------
+        out: str
+            Random string with `num_bits` of entropy.
+        """
+        uint: int = self.random_uint(num_bits)
+        return alphabet_encode(uint, alphabet)
 
     def get_random_uint(self, num_bits: Optional[int] = None) -> int:
         """

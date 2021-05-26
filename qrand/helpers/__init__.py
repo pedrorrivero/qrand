@@ -23,6 +23,13 @@
 from .bounded_factorization import compute_bounded_factorization
 from .is_bitstring import is_bitstring
 from .numeral_bases import (
+    ALPHABET,
+    BASE32_ALPHABET,
+    BASE64_ALPHABET,
+    LOWER,
+    NUMBERS,
+    SYMBOLS,
+    UPPER,
     alphabet_decode,
     alphabet_encode,
     decode_base32,
@@ -35,6 +42,13 @@ from .reverse_endian import reverse_endian
 __all__ = [
     "compute_bounded_factorization",
     "is_bitstring",
+    "UPPER",
+    "LOWER",
+    "NUMBERS",
+    "SYMBOLS",
+    "ALPHABET",
+    "BASE32_ALPHABET",
+    "BASE64_ALPHABET",
     "alphabet_decode",
     "alphabet_encode",
     "decode_base32",

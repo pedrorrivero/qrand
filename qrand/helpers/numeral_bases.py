@@ -20,25 +20,35 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import Dict
+from collections import OrderedDict
+from typing import Dict, Optional
 
 from .reverse_endian import reverse_endian
 
 UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 LOWER = "abcdefghijklmnopqrstuvwxyz"
-DECIMAL_ALPHABET = "0123456789"
+NUMBERS = "0123456789"
+SYMBOLS = "<>.,:;_-+*=?!|@#$%&/()"
 
 
 ###############################################################################
 ## ALPHABET
 ###############################################################################
-def alphabet_encode(uint: int, alphabet: str) -> str:
+ALPHABET = UPPER + LOWER + NUMBERS + SYMBOLS
+
+
+def alphabet_encode(uint: int, alphabet: Optional[str] = None) -> str:
     if not isinstance(uint, int):
         raise TypeError(f"Invalid uint type '{type(uint)}'. Expected int.")
     if uint < 1:
         raise ValueError(f"Invalid uint '{uint}'<1")
-    numeral: str = ""
+    alphabet = (
+        _remove_duplicate_chars(alphabet)
+        if alphabet and isinstance(alphabet, str)
+        else ALPHABET
+    )
     base: int = len(alphabet)
+    numeral: str = ""
     while uint != 0:
         remainder: int = uint % base
         numeral += alphabet[remainder]
@@ -46,12 +56,17 @@ def alphabet_encode(uint: int, alphabet: str) -> str:
     return reverse_endian(numeral)  # type: ignore
 
 
-def alphabet_decode(numeral: str, alphabet: str) -> int:
+def alphabet_decode(numeral: str, alphabet: Optional[str] = None) -> int:
     numeral: str = reverse_endian(numeral)  # type: ignore
-    uint: int = 0
-    base: int = len(alphabet)
+    alphabet = (
+        _remove_duplicate_chars(alphabet)
+        if alphabet and isinstance(alphabet, str)
+        else ALPHABET
+    )
     value_dict: Dict[str, int] = _build_value_dict(alphabet)
+    base: int = len(alphabet)
     mult: int = 1
+    uint: int = 0
     while numeral:
         uint += mult * value_dict[numeral[0]]
         numeral = numeral[1:]
@@ -66,6 +81,11 @@ def _build_value_dict(alphabet: str) -> Dict[str, int]:
         dictionary[char] = i
         i += 1
     return dictionary
+
+
+def _remove_duplicate_chars(alphabet: str) -> str:
+    od = OrderedDict.fromkeys(alphabet)
+    return "".join(od)
 
 
 ###############################################################################
@@ -85,7 +105,7 @@ def decode_base32(numeral: str) -> int:
 ###############################################################################
 ## BASE64
 ###############################################################################
-BASE64_ALPHABET = UPPER + LOWER + DECIMAL_ALPHABET + "+/"
+BASE64_ALPHABET = UPPER + LOWER + NUMBERS + "+/"
 
 
 def encode_base64(uint: int) -> str:
