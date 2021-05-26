@@ -28,7 +28,7 @@ from randomgen import UserBitGenerator
 
 from .caches import BasicCache, BitCache
 from .platforms import QuantumPlatform
-from .protocols import QuantumProtocol
+from .protocols import HadamardProtocol, QuantumProtocol
 
 
 ###############################################################################
@@ -43,7 +43,7 @@ class QuantumBitGenerator(UserBitGenerator):
     ----------
     platform: QuantumPlatform
         The quantum platform that will be used for QRNG.
-    protocol: QuantumProtocol
+    protocol: QuantumProtocol, default: HadamardProtocol()
         The quantum protocol that will be used for QRNG.
     ISRAW32: bool, default: False
         Toggle 32-bit BitGenerator mode. If `False` the mode will be 64-bit.
@@ -87,7 +87,7 @@ class QuantumBitGenerator(UserBitGenerator):
     def __init__(
         self,
         platform: QuantumPlatform,
-        protocol: QuantumProtocol,
+        protocol: QuantumProtocol = HadamardProtocol(),
         ISRAW32: bool = False,
     ) -> None:
         self.platform: QuantumPlatform = platform
