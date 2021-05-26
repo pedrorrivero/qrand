@@ -286,7 +286,7 @@ class Qrng(QuantumBitGenerator):
         Returns
         -------
         out: float
-            Random float in the range [min,max).
+            Random double in the range [min,max).
         """
         return self.random_double(max, min)
 

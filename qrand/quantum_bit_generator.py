@@ -227,7 +227,7 @@ class QuantumBitGenerator(UserBitGenerator):
         Returns
         -------
         out: float
-            Random float in the range [min,max).
+            Random double in the range [min,max).
 
         Notes
         -----
