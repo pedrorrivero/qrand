@@ -215,7 +215,7 @@ class QuantumBitGenerator(UserBitGenerator):
     def random_double(self, max: float = 1, min: float = 0) -> float:
         """
         Returns a random double from a uniform distribution in the range
-        [0,n).
+        [min,max).
 
         Parameters
         ----------
@@ -227,7 +227,7 @@ class QuantumBitGenerator(UserBitGenerator):
         Returns
         -------
         out: float
-            Random float in the range [0,n).
+            Random float in the range [min,max).
 
         Notes
         -----
