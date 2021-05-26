@@ -21,7 +21,7 @@
 ## limitations under the License.
 
 from ..errors import raise_deprecation_warning
-from ..helpers import is_bitstring
+from ..helpers import isbitstring
 from .cache import BitCache
 
 
@@ -107,11 +107,11 @@ class BasicCache(BitCache):
 
         RAISES
         ------
-        TypeError (is_bitstring)
+        TypeError (isbitstring)
             If input bitstring is not str
         ValueError
             If input bitstring is not a valid bitstring
         """
-        if not is_bitstring(bitstring):
+        if not isbitstring(bitstring):
             raise ValueError(f"Invalid bitstring value '{bitstring}'")
         self._cache += bitstring

@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 25, 2021
+##   |  ___/|  _  /    DATE: May 26, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -25,7 +25,7 @@ from struct import pack, unpack
 from typing import Optional
 
 from .errors import raise_deprecation_warning
-from .helpers import encode_base32, encode_base64
+from .helpers import ALPHABETS, numeral_encode
 from .quantum_bit_generator import QuantumBitGenerator
 
 
@@ -193,7 +193,7 @@ class Qrng:
             Random base32 encoded numeral string.
         """
         uint: int = self.get_random_uint(num_bits)
-        return encode_base32(uint)
+        return numeral_encode(uint, ALPHABETS["BASE32"])
 
     def get_random_base64(self, num_bits: Optional[int] = None) -> str:
         """
@@ -211,7 +211,7 @@ class Qrng:
             Random base64 encoded numeral string.
         """
         uint: int = self.get_random_uint(num_bits)
-        return encode_base64(uint)
+        return numeral_encode(uint, ALPHABETS["BASE64"])
 
     def get_random_bitstring(self, num_bits: Optional[int] = None) -> str:
         """

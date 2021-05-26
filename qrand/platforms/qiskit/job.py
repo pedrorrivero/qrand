@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 17, 2021
+##   |  ___/|  _  /    DATE: May 26, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -150,4 +150,4 @@ class QiskitJob(QuantumJob):
             counts: List[Counts] = [cts] if isinstance(cts, list) else cts
             for c in counts:
                 measurements += [k for k, v in c.items() if v == 1]
-        return reverse_endian(measurements)  # type: ignore
+        return [reverse_endian(m) for m in measurements]

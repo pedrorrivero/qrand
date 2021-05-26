@@ -22,7 +22,7 @@
 
 from abc import ABC, abstractmethod
 
-from ..helpers import is_bitstring
+from ..helpers import isbitstring
 
 
 ###############################################################################
@@ -95,7 +95,7 @@ class BitCache(ABC):
 
         RAISES
         ------
-        TypeError (is_bitstring)
+        TypeError (isbitstring)
             If input bitstring is not str
         ValueError
             If input bitstring is not a valid bitstring

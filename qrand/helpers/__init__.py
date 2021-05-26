@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 25, 2021
+##   |  ___/|  _  /    DATE: May 26, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -21,39 +21,21 @@
 ## limitations under the License.
 
 from .bounded_factorization import compute_bounded_factorization
-from .is_bitstring import is_bitstring
-from .numeral_bases import (
-    ALPHABET,
-    BASE32_ALPHABET,
-    BASE64_ALPHABET,
-    LOWER,
-    NUMBERS,
-    SYMBOLS,
-    UPPER,
-    alphabet_decode,
-    alphabet_encode,
-    decode_base32,
-    decode_base64,
-    encode_base32,
-    encode_base64,
+from .numeral_encodings import (
+    ALPHABETS,
+    isbitstring,
+    isnumeral,
+    numeral_decode,
+    numeral_encode,
+    reverse_endian,
 )
-from .reverse_endian import reverse_endian
 
 __all__ = [
     "compute_bounded_factorization",
-    "is_bitstring",
-    "UPPER",
-    "LOWER",
-    "NUMBERS",
-    "SYMBOLS",
-    "ALPHABET",
-    "BASE32_ALPHABET",
-    "BASE64_ALPHABET",
-    "alphabet_decode",
-    "alphabet_encode",
-    "decode_base32",
-    "decode_base64",
-    "encode_base32",
-    "encode_base64",
+    "ALPHABETS",
+    "isbitstring",
+    "isnumeral",
+    "numeral_decode",
+    "numeral_encode",
     "reverse_endian",
 ]

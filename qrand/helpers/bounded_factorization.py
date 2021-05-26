@@ -29,7 +29,7 @@ from typing import Tuple
 def compute_bounded_factorization(
     n: int, bound_A: int, bound_B: int
 ) -> Tuple[int, int]:
-    _validate_arguments(n, bound_A, bound_B)
+    _validate_args(n, bound_A, bound_B)
     if bound_A * bound_B < n:
         return bound_A, bound_B
     swapped: bool = bound_A > bound_B
@@ -49,7 +49,7 @@ def compute_bounded_factorization(
     return (final_b, final_a) if swapped else (final_a, final_b)
 
 
-def _validate_arguments(n: int, bound_A: int, bound_B: int) -> None:
+def _validate_args(n: int, bound_A: int, bound_B: int) -> None:
     if not (
         isinstance(n, int)
         and isinstance(bound_A, int)
