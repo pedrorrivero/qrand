@@ -61,10 +61,10 @@ class Qrng(QuantumBitGenerator):
         Returns a random complex in rectangular form from a given polar range.
         If no max radius give, 1 is used. If no max angle given, 2pi used.
     get_random_complex_rect(
-        r1: float = -1,
-        r2: float = +1,
-        i1: Optional[float] = None,
-        i2: Optional[float] = None,
+        r_max: float = 1,
+        r_min: float = 0,
+        i_max: Optional[float] = None,
+        i_min: Optional[float] = None,
     ) -> complex:
         Returns a random complex with both real and imaginary parts from the
         given ranges. Default real range [-1,1). If no imaginary range
@@ -74,16 +74,16 @@ class Qrng(QuantumBitGenerator):
         uniform distribution.
     get_random_double(max: float = 1, min: float = 0) -> float:
         Returns a random double from a uniform distribution in the range
-        [min,max). Default range [-1,1).
+        [min,max). Default range [0,1).
     get_random_float(max: float = 1, min: float = 0) -> float:
         Returns a random float from a uniform distribution in the range
-        [min,max). Default range [-1,1).
+        [min,max). Default range [0,1).
     get_random_hex(num_bits: Optional[int] = None) -> str:
         Returns a random hex base encoded numeral string from a `num_bits`
         uniform distribution.
     get_random_int(max: int = 1, min: int = 0) -> int:
         Returns a random integer between and including [min, max]. Default
-        range [-1,1].
+        range [0,1].
     get_random_int32() -> int:
         Returns a random 32 bit unsigned integer from a uniform distribution.
     get_random_int64() -> int:
@@ -219,37 +219,37 @@ class Qrng(QuantumBitGenerator):
 
     def get_random_complex_rect(
         self,
-        r1: float = -1,
-        r2: float = +1,
-        i1: Optional[float] = None,
-        i2: Optional[float] = None,
+        r_max: float = 1,
+        r_min: float = 0,
+        i_max: Optional[float] = None,
+        i_min: Optional[float] = None,
     ) -> complex:
         """
         Returns a random complex with both real and imaginary parts from the
-        given ranges. Default real range [-1,1). If no imaginary range
+        given ranges. Default real range [0,1). If no imaginary range
         specified, real range used.
 
         Parameters
         ----------
-        r1: float, default: -1
+        r_max: float, default: 1
             Real lower bound for the random number.
-        r2: float, default: +1
+        r_min: float, default: 0
             Real strict upper bound for the random number.
-        i1: float, default: None
+        i_max: float, default: None
             Imaginary lower bound for the random number.
-        i2: float, default: None
+        i_min: float, default: None
             Imaginary strict upper bound for the random number.
 
         Returns
         -------
         out: complex
-            Random complex in the range [r1,r2) + j[i1,i2).
+            Random complex in the range [r_max,r_min) + j[i_max,i_min).
         """
-        re: float = self.random_double(r1, r2)
-        if i1 is None or i2 is None:
-            im: float = self.random_double(r1, r2)
+        re: float = self.random_double(r_max, r_min)
+        if i_max is None or i_min is None:
+            im: float = self.random_double(r_max, r_min)
         else:
-            im = self.random_double(i1, i2)
+            im = self.random_double(i_max, i_min)
         return re + im * 1j
 
     def get_random_decimal(self, num_bits: Optional[int] = None) -> str:
@@ -273,7 +273,7 @@ class Qrng(QuantumBitGenerator):
     def get_random_double(self, max: float = 1, min: float = 0) -> float:
         """
         Returns a random double from a uniform distribution in the range
-        [min,max). Default range [-1,1).
+        [min,max). Default range [0,1).
 
         Parameters
         ----------
@@ -292,7 +292,7 @@ class Qrng(QuantumBitGenerator):
     def get_random_float(self, max: float = 1, min: float = 0) -> float:
         """
         Returns a random float from a uniform distribution in the range
-        [min,max). Default range [-1,1).
+        [min,max). Default range [0,1).
 
         Parameters
         ----------
@@ -345,7 +345,7 @@ class Qrng(QuantumBitGenerator):
     def get_random_int(self, max: int = 1, min: int = 0) -> int:
         """
         Returns a random integer between and including [min, max]. Default
-        range [-1,1].
+        range [0,1].
 
         Parameters
         ----------
