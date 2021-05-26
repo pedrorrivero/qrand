@@ -41,15 +41,7 @@ class Qrng(QuantumBitGenerator):
 
     Parameters
     ----------
-    quantum_bit_generator: QuantumBitGenerator
-        A QuantumBitGenerator instance object to handle random number
-        production.
-
-    Attributes
-    ----------
-    quantum_bit_generator: QuantumBitGenerator
-        A QuantumBitGenerator instance object to handle random number
-        production.
+    Same as QuantumBitGenerator.
 
     Methods
     -------
