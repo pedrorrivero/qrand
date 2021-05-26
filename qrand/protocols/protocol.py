@@ -103,7 +103,7 @@ class ValidationDecorator(QuantumProtocol):
 
     def validate(self, result: ProtocolResult) -> bool:
         valid: bool = self._validate_layer(result)
-        if type(self.base_protocol) is BareQuantumProtocol:
+        if isinstance(self.base_protocol, BareQuantumProtocol):
             return valid
         return valid and self.base_protocol.validate(result)
 
