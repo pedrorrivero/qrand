@@ -21,7 +21,7 @@
 ## limitations under the License.
 
 from abc import ABC, abstractmethod
-
+import math
 
 ###############################################################################
 ## VALIDATION STRATEGY INTERFACE (STRATEGY)
@@ -30,3 +30,13 @@ class ValidationStrategy(ABC):
     @abstractmethod
     def validate(self, bitstring: str) -> bool:
         pass
+
+class FrequencyTest(ValidationStrategy):
+    def validate(self, bitstring: str) -> bool:
+        n=len(bitstring)
+        s_obs=0
+        for bit in bitstring:
+            s_obs+=2*int(bit)-1
+        s_obs=s_obs/math.sqrt(n)
+        p_value=math.erfc(s_obs/math.sqrt(2))
+        return p_value>0.01
