@@ -31,12 +31,13 @@ class ValidationStrategy(ABC):
     def validate(self, bitstring: str) -> bool:
         pass
 
+
 class FrequencyTest(ValidationStrategy):
     def validate(self, bitstring: str) -> bool:
-        n=len(bitstring)
-        s_obs=0
+        n = len(bitstring)
+        s_obs = 0
         for bit in bitstring:
-            s_obs+=2*int(bit)-1
-        s_obs=s_obs/math.sqrt(n)
-        p_value=math.erfc(s_obs/math.sqrt(2))
-        return p_value>0.01
+            s_obs += 2 * int(bit) - 1
+        s_obs = s_obs / math.sqrt(n)
+        p_value = math.erfc(s_obs / math.sqrt(2))
+        return p_value > 0.01
