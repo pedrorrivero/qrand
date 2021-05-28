@@ -20,61 +20,51 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import Any, Optional
+from typing import Optional
 from warnings import warn
 
 
 ###############################################################################
-## VALIDATE TYPE
+## RAISE NOT IMPLEMENTED ERROR
 ###############################################################################
-def validate_type(object: Any, type_class: type) -> None:
+def raise_not_implemented_error(
+    subject: str, alt: Optional[str] = None
+) -> None:
     """
-    Raises TypeError with custom deprecation message if `object` and
-    `type_class` do not match.
+    Raises NotImplementedError with custom deprecation message.
 
     Parameters
     ----------
-    object: Any
-        The object to validate.
-    type_class: type
-        The correct object type.
-
-    Raises
-    ------
-    TypeError
-        If `object` does not match `type_class`.
+    subject: str
+        The non-implemented subject.
+    alt: str
+        Alternatives.
     """
-    if not isinstance(object, type_class):
-        raise TypeError(
-            f"Invalid object type {type(object)}, \
-            expected {type_class.__name__}."
-        )
+    MESSAGE = f"{subject} has not been implemented yet."
+    if alt:
+        MESSAGE += f" Use {alt} instead."
+    raise NotImplementedError(MESSAGE)
 
 
 ###############################################################################
-## VALIDATE NATURAL NUMBER
+## RAISE FUTURE WARNING
 ###############################################################################
-def validate_natural_number(number: int, zero: bool = False) -> None:
+def raise_future_warning(
+    subject: str, version: str, alt: Optional[str] = None
+) -> None:
     """
-    Raises ValueError with custom message if `number` is not in the naturals.
+    Raises FutureWarning with custom deprecation message.
 
     Parameters
     ----------
-    number: int
-        The object to validate.
-    zero: bool, default: False
-        Count zero as a natural.
-
-    Raises
-    ------
-    TypeError
-        If `number` is not int.
-    ValueError
-        If `number` is not a natural number.
+    subject: str
+        The subject of future deprecation.
+    version: str
+        The version in which deprecation will occur.
+    alt: str
+        Alternatives.
     """
-    MESSAGE = f"Invalid value {number} <{'=' if not zero else ''} 0."
-    validate_type(number, int)
-    if number < 0:
-        raise ValueError(MESSAGE)
-    elif not zero and number == 0:
-        raise ValueError(MESSAGE)
+    MESSAGE = f"{subject} will be deprecated in version {version}."
+    if alt:
+        MESSAGE += f" Use {alt} instead."
+    warn(MESSAGE, FutureWarning)
