@@ -20,7 +20,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from ..errors import raise_future_warning
+from ..errors import raise_future_warning, validate_type
 from ..helpers import isbitstring
 from .cache import BitCache
 
@@ -72,11 +72,8 @@ class BasicCache(BitCache):
         self._cache = ""
 
     def pop(self, num_bits: int) -> str:
-        if not isinstance(num_bits, int):
-            raise TypeError(
-                f"Invalid input type {type(num_bits)}. Expected int."
-            )
-        elif num_bits < 1:
+        validate_type(num_bits, int)
+        if num_bits < 1:
             raise ValueError("Input number of bits must be greater than zero.")
         elif num_bits > self.size:
             raise RuntimeError(

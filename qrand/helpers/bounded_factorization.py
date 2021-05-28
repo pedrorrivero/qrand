@@ -22,6 +22,8 @@
 
 from typing import Tuple
 
+from ..errors import validate_type
+
 
 ###############################################################################
 ## COMPUTE BOUNDED FACTORIZATION
@@ -50,11 +52,8 @@ def compute_bounded_factorization(
 
 
 def _validate_args(n: int, bound_A: int, bound_B: int) -> None:
-    if not (
-        isinstance(n, int)
-        and isinstance(bound_A, int)
-        and isinstance(bound_B, int)
-    ):
-        raise TypeError("Input arguments must be natural numbers.")
+    validate_type(n, int)
+    validate_type(bound_A, int)
+    validate_type(bound_B, int)
     if not (n > 0 and bound_A > 0 and bound_B > 0):
         raise ValueError("Input arguments must be natural numbers.")

@@ -23,6 +23,8 @@
 from collections import OrderedDict
 from typing import Any, Dict
 
+from ..errors import validate_type
+
 _UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 _LOWER = "abcdefghijklmnopqrstuvwxyz"
 _NUMBERS = "0123456789"
@@ -85,10 +87,7 @@ def numeral_decode(numeral: str, base_alphabet: str) -> int:
 ## REVERSE ENDIAN
 ###############################################################################
 def reverse_endian(numeral: str) -> str:
-    if not isinstance(numeral, str):
-        raise TypeError(
-            f"Invalid `numeral` type {type(numeral)}. Expected str."
-        )
+    validate_type(numeral, str)
     return numeral[::-1]
 
 
@@ -116,14 +115,8 @@ def isnumeral(numeral: str, base_alphabet: str) -> bool:
     TypeError
         If input `numeral` or `base_alphabet` are not str.
     """
-    if not isinstance(numeral, str):
-        raise TypeError(
-            f"Invalid numeral type '{type(numeral)}'. Expected str."
-        )
-    if not isinstance(base_alphabet, str):
-        raise TypeError(
-            f"Invalid base_alphabet type '{type(base_alphabet)}'. Expected str."
-        )
+    validate_type(numeral, str)
+    validate_type(base_alphabet, str)
     a: set = set(base_alphabet)
     n: set = set(numeral)
     return n.issubset(a)
@@ -177,14 +170,9 @@ def _validate_decode_args(numeral: str, base_alphabet: str) -> None:
 
 
 def _validate_encode_args(uint: int, base_alphabet: str) -> None:
-    if not isinstance(uint, int):
-        raise TypeError(f"Invalid `uint` type '{type(uint)}'. Expected int.")
+    validate_type(uint, int)
     if uint < 0:
         raise ValueError(f"Invalid `uint` value '{uint}'<0")
-    if not isinstance(base_alphabet, str):
-        raise TypeError(
-            f"Invalid `base_alphabet` type '{type(base_alphabet)}'. \
-            Expected str."
-        )
+    validate_type(base_alphabet, str)
     if not base_alphabet:
         raise ValueError("Invalid input empty `base_alphabet`.")

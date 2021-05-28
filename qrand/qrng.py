@@ -24,7 +24,7 @@ import math
 from struct import pack, unpack
 from typing import Optional
 
-from .errors import raise_future_warning
+from .errors import raise_future_warning, validate_type
 from .helpers import ALPHABETS, numeral_encode
 from .quantum_bit_generator import QuantumBitGenerator
 
@@ -138,12 +138,7 @@ class Qrng:
         self, quantum_bit_generator: QuantumBitGenerator
     ) -> None:
         raise_future_warning("quantum_bit_generator", "1.0.0")
-        if not isinstance(quantum_bit_generator, QuantumBitGenerator):
-            raise TypeError(
-                f"Invalid quantum_bit_generator type \
-                '{type(quantum_bit_generator)}'. \
-                Expected instance of QuantumBitGenerator"
-            )
+        validate_type(quantum_bit_generator, QuantumBitGenerator)
         self._quantum_bit_generator: QuantumBitGenerator = (
             quantum_bit_generator
         )

@@ -27,6 +27,7 @@ from numpy import float64, uint32, uint64
 from randomgen import UserBitGenerator
 
 from .caches import BasicCache, BitCache
+from .errors import validate_type
 from .platforms import QuantumPlatform
 from .protocols import HadamardProtocol, QuantumProtocol
 
@@ -128,10 +129,7 @@ class QuantumBitGenerator(UserBitGenerator):
 
     @platform.setter
     def platform(self, p: QuantumPlatform) -> None:
-        if not isinstance(p, QuantumPlatform):
-            raise TypeError(
-                f"Invalid platform type '{type(p)}'. Expected QuantumPlatform."
-            )
+        validate_type(p, QuantumPlatform)
         self._platform = p
 
     @property
@@ -143,10 +141,7 @@ class QuantumBitGenerator(UserBitGenerator):
 
     @protocol.setter
     def protocol(self, p: QuantumProtocol) -> None:
-        if not isinstance(p, QuantumProtocol):
-            raise TypeError(
-                f"Invalid protocol type '{type(p)}'. Expected QuantumProtocol."
-            )
+        validate_type(p, QuantumProtocol)
         self._protocol = p
 
     def dump_cache(self, flush: bool = False) -> str:
