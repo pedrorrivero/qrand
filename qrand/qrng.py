@@ -24,8 +24,8 @@ import math
 from struct import pack, unpack
 from typing import Optional
 
-from .errors import raise_future_warning, validate_type
-from .helpers import ALPHABETS, numeral_encode
+from .errors import raise_future_warning
+from .helpers import ALPHABETS, numeral_encode, validate_type
 from .quantum_bit_generator import QuantumBitGenerator
 
 

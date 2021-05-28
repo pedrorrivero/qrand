@@ -20,8 +20,8 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from ..errors import raise_future_warning, validate_natural_number
-from ..helpers import isbitstring
+from ..errors import raise_future_warning
+from ..helpers import isbitstring, validate_natural_number
 from .cache import BitCache
 
 

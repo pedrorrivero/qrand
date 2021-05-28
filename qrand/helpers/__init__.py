@@ -20,6 +20,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
+from .argument_validation import validate_natural_number, validate_type
 from .bounded_factorization import compute_bounded_factorization
 from .numeral_encodings import (
     ALPHABETS,
@@ -38,4 +39,6 @@ __all__ = [
     "numeral_decode",
     "numeral_encode",
     "reverse_endian",
+    "validate_natural_number",
+    "validate_type",
 ]

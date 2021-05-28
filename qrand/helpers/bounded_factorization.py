@@ -22,7 +22,7 @@
 
 from typing import Tuple
 
-from ..errors import validate_natural_number
+from .argument_validation import validate_natural_number
 
 
 ###############################################################################
