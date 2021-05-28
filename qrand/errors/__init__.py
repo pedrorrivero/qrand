@@ -20,12 +20,9 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from .argument_validation import validate_natural_number, validate_type
 from .development import raise_future_warning, raise_not_implemented_error
 
 __all__ = [
-    "validate_natural_number",
-    "validate_type",
     "raise_future_warning",
     "raise_not_implemented_error",
 ]

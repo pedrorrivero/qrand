@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 18, 2021
+##   |  ___/|  _  /    DATE: May 28, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,8 +20,8 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from ..errors import raise_future_warning, validate_natural_number
-from ..helpers import isbitstring
+from ..errors import raise_future_warning
+from ..helpers import ALPHABETS, validate_natural_number, validate_numeral
 from .cache import BitCache
 
 
@@ -82,6 +82,5 @@ class BasicCache(BitCache):
         return bitstring
 
     def push(self, bitstring: str) -> None:
-        if not isbitstring(bitstring):
-            raise ValueError(f"Invalid bitstring value '{bitstring}'")
+        validate_numeral(bitstring, ALPHABETS["BINARY"])
         self._cache += bitstring

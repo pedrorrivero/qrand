@@ -25,33 +25,6 @@ from warnings import warn
 
 
 ###############################################################################
-## VALIDATE TYPE
-###############################################################################
-def validate_type(object: Any, type_class: type) -> None:
-    """
-    Raises TypeError with custom deprecation message if `object` and
-    `type_class` do not match.
-
-    Parameters
-    ----------
-    object: Any
-        The object to validate.
-    type_class: type
-        The correct object type.
-
-    Raises
-    ------
-    TypeError
-        If `object` does not match `type_class`.
-    """
-    if not isinstance(object, type_class):
-        raise TypeError(
-            f"Invalid object type {type(object)}, \
-            expected {type_class.__name__}."
-        )
-
-
-###############################################################################
 ## VALIDATE NATURAL NUMBER
 ###############################################################################
 def validate_natural_number(number: int, zero: bool = False) -> None:
@@ -78,3 +51,30 @@ def validate_natural_number(number: int, zero: bool = False) -> None:
         raise ValueError(MESSAGE)
     elif not zero and number == 0:
         raise ValueError(MESSAGE)
+
+
+###############################################################################
+## VALIDATE TYPE
+###############################################################################
+def validate_type(object: Any, type_class: type) -> None:
+    """
+    Raises TypeError with custom deprecation message if `object` and
+    `type_class` do not match.
+
+    Parameters
+    ----------
+    object: Any
+        The object to validate.
+    type_class: type
+        The correct object type.
+
+    Raises
+    ------
+    TypeError
+        If `object` does not match `type_class`.
+    """
+    if not isinstance(object, type_class):
+        raise TypeError(
+            f"Invalid object type {type(object)}, \
+            expected {type_class.__name__}."
+        )

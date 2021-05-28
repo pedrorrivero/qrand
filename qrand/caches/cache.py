@@ -22,8 +22,6 @@
 
 from abc import ABC, abstractmethod
 
-from ..helpers import isbitstring
-
 
 ###############################################################################
 ## BIT CACHE INTERFACE
