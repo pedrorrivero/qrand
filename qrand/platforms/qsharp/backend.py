@@ -20,6 +20,8 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
+from typing import Optional
+
 from ..backend import QuantumBackend
 
 
@@ -27,15 +29,40 @@ from ..backend import QuantumBackend
 ## QSHARP BACKEND (DECORATOR)
 ###############################################################################
 class QsharpBackend(QuantumBackend):
-    def __init__(self) -> None:
-        self.ERROR_MSG = f"{self.__class__.__name__}"  # TODO
-        raise NotImplementedError(self.ERROR_MSG)
+    def __init__(
+        self,
+        resource_id: Optional[str] = None,
+        target_id: Optional[str] = None,
+    ) -> None:
+        self.resource_id = resource_id
+        self.target_id = target_id
 
     ############################### PUBLIC API ###############################
     @property
     def max_measurements(self) -> int:
-        raise NotImplementedError(self.ERROR_MSG)
+        return self.max_shots * self.max_experiments
 
     @property
     def max_qubits(self) -> int:
-        raise NotImplementedError(self.ERROR_MSG)
+        if self.target_id == "ionq.simulator":
+            return 29
+        elif self.target_id == "ionq.qpu":
+            return 11
+        elif self.target_id == "honeywell.hqs-lt-1.0":
+            return 6
+        elif self.target_id == "honeywell.hqs-lt-s1":
+            return 10
+        elif (
+            self.resource_id is None and self.target_id == "Quantum Simulator"
+        ):
+            return 30
+        else:
+            return 1
+
+    @property
+    def max_shots(self) -> int:
+        return 1
+
+    @property
+    def max_experiments(self) -> int:
+        return 1
