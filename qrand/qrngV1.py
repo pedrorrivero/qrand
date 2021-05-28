@@ -29,7 +29,7 @@ from .quantum_bit_generator import QuantumBitGenerator
 
 
 ###############################################################################
-## QRNG (OBJECT WRAPPER)
+## QRNG (CLASS WRAPPER)
 ###############################################################################
 class Qrng(QuantumBitGenerator):
     """
