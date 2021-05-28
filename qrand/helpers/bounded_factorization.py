@@ -22,7 +22,7 @@
 
 from typing import Tuple
 
-from ..errors import validate_type
+from ..errors import validate_natural_number
 
 
 ###############################################################################
@@ -52,8 +52,6 @@ def compute_bounded_factorization(
 
 
 def _validate_args(n: int, bound_A: int, bound_B: int) -> None:
-    validate_type(n, int)
-    validate_type(bound_A, int)
-    validate_type(bound_B, int)
-    if not (n > 0 and bound_A > 0 and bound_B > 0):
-        raise ValueError("Input arguments must be natural numbers.")
+    validate_natural_number(n, zero=False)
+    validate_natural_number(bound_A, zero=False)
+    validate_natural_number(bound_B, zero=False)

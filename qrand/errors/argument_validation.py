@@ -29,8 +29,8 @@ from warnings import warn
 ###############################################################################
 def validate_type(object: Any, type_class: type) -> None:
     """
-    Raises TypeError with custom deprecation message if object and type_class
-    do not match.
+    Raises TypeError with custom deprecation message if `object` and
+    `type_class` do not match.
 
     Parameters
     ----------
@@ -42,10 +42,39 @@ def validate_type(object: Any, type_class: type) -> None:
     Raises
     ------
     TypeError
-        If `object` does not match `type_class`
+        If `object` does not match `type_class`.
     """
     if not isinstance(object, type_class):
         raise TypeError(
             f"Invalid object type {type(object)}, \
             expected {type_class.__name__}."
         )
+
+
+###############################################################################
+## VALIDATE NATURAL NUMBER
+###############################################################################
+def validate_natural_number(number: int, zero: bool = False) -> None:
+    """
+    Raises ValueError with custom message if `number` is not in the naturals.
+
+    Parameters
+    ----------
+    number: int
+        The object to validate.
+    zero: bool, default: False
+        Count zero as a natural.
+
+    Raises
+    ------
+    TypeError
+        If `number` is not int.
+    ValueError
+        If `number` is not a natural number.
+    """
+    MESSAGE = f"Invalid value {number} <{'=' if not zero else ''} 0."
+    validate_type(number, int)
+    if number < 0:
+        raise ValueError(MESSAGE)
+    elif not zero and number == 0:
+        raise ValueError(MESSAGE)

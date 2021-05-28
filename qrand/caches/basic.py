@@ -20,7 +20,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from ..errors import raise_future_warning, validate_type
+from ..errors import raise_future_warning, validate_natural_number
 from ..helpers import isbitstring
 from .cache import BitCache
 
@@ -72,10 +72,8 @@ class BasicCache(BitCache):
         self._cache = ""
 
     def pop(self, num_bits: int) -> str:
-        validate_type(num_bits, int)
-        if num_bits < 1:
-            raise ValueError("Input number of bits must be greater than zero.")
-        elif num_bits > self.size:
+        validate_natural_number(num_bits, zero=False)
+        if num_bits > self.size:
             raise RuntimeError(
                 f"Insufficient cache size {self.size} < {num_bits}."
             )

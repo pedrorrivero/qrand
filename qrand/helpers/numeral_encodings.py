@@ -23,7 +23,7 @@
 from collections import OrderedDict
 from typing import Any, Dict
 
-from ..errors import validate_type
+from ..errors import validate_natural_number, validate_type
 
 _UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 _LOWER = "abcdefghijklmnopqrstuvwxyz"
@@ -170,9 +170,7 @@ def _validate_decode_args(numeral: str, base_alphabet: str) -> None:
 
 
 def _validate_encode_args(uint: int, base_alphabet: str) -> None:
-    validate_type(uint, int)
-    if uint < 0:
-        raise ValueError(f"Invalid `uint` value '{uint}'<0")
+    validate_natural_number(uint, zero=True)
     validate_type(base_alphabet, str)
     if not base_alphabet:
         raise ValueError("Invalid input empty `base_alphabet`.")
