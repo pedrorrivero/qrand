@@ -27,7 +27,7 @@ from numpy import float64, uint32, uint64
 from randomgen import UserBitGenerator
 
 from .caches import BasicCache, BitCache
-from .helpers import validate_type
+from .errors import validate_type
 from .platforms import QuantumPlatform
 from .protocols import HadamardProtocol, QuantumProtocol
 

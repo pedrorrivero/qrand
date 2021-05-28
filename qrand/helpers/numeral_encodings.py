@@ -23,7 +23,7 @@
 from collections import OrderedDict
 from typing import Any, Dict
 
-from .argument_validation import validate_natural_number, validate_type
+from ..errors import validate_natural_number, validate_type
 
 _UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 _LOWER = "abcdefghijklmnopqrstuvwxyz"
