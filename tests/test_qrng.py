@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 14, 2021
+##   |  ___/|  _  /    DATE: May 25, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -29,17 +29,17 @@ from qrand.qrng import Qrng
 ###############################################################################
 class TestBitCache:
     ############################# PUBLIC METHODS #############################
-    def test_get_random_bitstring(self):
-        bitgen = QiskitBitGenerator()
-        bitgen32 = QiskitBitGenerator(ISRAW32=True)
-        qrng = Qrng(bitgen)
-        qrng32 = Qrng(bitgen32)
-        cache = "100" * 1000
-        bitgen.load_cache(cache)
-        bitgen32.load_cache(cache)
-        assert qrng.get_random_bitstring() == cache[:64]
-        assert qrng32.get_random_bitstring() == cache[:32]
-        assert qrng.get_random_bitstring(4) == cache[64:68]
+    # def test_get_random_bitstring(self):
+    #     bitgen = QiskitBitGenerator()
+    #     bitgen32 = QiskitBitGenerator(ISRAW32=True)
+    #     qrng = Qrng(bitgen)
+    #     qrng32 = Qrng(bitgen32)
+    #     cache = "100" * 1000
+    #     bitgen.load_cache(cache)
+    #     bitgen32.load_cache(cache)
+    #     assert qrng.get_random_bitstring() == cache[:64]
+    #     assert qrng32.get_random_bitstring() == cache[:32]
+    #     assert qrng.get_random_bitstring(4) == cache[64:68]
 
     # def test_get_random_complex_polar(self):
     #     bitgen = QiskitBitGenerator()

@@ -24,10 +24,22 @@ from typing import Optional
 from warnings import warn
 
 
-def raise_deprecation_warning(
-    instance: str, version: str, alt: Optional[str] = None
+def raise_future_warning(
+    subject: str, version: str, alt: Optional[str] = None
 ) -> None:
-    MESSAGE = f"{instance} will be deprecated in version {version}."
+    """
+    Raises FutureWarning with custom deprecation message.
+
+    Parameters
+    ----------
+    subject: str
+        The subject of future deprecation.
+    version: str
+        The version in which deprecation will occur.
+    alt: str
+        Alternatives.
+    """
+    MESSAGE = f"{subject} will be deprecated in version {version}."
     if alt:
         MESSAGE += f" Use {alt} instead."
     warn(MESSAGE, FutureWarning)

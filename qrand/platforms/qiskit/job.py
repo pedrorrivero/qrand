@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 17, 2021
+##   |  ___/|  _  /    DATE: May 26, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -80,9 +80,7 @@ class QiskitJob(QuantumJob):
     def num_measurements(self, num_measurements: Optional[int]) -> None:
         num_measurements = (
             num_measurements
-            if num_measurements
-            and type(num_measurements) is int
-            and 0 < num_measurements
+            if isinstance(num_measurements, int) and 0 < num_measurements
             else self.backend.max_measurements
         )
         if self.backend.max_measurements < num_measurements:
@@ -121,8 +119,7 @@ class QiskitJob(QuantumJob):
     def _experiments(self, experiments: Optional[int]) -> None:
         self.__experiments: int = (
             experiments
-            if experiments
-            and type(experiments) is int
+            if isinstance(experiments, int)
             and 0 < experiments < self.backend.max_experiments
             else self.backend.max_experiments
         )
@@ -139,9 +136,7 @@ class QiskitJob(QuantumJob):
     def _shots(self, shots: Optional[int]) -> None:
         self.__shots: int = (
             shots
-            if shots
-            and type(shots) is int
-            and 0 < shots < self.backend.max_shots
+            if isinstance(shots, int) and 0 < shots < self.backend.max_shots
             else self.backend.max_shots
         )
 
@@ -152,7 +147,7 @@ class QiskitJob(QuantumJob):
                 measurements += result.get_memory(e)
         else:
             cts = result.get_counts()
-            counts: List[Counts] = [cts] if type(cts) != list else cts
+            counts: List[Counts] = [cts] if isinstance(cts, list) else cts
             for c in counts:
                 measurements += [k for k, v in c.items() if v == 1]
-        return reverse_endian(measurements)  # type: ignore
+        return [reverse_endian(m) for m in measurements]

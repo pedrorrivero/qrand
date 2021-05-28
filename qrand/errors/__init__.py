@@ -20,8 +20,11 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from .deprecation import raise_deprecation_warning
+from .argument_validation import validate_natural_number, validate_type
+from .deprecation import raise_future_warning
 
 __all__ = [
-    "raise_deprecation_warning",
+    "validate_natural_number",
+    "validate_type",
+    "raise_future_warning",
 ]

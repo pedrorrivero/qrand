@@ -20,8 +20,8 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from ..errors import raise_deprecation_warning
-from ..helpers import is_bitstring
+from ..errors import raise_future_warning, validate_natural_number
+from ..helpers import isbitstring
 from .cache import BitCache
 
 
@@ -30,7 +30,23 @@ from .cache import BitCache
 ###############################################################################
 class BasicCache(BitCache):
     """
-    BitCache first in, first out (FIFO) data structure.
+    Basic non-persistent implementation of the BitCache FIFO data structure.
+
+    Attributes
+    ----------
+    size: int
+        The number of bits currently stored in the BitCache.
+
+    Methods
+    -------
+    dump() -> str
+        Outputs all the contents in the cache without erasing.
+    flush() -> None:
+        Erases the cache.
+    pop(n: int) -> str:
+        Returns a size `n` bitstring removing it from the top of the cache.
+    push(bitstring: str) -> None:
+        Inserts bitstring at the end of the cache.
     """
 
     def __init__(self) -> None:
@@ -39,9 +55,6 @@ class BasicCache(BitCache):
     ############################### PUBLIC API ###############################
     @property
     def size(self) -> int:
-        """
-        The number of bits currently stored in the BitCache.
-        """
         return len(self._cache)
 
     @property
@@ -49,69 +62,26 @@ class BasicCache(BitCache):
         """
         The state of the BitCache object.
         """
-        raise_deprecation_warning("state", "1.0.0")
+        raise_future_warning("state", "1.0.0")
         return {"size": self.size}
 
     def dump(self) -> str:
-        """
-        Outputs all the contents in the cache without erasing.
-
-        RETURNS
-        -------
-        out: str
-            Cache contents.
-        """
         return self._cache
 
     def flush(self) -> None:
-        """
-        Erases the cache.
-        """
         self._cache = ""
 
-    def pop(self, n: int) -> str:
-        """
-        Returns a size `n` bitstring removing it from the top of the cache.
-
-        PARAMETERS
-        ----------
-        n: int
-            Number of bits to retrieve
-
-        RETURNS
-        -------
-        out: str
-            Size `n` bitstring.
-
-        RAISES
-        ------
-        ValueError
-            If input is greater than cache size, or less than one.
-        """
-        if n < 1:
-            raise ValueError("Input number of bits must be greater than zero")
-        elif n > self.size:
-            raise RuntimeError("Insufficient cache size")
-        bitstring: str = self._cache[:n]
-        self._cache = self._cache[n:]
+    def pop(self, num_bits: int) -> str:
+        validate_natural_number(num_bits, zero=False)
+        if num_bits > self.size:
+            raise RuntimeError(
+                f"Insufficient cache size {self.size} < {num_bits}."
+            )
+        bitstring: str = self._cache[:num_bits]
+        self._cache = self._cache[num_bits:]
         return bitstring
 
     def push(self, bitstring: str) -> None:
-        """
-        Inserts bitstring at the end of the cache.
-
-        PARAMETERS
-        ----------
-        bitstring: str
-            The bitstring to insert.
-
-        RAISES
-        ------
-        TypeError (is_bitstring)
-            If input bitstring is not str
-        ValueError
-            If input bitstring is not a valid bitstring
-        """
-        if not is_bitstring(bitstring):
+        if not isbitstring(bitstring):
             raise ValueError(f"Invalid bitstring value '{bitstring}'")
         self._cache += bitstring

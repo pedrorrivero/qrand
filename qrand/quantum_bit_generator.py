@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 20, 2021
+##   |  ___/|  _  /    DATE: May 25, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -27,8 +27,9 @@ from numpy import float64, uint32, uint64
 from randomgen import UserBitGenerator
 
 from .caches import BasicCache, BitCache
+from .errors import validate_type
 from .platforms import QuantumPlatform
-from .protocols import QuantumProtocol
+from .protocols import HadamardProtocol, QuantumProtocol
 
 
 ###############################################################################
@@ -43,7 +44,7 @@ class QuantumBitGenerator(UserBitGenerator):
     ----------
     platform: QuantumPlatform
         The quantum platform that will be used for QRNG.
-    protocol: QuantumProtocol
+    protocol: QuantumProtocol, default: HadamardProtocol()
         The quantum protocol that will be used for QRNG.
     ISRAW32: bool, default: False
         Toggle 32-bit BitGenerator mode. If `False` the mode will be 64-bit.
@@ -69,11 +70,11 @@ class QuantumBitGenerator(UserBitGenerator):
         Erase the cache.
     load_cache(bitstring: str, flush: bool = False) -> None:
         Load cache from bitstring.
-    random_bitstring(num_bits: int = 0) -> str:
+    random_bitstring(num_bits: Optional[int] = None) -> str:
         Returns a random bitstring of a given lenght.
-    random_double(n: float = 1) -> float:
+    random_double(max: float = 1, min: float = 0) -> float:
         Returns a random double from a uniform distribution in the range [0,n).
-    random_uint(num_bits: int = 0) -> int:
+    random_uint(num_bits: Optional[int] = None) -> int:
         Returns a random unsigned int of a given size in bits.
 
     Notes
@@ -87,7 +88,7 @@ class QuantumBitGenerator(UserBitGenerator):
     def __init__(
         self,
         platform: QuantumPlatform,
-        protocol: QuantumProtocol,
+        protocol: QuantumProtocol = HadamardProtocol(),
         ISRAW32: bool = False,
     ) -> None:
         self.platform: QuantumPlatform = platform
@@ -128,6 +129,7 @@ class QuantumBitGenerator(UserBitGenerator):
 
     @platform.setter
     def platform(self, p: QuantumPlatform) -> None:
+        validate_type(p, QuantumPlatform)
         self._platform = p
 
     @property
@@ -139,6 +141,7 @@ class QuantumBitGenerator(UserBitGenerator):
 
     @protocol.setter
     def protocol(self, p: QuantumProtocol) -> None:
+        validate_type(p, QuantumProtocol)
         self._protocol = p
 
     def dump_cache(self, flush: bool = False) -> str:
@@ -183,79 +186,77 @@ class QuantumBitGenerator(UserBitGenerator):
 
     def random_bitstring(self, num_bits: Optional[int] = None) -> str:
         """
-        Returns a random bitstring of a given lenght.
+        Returns a random bitstring from a `num_bits` uniform distribution.
 
         Parameters
         ----------
-        num_bits: int, optional
-            Number of bits to retrieve. It defaults to the raw number of BITS
-            for the instance QuantumBitGenerator (i.e. 32 or 64).
+        num_bits: int, default: BITS (i.e. 32 or 64)
+            Number of bits to retrieve.
 
         Returns
         -------
         out: str
-            Bitstring of lenght `num_bits`.
+            Random bitstring of length `num_bits`.
         """
         num_bits = (
             num_bits
-            if num_bits and type(num_bits) is int and num_bits > 0
+            if isinstance(num_bits, int) and num_bits > 0
             else self.BITS
         )
         while self.bitcache.size < num_bits:
             self._refill_cache()
         return self.bitcache.pop(num_bits)
 
-    def random_double(self, n: float = 1) -> float:
+    def random_double(self, max: float = 1, min: float = 0) -> float:
         """
         Returns a random double from a uniform distribution in the range
-        [0,n).
+        [min,max).
 
         Parameters
         ----------
-        n: float, default: 1
-            Size of the range [0,n) from which to draw the random number.
+        max: float, default: 1
+            Strict upper bound for the random number.
+        min: float, default: 0
+            Lower bound for the random number.
 
         Returns
         -------
         out: float
-            Random float in the range [0,n).
+            Random double in the range [min,max).
 
         Notes
         -----
-        COPYRIGHT NOTICE
-        Source: https://github.com/ozanerhansha/qRNG
-        License: GNU GENERAL PUBLIC LICENSE VERSION 3
-        Changes:
-            - Add static type hints
-            - Limit range to [0,n) instead of [min,max) and add default
-            - Replace call to original get_random_int64
+        Implementation based on the double-precision floating-point format
+        (FP64) [1]_.
+
+        References
+        ----------
+        .. [1] Wikipedia contributors, "Double-precision floating-point
+            format," Wikipedia, The Free Encyclopedia, https://en.wikipedia.org/
+            w/index.php?title=Double-precision_floating-
+            point_format&oldid=1024750735 (accessed May 25, 2021).
         """
-        unpacked = 0x3FF0000000000000 | self.random_uint(64) >> 12
-        packed = pack("Q", unpacked)
-        value: float = unpack("d", packed)[0] - 1.0
-        return value * n
+        min, max = float(min), float(max)
+        bits_as_uint: int = 0x3FF0000000000000 | self.random_uint(64 - 12)
+        to_bytes: bytes = pack(">Q", bits_as_uint)
+        standard_value: float = unpack(">d", to_bytes)[0] - 1.0
+        return (max - min) * standard_value + min
 
     def random_uint(self, num_bits: Optional[int] = None) -> int:
         """
-        Returns a random unsigned int of a given size in bits.
+        Returns a random unsigned int from a `num_bits` uniform distribution.
 
         Parameters
         ----------
-        num_bits: int, optional
-            Number of bits to retrieve. It defaults to the raw number of BITS
-            for the instance QuantumBitGenerator (i.e. 32 or 64).
+        num_bits: int, default: BITS (i.e. 32 or 64)
+            Number of bits to retrieve.
 
         Returns
         -------
         out: int
-            Unsigned int of `num_bits` bits.
+            Random unsigned int of size `num_bits`.
         """
-        num_bits = (
-            num_bits
-            if num_bits and type(num_bits) is int and num_bits > 0
-            else self.BITS
-        )
-        return int(self.random_bitstring(num_bits), 2)
+        return int(self.random_bitstring(num_bits), base=2)
 
     ############################### PRIVATE API ###############################
     def _build_cache(self) -> BitCache:
@@ -280,7 +281,8 @@ class QuantumBitGenerator(UserBitGenerator):
     @property
     def _next_raw(self) -> Callable[[Any], Union[uint32, uint64]]:
         """
-        A callable that returns either 64 or 32 random bits. It must accept a single input which is a void pointer to a memory address.
+        A callable that returns either 64 or 32 random bits. It must accept a
+        single input which is a void pointer to a memory address.
         """
         return self._next_32 if self._ISRAW32 else self._next_64
 
@@ -316,6 +318,6 @@ class QuantumBitGenerator(UserBitGenerator):
         """
 
         def next_double(void_p: Any) -> float64:
-            return float64(self.random_double(1))
+            return float64(self.random_double(1, 0))
 
         return next_double

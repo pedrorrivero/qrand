@@ -1,3 +1,32 @@
+## 0.3.0a6 (2021-05-27)
+
+### Refactor
+
+- **helpers**: merge numeral encoding functions in one module
+- **Qrng**: update get_complex_rect argument defaults
+- **Qrng**: convert to class wrapper [issue #14]
+- **Qrng**: redesign get_random_base32 and get_random_base64
+- **QuantumBitGenerator**: remove argument checks in random_uint
+- **reverse_endian**: rename bitstrings to numerals
+- **HadamardProtocol**: rename output to measurements
+- **Qrng**: reorder in public and private API
+
+### Fix
+
+- **ValidationDecorator**: fix BareQuantumProtocol instance check
+- **QuantumBitGenerator**: verify attribute types on set
+
+### Feat
+
+- **QuantumBitGenerator**: add default protocol [issue #14]
+- **Qrng**: add get_random_string
+- **Qrng**: add quantum_bit_generator property
+
+### Perf
+
+- **Qrng**: minimize bit consumption in get_random_float
+- **QuantumBitGenerator**: minimize bit consumption in random_uint
+
 ## 0.3.0a5 (2021-05-20)
 
 ### Refactor
