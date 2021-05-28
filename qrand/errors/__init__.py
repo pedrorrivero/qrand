@@ -20,8 +20,8 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from .deprecation import raise_deprecation_warning
+from .deprecation import raise_future_warning
 
 __all__ = [
-    "raise_deprecation_warning",
+    "raise_future_warning",
 ]

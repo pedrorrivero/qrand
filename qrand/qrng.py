@@ -24,7 +24,7 @@ import math
 from struct import pack, unpack
 from typing import Optional
 
-from .errors import raise_deprecation_warning
+from .errors import raise_future_warning
 from .helpers import ALPHABETS, numeral_encode
 from .quantum_bit_generator import QuantumBitGenerator
 
@@ -120,7 +120,7 @@ class Qrng:
     """
 
     def __init__(self, quantum_bit_generator: QuantumBitGenerator):
-        raise_deprecation_warning("This version of Qrng", "1.0.0")
+        raise_future_warning("This version of Qrng", "1.0.0")
         self.quantum_bit_generator = quantum_bit_generator
 
     ############################### PUBLIC API ###############################
@@ -130,14 +130,14 @@ class Qrng:
         A QuantumBitGenerator instance object to handle random number
         production.
         """
-        raise_deprecation_warning("quantum_bit_generator", "1.0.0")
+        raise_future_warning("quantum_bit_generator", "1.0.0")
         return self._quantum_bit_generator
 
     @quantum_bit_generator.setter
     def quantum_bit_generator(
         self, quantum_bit_generator: QuantumBitGenerator
     ) -> None:
-        raise_deprecation_warning("quantum_bit_generator", "1.0.0")
+        raise_future_warning("quantum_bit_generator", "1.0.0")
         if not isinstance(quantum_bit_generator, QuantumBitGenerator):
             raise TypeError(
                 f"Invalid quantum_bit_generator type \
@@ -153,7 +153,7 @@ class Qrng:
         """
         The state of the Qrng object.
         """
-        raise_deprecation_warning("state", "1.0.0")
+        raise_future_warning("state", "1.0.0")
         return {
             "quantum_bit_generator": self.quantum_bit_generator.state,
         }
@@ -172,9 +172,7 @@ class Qrng:
         out: str
             Random bitstring of length `num_bits`.
         """
-        raise_deprecation_warning(
-            "get_bit_string", "1.0.0", "get_random_bitstring"
-        )
+        raise_future_warning("get_bit_string", "1.0.0", "get_random_bitstring")
         return self.quantum_bit_generator.random_bitstring(num_bits)
 
     def get_random_base32(self, num_bits: Optional[int] = None) -> str:

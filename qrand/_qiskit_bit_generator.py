@@ -30,7 +30,7 @@ from qiskit.providers.models import BackendConfiguration
 from qiskit.result import Counts, Result
 
 from .caches import BasicCache as BitCache
-from .errors import raise_deprecation_warning
+from .errors import raise_future_warning
 from .quantum_bit_generator import QuantumBitGenerator
 
 ###############################################################################
@@ -109,7 +109,7 @@ class QiskitBitGenerator(QuantumBitGenerator):
         max_bits_per_request: int = 0,
         ISRAW32: bool = False,
     ) -> None:
-        raise_deprecation_warning(
+        raise_future_warning(
             "QiskitBitGenerator",
             "1.0.0",
             "QuantumBitGenerator and QiskitPlatform",

@@ -20,7 +20,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from ..errors import raise_deprecation_warning
+from ..errors import raise_future_warning
 from ..helpers import isbitstring
 from .cache import BitCache
 
@@ -62,7 +62,7 @@ class BasicCache(BitCache):
         """
         The state of the BitCache object.
         """
-        raise_deprecation_warning("state", "1.0.0")
+        raise_future_warning("state", "1.0.0")
         return {"size": self.size}
 
     def dump(self) -> str:

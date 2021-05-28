@@ -24,7 +24,7 @@ from typing import Optional
 from warnings import warn
 
 
-def raise_deprecation_warning(
+def raise_future_warning(
     subject: str, version: str, alt: Optional[str] = None
 ) -> None:
     """
