@@ -30,7 +30,23 @@ from ..helpers import isbitstring
 ###############################################################################
 class BitCache(ABC):
     """
-    BitCache first in, first out (FIFO) data structure.
+    BitCache FIFO (first in, first out) data structure.
+
+    Attributes
+    ----------
+    size: int
+        The number of bits currently stored in the BitCache.
+
+    Methods
+    -------
+    dump() -> str
+        Outputs all the contents in the cache without erasing.
+    flush() -> None:
+        Erases the cache.
+    pop(n: int) -> str:
+        Returns a size `n` bitstring removing it from the top of the cache.
+    push(bitstring: str) -> None:
+        Inserts bitstring at the end of the cache.
     """
 
     ############################### PUBLIC API ###############################
@@ -47,7 +63,7 @@ class BitCache(ABC):
         """
         Outputs all the contents in the cache without erasing.
 
-        RETURNS
+        Returns
         -------
         out: str
             Cache contents.
@@ -62,24 +78,28 @@ class BitCache(ABC):
         pass
 
     @abstractmethod
-    def pop(self, n: int) -> str:
+    def pop(self, num_bits: int) -> str:
         """
         Returns a size `n` bitstring removing it from the top of the cache.
 
-        PARAMETERS
+        Parameters
         ----------
-        n: int
-            Number of bits to retrieve
+        num_bits: int
+            Number of bits to retrieve.
 
-        RETURNS
+        Returns
         -------
         out: str
             Size `n` bitstring.
 
-        RAISES
+        Raises
         ------
+        TypeError
+            If input is not int.
         ValueError
-            If input is greater than cache size, or less than one.
+            If input is less than one.
+        RuntimeError
+            If input is greater than cache size.
         """
         pass
 
@@ -88,16 +108,16 @@ class BitCache(ABC):
         """
         Inserts bitstring at the end of the cache.
 
-        PARAMETERS
+        Parameters
         ----------
         bitstring: str
             The bitstring to insert.
 
-        RAISES
+        Raises
         ------
-        TypeError (isbitstring)
-            If input bitstring is not str
+        TypeError
+            If input bitstring is not str.
         ValueError
-            If input bitstring is not a valid bitstring
+            If input bitstring is not a valid bitstring.
         """
         pass
