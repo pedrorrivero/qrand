@@ -24,9 +24,9 @@ from .argument_validation import validate_natural_number, validate_type
 from .bounded_factorization import compute_bounded_factorization
 from .numeral_encodings import (
     ALPHABETS,
+    decode_numeral,
+    encode_numeral,
     isnumeral,
-    numeral_decode,
-    numeral_encode,
     reverse_endian,
     validate_numeral,
 )
@@ -37,8 +37,8 @@ __all__ = [
     "validate_type",
     "compute_bounded_factorization",
     "ALPHABETS",
+    "decode_numeral",
+    "encode_numeral",
     "isnumeral",
-    "numeral_decode",
-    "numeral_encode",
     "reverse_endian",
 ]

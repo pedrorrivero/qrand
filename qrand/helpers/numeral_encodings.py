@@ -51,7 +51,22 @@ ALPHABETS = {
 ###############################################################################
 ## ENCODE
 ###############################################################################
-def numeral_encode(uint: int, base_alphabet: str) -> str:
+def encode_numeral(uint: int, base_alphabet: str) -> str:
+    """
+    Encode `uint` in the given `base_alphabet` as a numeral string.
+
+    Parameters
+    ----------
+    uint: int
+        The number to encode.
+    base_alphabet: str
+        The alphabet to use as base for the encoding.
+
+    Returns
+    -------
+    out: str
+        The encoded `uint` in the given `base_alphabet` as a numeral string.
+    """
     _validate_encode_args(uint, base_alphabet)
     base_alphabet = _remove_duplicate_chars(base_alphabet)
     base: int = len(base_alphabet)
@@ -68,7 +83,22 @@ def numeral_encode(uint: int, base_alphabet: str) -> str:
 ###############################################################################
 ## DECODE
 ###############################################################################
-def numeral_decode(numeral: str, base_alphabet: str) -> int:
+def decode_numeral(numeral: str, base_alphabet: str) -> int:
+    """
+    Decode `numeral` string in the given `base_alphabet`.
+
+    Parameters
+    ----------
+    numeral: str
+        The numeral string to decode.
+    base_alphabet: str
+        The alphabet to use as base for the encoding.
+
+    Returns
+    -------
+    out: int
+        The decoded `numeral` int in the given `base_alphabet`.
+    """
     validate_numeral(numeral, base_alphabet)
     numeral = reverse_endian(numeral)
     base_alphabet = _remove_duplicate_chars(base_alphabet)
@@ -87,6 +117,19 @@ def numeral_decode(numeral: str, base_alphabet: str) -> int:
 ## REVERSE ENDIAN
 ###############################################################################
 def reverse_endian(numeral: str) -> str:
+    """
+    Reverses the endianness of a given `numeral` string.
+
+    Parameters
+    ----------
+    numeral: str
+        The numeral string whose endianness to reverse.
+
+    Returns
+    -------
+    out: str
+        The `numeral` string with its endianness reversed.
+    """
     validate_type(numeral, str)
     return numeral[::-1]
 
