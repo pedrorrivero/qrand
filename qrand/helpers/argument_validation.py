@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 28, 2021
+##   |  ___/|  _  /    DATE: May 29, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -45,12 +45,11 @@ def validate_natural_number(number: int, zero: bool = False) -> None:
     ValueError
         If `number` is not a natural number.
     """
-    MESSAGE = f"Invalid value {number} <{'=' if not zero else ''} 0."
     validate_type(number, int)
-    if number < 0:
-        raise ValueError(MESSAGE)
-    elif not zero and number == 0:
-        raise ValueError(MESSAGE)
+    if number < 0 or not zero and number == 0:
+        raise ValueError(
+            f"Invalid value {number} <{'=' if not zero else ''} 0."
+        )
 
 
 ###############################################################################
