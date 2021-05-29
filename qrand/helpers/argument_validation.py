@@ -20,7 +20,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import Any, Optional
+from typing import Any, Optional, Tuple, Union
 from warnings import warn
 
 
@@ -55,7 +55,9 @@ def validate_natural_number(number: int, zero: bool = False) -> None:
 ###############################################################################
 ## VALIDATE TYPE
 ###############################################################################
-def validate_type(object: Any, classinfo: type) -> None:
+def validate_type(
+    object: Any, classinfo: Union[type, Tuple[type, ...]]
+) -> None:
     """
     Raises TypeError with custom deprecation message if `object` and
     `classinfo` do not match.
@@ -64,16 +66,19 @@ def validate_type(object: Any, classinfo: type) -> None:
     ----------
     object: Any
         The object to validate.
-    classinfo: type
-        The correct object type.
+    classinfo: Union[type, Tuple[type, ...]]
+        The correct object type(s).
 
     Raises
     ------
     TypeError
         If `object` does not match `classinfo`.
     """
+    MESSAGE = f"Invalid object type {type(object)}"
+    MESSAGE += (
+        f", expected {classinfo.__name__}."
+        if isinstance(classinfo, type)
+        else "."
+    )
     if not isinstance(object, classinfo):
-        raise TypeError(
-            f"Invalid object type {type(object)}, \
-            expected {classinfo.__name__}."
-        )
+        raise TypeError(MESSAGE)
