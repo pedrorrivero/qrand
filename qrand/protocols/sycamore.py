@@ -22,6 +22,7 @@
 
 from typing import Literal
 
+from ..errors import raise_not_implemented_error
 from ..platforms.factory import QuantumFactory
 from .protocol import BareQuantumProtocol
 from .result import ProtocolResult
@@ -31,14 +32,12 @@ from .result import ProtocolResult
 ## SYCAMORE PROTOCOL
 ###############################################################################
 class SycamoreProtocol(BareQuantumProtocol):
-    @property
-    @classmethod
-    def ERROR_MSG(cls):
-        return f"{cls.__name__}"  # TODO
+    def __init__(self) -> None:
+        raise_not_implemented_error("SycamoreProtocol", "HadamardProtocol")
 
     ############################### PUBLIC API ###############################
     def run(self, factory: QuantumFactory) -> ProtocolResult:
-        raise NotImplementedError(self.__class__.ERROR_MSG)
+        pass
 
     def verify(self) -> Literal[False]:
-        raise NotImplementedError(self.__class__.ERROR_MSG)
+        pass

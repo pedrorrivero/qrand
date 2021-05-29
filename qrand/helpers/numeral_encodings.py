@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 26, 2021
+##   |  ___/|  _  /    DATE: May 28, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -23,7 +23,7 @@
 from collections import OrderedDict
 from typing import Any, Dict
 
-from ..errors import validate_natural_number, validate_type
+from .argument_validation import validate_natural_number, validate_type
 
 _UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 _LOWER = "abcdefghijklmnopqrstuvwxyz"
@@ -51,7 +51,22 @@ ALPHABETS = {
 ###############################################################################
 ## ENCODE
 ###############################################################################
-def numeral_encode(uint: int, base_alphabet: str) -> str:
+def encode_numeral(uint: int, base_alphabet: str) -> str:
+    """
+    Encode `uint` in the given `base_alphabet` as a numeral string.
+
+    Parameters
+    ----------
+    uint: int
+        The number to encode.
+    base_alphabet: str
+        The alphabet to use as base for the encoding.
+
+    Returns
+    -------
+    out: str
+        The encoded `uint` in the given `base_alphabet` as a numeral string.
+    """
     _validate_encode_args(uint, base_alphabet)
     base_alphabet = _remove_duplicate_chars(base_alphabet)
     base: int = len(base_alphabet)
@@ -68,8 +83,23 @@ def numeral_encode(uint: int, base_alphabet: str) -> str:
 ###############################################################################
 ## DECODE
 ###############################################################################
-def numeral_decode(numeral: str, base_alphabet: str) -> int:
-    _validate_decode_args(numeral, base_alphabet)
+def decode_numeral(numeral: str, base_alphabet: str) -> int:
+    """
+    Decode `numeral` string in the given `base_alphabet`.
+
+    Parameters
+    ----------
+    numeral: str
+        The numeral string to decode.
+    base_alphabet: str
+        The alphabet to use as base for the encoding.
+
+    Returns
+    -------
+    out: int
+        The decoded `numeral` int in the given `base_alphabet`.
+    """
+    validate_numeral(numeral, base_alphabet)
     numeral = reverse_endian(numeral)
     base_alphabet = _remove_duplicate_chars(base_alphabet)
     value_dict: Dict[str, int] = _build_value_dict(base_alphabet)
@@ -87,6 +117,19 @@ def numeral_decode(numeral: str, base_alphabet: str) -> int:
 ## REVERSE ENDIAN
 ###############################################################################
 def reverse_endian(numeral: str) -> str:
+    """
+    Reverses the endianness of a given `numeral` string.
+
+    Parameters
+    ----------
+    numeral: str
+        The numeral string whose endianness to reverse.
+
+    Returns
+    -------
+    out: str
+        The `numeral` string with its endianness reversed.
+    """
     validate_type(numeral, str)
     return numeral[::-1]
 
@@ -96,7 +139,8 @@ def reverse_endian(numeral: str) -> str:
 ###############################################################################
 def isnumeral(numeral: str, base_alphabet: str) -> bool:
     """
-    Returns `True` if the input str is a bitstring, `False` otherwise.
+    Returns `True` if the input `numeral` is a numeral in the given
+    `base_alphabet`, `False` otherwise.
 
     Parameters
     ----------
@@ -110,7 +154,7 @@ def isnumeral(numeral: str, base_alphabet: str) -> bool:
     out: bool
         `True` if `numeral` is a numeral in the given base, `False` otherwise.
 
-    RAISES
+    Raises
     ------
     TypeError
         If input `numeral` or `base_alphabet` are not str.
@@ -122,26 +166,32 @@ def isnumeral(numeral: str, base_alphabet: str) -> bool:
     return n.issubset(a)
 
 
-def isbitstring(bitstring: str) -> bool:
+###############################################################################
+## VALIDATE NUMERAL
+###############################################################################
+def validate_numeral(numeral: str, base_alphabet: str) -> None:
     """
-    Returns `True` if the input str is a bitstring, `False` otherwise.
+    Raises ValueError if the input `numeral` is not a numeral in the given
+    `base_alphabet`.
 
-    PARAMETERS
+    Parameters
     ----------
-    bitstring: str
-        The string to check.
+    numeral: str
+        The numeral string to check.
+    base_alphabet: str
+        A string containig the characters to be used as base.
 
-    RETURNS
-    -------
-    out: bool
-        `True` if input str is bitstring, `False` otherwise.
-
-    RAISES
+    Raises
     ------
     TypeError
-        If input bitstring is not str.
+        If input `numeral` or `base_alphabet` are not str.
+    ValueError
+        If `numeral` is not a numeral in the given base.
     """
-    return isnumeral(bitstring, ALPHABETS["BINARY"])
+    if not isnumeral(numeral, base_alphabet):
+        raise ValueError(
+            "Input `numeral` contains characters outside of `base_alphabet`."
+        )
 
 
 ###############################################################################
@@ -159,14 +209,6 @@ def _build_value_dict(base_alphabet: str) -> Dict[str, int]:
 def _remove_duplicate_chars(base_alphabet: str) -> str:
     od: Dict[str, Any] = OrderedDict.fromkeys(base_alphabet)
     return "".join(od)
-
-
-def _validate_decode_args(numeral: str, base_alphabet: str) -> None:
-    if not isnumeral(numeral, base_alphabet):
-        raise ValueError(
-            "Base mismatch. Input `numeral` contains characters outside \
-            input `base_alphabet`."
-        )
 
 
 def _validate_encode_args(uint: int, base_alphabet: str) -> None:

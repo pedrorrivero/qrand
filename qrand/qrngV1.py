@@ -24,7 +24,7 @@ import math
 from struct import pack, unpack
 from typing import Optional
 
-from .helpers import ALPHABETS, numeral_encode
+from .helpers import ALPHABETS, encode_numeral
 from .quantum_bit_generator import QuantumBitGenerator
 
 
@@ -136,7 +136,7 @@ class Qrng(QuantumBitGenerator):
             Random base32 encoded numeral string.
         """
         uint: int = self.get_random_uint(num_bits)
-        return numeral_encode(uint, ALPHABETS["BASE32"])
+        return encode_numeral(uint, ALPHABETS["BASE32"])
 
     def get_random_base64(self, num_bits: Optional[int] = None) -> str:
         """
@@ -154,7 +154,7 @@ class Qrng(QuantumBitGenerator):
             Random base64 encoded numeral string.
         """
         uint: int = self.get_random_uint(num_bits)
-        return numeral_encode(uint, ALPHABETS["BASE64"])
+        return encode_numeral(uint, ALPHABETS["BASE64"])
 
     def get_random_bitstring(self, num_bits: Optional[int] = None) -> str:
         """
@@ -428,7 +428,7 @@ class Qrng(QuantumBitGenerator):
             Random string with `num_bits` of entropy.
         """
         uint: int = self.random_uint(num_bits)
-        return numeral_encode(uint, base_alphabet)
+        return encode_numeral(uint, base_alphabet)
 
     def get_random_uint(self, num_bits: Optional[int] = None) -> int:
         """
