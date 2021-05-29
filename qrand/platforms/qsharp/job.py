@@ -25,7 +25,6 @@ from warnings import warn
 
 from qsharp import QSharpCallable, azure, compile
 
-from ...helpers import compute_bounded_factorization
 from ..job import QuantumJob
 from .backend import QsharpBackend
 from .circuit import QsharpCircuit
@@ -43,7 +42,7 @@ class QsharpJob(QuantumJob):
     ) -> None:
         self.backend = backend
         self.circuit = circuit
-        self.num_measurements = num_measurements  # type: ignore
+        self.num_measurements: int = num_measurements  # type: ignore
 
     ############################### PUBLIC API ###############################
     @property
@@ -69,16 +68,14 @@ class QsharpJob(QuantumJob):
         self._circuit: QsharpCircuit = circuit
 
     @property
-    def num_measurements(self) -> int:
-        return self._shots * self._experiments
+    def num_measurements(self) -> int:  # type: ignore
+        return self._num_measurements
 
     @num_measurements.setter
     def num_measurements(self, num_measurements: Optional[int]) -> None:
         num_measurements = (
             num_measurements
-            if num_measurements
-            and type(num_measurements) is int
-            and 0 < num_measurements
+            if isinstance(num_measurements, int) and 0 < num_measurements
             else self.backend.max_measurements
         )
         if self.backend.max_measurements < num_measurements:
@@ -88,18 +85,14 @@ class QsharpJob(QuantumJob):
                 Using max_measurements instead.",
                 UserWarning,
             )
-            num_measurements = self.backend.max_measurements
-        self._shots, self._experiments = compute_bounded_factorization(
-            num_measurements,
-            self.backend.max_shots,
-            self.backend.max_experiments,
-        )
+            self._num_measurements = self.backend.max_measurements
 
     def _generate_code(self) -> QSharpCallable:
         qsharp_code = """
         open Microsoft.Quantum.Intrinsic;
         open Microsoft.Quantum.Measurement;
         open Microsoft.Quantum.Arrays;
+        open Microsoft.Quantum.Math;
 
         operation Program():String[]{{
 
@@ -120,44 +113,14 @@ class QsharpJob(QuantumJob):
 
     def execute(self) -> List[str]:
         self.program = self._generate_code()
-        result: List[str] = []
 
         if self.backend.resource_id is None or self.backend.target_id is None:
-            result = self.program.simulate()
+            return self.program.simulate()
         else:
             azure.connect(resourceId=self.backend.resource_id)
             azure.target(targetId=self.backend.target_id)
-            result = azure.execute(
+            return azure.execute(
                 self.program,
                 shots=self.num_measurements,
                 jobName="Generate random number",
             )
-        return result
-
-    @property
-    def _experiments(self) -> int:
-        return self.__experiments
-
-    @_experiments.setter
-    def _experiments(self, experiments: Optional[int]) -> None:
-        self.__experiments: int = (
-            experiments
-            if experiments
-            and type(experiments) is int
-            and 0 < experiments < self.backend.max_experiments
-            else self.backend.max_experiments
-        )
-
-    @property
-    def _shots(self) -> int:
-        return self.__shots
-
-    @_shots.setter
-    def _shots(self, shots: Optional[int]) -> None:
-        self.__shots: int = (
-            shots
-            if shots
-            and type(shots) is int
-            and 0 < shots < self.backend.max_shots
-            else self.backend.max_shots
-        )
