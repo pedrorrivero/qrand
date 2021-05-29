@@ -56,25 +56,25 @@ def validate_natural_number(number: int, zero: bool = False) -> None:
 ###############################################################################
 ## VALIDATE TYPE
 ###############################################################################
-def validate_type(object: Any, type_class: type) -> None:
+def validate_type(object: Any, classinfo: type) -> None:
     """
     Raises TypeError with custom deprecation message if `object` and
-    `type_class` do not match.
+    `classinfo` do not match.
 
     Parameters
     ----------
     object: Any
         The object to validate.
-    type_class: type
+    classinfo: type
         The correct object type.
 
     Raises
     ------
     TypeError
-        If `object` does not match `type_class`.
+        If `object` does not match `classinfo`.
     """
-    if not isinstance(object, type_class):
+    if not isinstance(object, classinfo):
         raise TypeError(
             f"Invalid object type {type(object)}, \
-            expected {type_class.__name__}."
+            expected {classinfo.__name__}."
         )
