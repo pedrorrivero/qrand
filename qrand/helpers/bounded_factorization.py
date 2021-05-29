@@ -36,11 +36,9 @@ def compute_bounded_factorization(
         return bound_A, bound_B
     swapped: bool = bound_A > bound_B
     bound_A, bound_B = sorted([bound_A, bound_B])
-    final_b: int = bound_B
-    final_a: int = n // final_b
-    final_delta: int = n - final_a * final_b
-    a: int = final_a + 1
-    b: int = n // a
+    final_delta: int = n
+    b: int = bound_B
+    a: int = n // b
     delta: int = n - a * b
     while a <= bound_A and a <= b and final_delta != 0:
         if delta < final_delta:
