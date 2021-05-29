@@ -40,7 +40,7 @@ class QsharpBackend(QuantumBackend):
     ############################### PUBLIC API ###############################
     @property
     def max_measurements(self) -> int:
-        return 524288
+        return 1048576
 
     @property
     def max_qubits(self) -> int:
