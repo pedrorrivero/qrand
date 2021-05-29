@@ -30,7 +30,6 @@ class QsharpCircuit(QuantumCircuit):
     def __init__(self, num_qubits: int) -> None:
         self.gates: str = ""
         self._num_qubits: int = num_qubits
-        self.ERROR_MSG = f"{self.__class__.__name__}"  # TODO
 
     def _validate_qubit_index(self, qubit_index: int) -> None:
         if qubit_index >= self.num_qubits:
@@ -81,12 +80,24 @@ class QsharpCircuit(QuantumCircuit):
         self.gates += f"R1({theta},q[{target_qubit}]);"
 
     def u2(self, phi: float, lam: float, target_qubit: int) -> None:
-        raise NotImplementedError(self.ERROR_MSG)
+        self._validate_qubit_index(target_qubit)
+        self.gates += f"""
+        Rz({lam},q[{target_qubit}]);
+        Ry(0.5*PI(),q[{target_qubit}]);
+        Rz({phi},q[{target_qubit}]);
+        """
 
     def u3(
         self, theta: float, phi: float, lam: float, target_qubit: int
     ) -> None:
-        raise NotImplementedError(self.ERROR_MSG)
+        self._validate_qubit_index(target_qubit)
+        self.gates += f"""
+        Rz({lam},q[{target_qubit}]);
+        Rx(-0.5*PI(),q[{target_qubit}]);
+        Rz({theta},q[{target_qubit}]);
+        Rx(0.5*PI(),q[{target_qubit}]);
+        Rz({phi},q[{target_qubit}]);
+        """
 
     def x(self, target_qubit: int) -> None:
         self._validate_qubit_index(target_qubit)
