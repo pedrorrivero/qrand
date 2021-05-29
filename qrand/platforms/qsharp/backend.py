@@ -40,7 +40,7 @@ class QsharpBackend(QuantumBackend):
     ############################### PUBLIC API ###############################
     @property
     def max_measurements(self) -> int:
-        return self.max_shots * self.max_experiments
+        return 524288
 
     @property
     def max_qubits(self) -> int:
@@ -52,17 +52,5 @@ class QsharpBackend(QuantumBackend):
             return 6
         elif self.target_id == "honeywell.hqs-lt-s1":
             return 10
-        elif (
-            self.resource_id is None and self.target_id == "Quantum Simulator"
-        ):
-            return 30
         else:
             return 1
-
-    @property
-    def max_shots(self) -> int:
-        return 1
-
-    @property
-    def max_experiments(self) -> int:
-        return 1
