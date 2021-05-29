@@ -93,9 +93,9 @@ class QsharpCircuit(QuantumCircuit):
         self._validate_qubit_index(target_qubit)
         self.gates += f"""
         Rz({lam},q[{target_qubit}]);
-        Rx(-0.5*PI(),q[{target_qubit}]);
-        Rz({theta},q[{target_qubit}]);
         Rx(0.5*PI(),q[{target_qubit}]);
+        Rz({theta},q[{target_qubit}]);
+        Rx(-0.5*PI(),q[{target_qubit}]);
         Rz({phi},q[{target_qubit}]);
         """
 
