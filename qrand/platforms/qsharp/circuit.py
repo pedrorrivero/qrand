@@ -48,12 +48,12 @@ class QsharpCircuit(QuantumCircuit):
 
     @property
     def _gates(self) -> str:
-        return self._gates
+        return self.__gates
 
     @_gates.setter
     def _gates(self, gates: str) -> None:
         validate_type(gates, str)
-        self._gates = gates
+        self.__gates = gates
 
     ############################## SPECIAL GATES ##############################
     def measure(self, target_qubit: int) -> None:
