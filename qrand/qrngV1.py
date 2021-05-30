@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 26, 2021
+##   |  ___/|  _  /    DATE: May 29, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -29,7 +29,7 @@ from .quantum_bit_generator import QuantumBitGenerator
 
 
 ###############################################################################
-## QRNG (CLASS WRAPPER)
+## QRNG (CLASS DECORATOR)
 ###############################################################################
 class Qrng(QuantumBitGenerator):
     """
@@ -115,9 +115,6 @@ class Qrng(QuantumBitGenerator):
         - Reverse min, max arguments' order
         - Add additional features
     """
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     ############################### PUBLIC API ###############################
     def get_random_base32(self, num_bits: Optional[int] = None) -> str:
