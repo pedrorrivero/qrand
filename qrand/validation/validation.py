@@ -29,4 +29,17 @@ from abc import ABC, abstractmethod
 class ValidationStrategy(ABC):
     @abstractmethod
     def validate(self, bitstring: str) -> bool:
+        """
+        Validates the randomness/entropy in an input bitstring.
+
+        Parameters
+        ----------
+        bitstring: str
+            The bitstring to be tested.
+
+        Returns
+        -------
+        out: bool
+            `True` if succeeds, `False` otherwise.
+        """
         pass

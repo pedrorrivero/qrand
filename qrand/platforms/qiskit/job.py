@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 26, 2021
+##   |  ___/|  _  /    DATE: May 29, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -28,7 +28,11 @@ from qiskit import execute
 from qiskit.providers import Job
 from qiskit.result import Counts, Result
 
-from ...helpers import compute_bounded_factorization, reverse_endian
+from ...helpers import (
+    compute_bounded_factorization,
+    reverse_endian,
+    validate_type,
+)
 from ..job import QuantumJob
 from .backend import QiskitBackend
 from .circuit import QiskitCircuit
@@ -56,6 +60,7 @@ class QiskitJob(QuantumJob):
 
     @backend.setter
     def backend(self, backend: QiskitBackend) -> None:
+        validate_type(backend, QiskitBackend)
         self._backend: QiskitBackend = backend
 
     @property
@@ -64,6 +69,7 @@ class QiskitJob(QuantumJob):
 
     @circuit.setter
     def circuit(self, circuit: QiskitCircuit) -> None:
+        validate_type(circuit, QiskitCircuit)
         if self.backend.max_qubits < circuit.num_qubits:
             raise RuntimeError(
                 f"Failed to assign QiskitCircuit for QiskitJob. Number of \

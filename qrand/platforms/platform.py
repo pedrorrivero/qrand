@@ -21,16 +21,47 @@
 ## limitations under the License.
 
 from abc import abstractmethod
-from typing import Optional
 
 from ..protocols import QuantumProtocol
 from .factory import QuantumFactory
 
 
 ###############################################################################
-## QUANTUM PLATFORM INTERFACE (DECORATOR)
+## QUANTUM PLATFORM INTERFACE (CLASS DECORATOR)
 ###############################################################################
 class QuantumPlatform(QuantumFactory):
+    """
+    A class decorator for QuantumFactory which adds functionality to fetch
+    random bits following a given protocol.
+
+    Parameters
+    ----------
+    Same as QuantumFactory.
+
+    Attributes
+    ----------
+    Same as QuantumFactory.
+
+    Methods
+    -------
+    Same as QuantumFactory.
+    fetch_random_bits(protocol: QuantumProtocol) -> str:
+        Retrieves a string of random bits following a given protocol.
+    """
+
     @abstractmethod
     def fetch_random_bits(self, protocol: QuantumProtocol) -> str:
+        """
+        Retrieves a string of random bits following a given protocol.
+
+        Parameters
+        ----------
+        protocol: QuantumProtocol
+            The protocol to generate random bits.
+
+        Returns
+        -------
+        out: str
+            A string of random bits.
+        """
         pass

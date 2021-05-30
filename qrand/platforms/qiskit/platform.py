@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 20, 2021
+##   |  ___/|  _  /    DATE: May 29, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -28,6 +28,7 @@ from qiskit.providers import Provider
 from qiskit.providers.ibmq import IBMQError, least_busy
 from qiskit.providers.models import BackendConfiguration
 
+from ...helpers import validate_type
 from ...protocols import ProtocolResult, QuantumProtocol
 from ..platform import QuantumPlatform
 from .backend import QiskitBackend
@@ -61,24 +62,30 @@ class QiskitPlatform(QuantumPlatform):
             backend = BasicAer.get_backend("qasm_simulator")
         self.provider: Optional[Provider] = provider
         self.backend: Backend = backend
-        self.backend_filter: BackendFilter = backend_filter  # type: ignore
+        self.backend_filter: Optional[BackendFilter] = backend_filter
 
     ############################### PUBLIC API ###############################
     @property
-    def backend(self) -> QiskitBackend:
+    def backend(self) -> Backend:
         return self._backend
 
     @backend.setter
     def backend(self, backend: Backend) -> None:
+        validate_type(backend, Backend)
         self._backend: Backend = backend
 
     @property
-    def backend_filter(self) -> BackendFilter:
-        return self._backend_filter
+    def backend_filter(self) -> Optional[BackendFilter]:
+        return self._backend_filter or self.default_backend_filter
 
     @backend_filter.setter
     def backend_filter(self, backend_filter: Optional[BackendFilter]) -> None:
-        self._backend_filter = backend_filter or self.default_backend_filter
+        try:
+            assert callable(backend_filter)
+            assert isinstance(backend_filter(self.backend), bool)
+            self._backend_filter: Optional[BackendFilter] = backend_filter
+        except Exception:
+            self._backend_filter = None
 
     @property
     def provider(self) -> Optional[Provider]:
@@ -86,6 +93,7 @@ class QiskitPlatform(QuantumPlatform):
 
     @provider.setter
     def provider(self, provider: Optional[Provider]) -> None:
+        validate_type(provider, (Provider, type(None)))
         self._provider: Provider = provider
 
     @staticmethod
@@ -105,6 +113,7 @@ class QiskitPlatform(QuantumPlatform):
         return QiskitJob(circuit, backend, num_measurements)
 
     def fetch_random_bits(self, protocol: QuantumProtocol) -> str:
+        validate_type(protocol, QuantumProtocol)
         result: ProtocolResult = protocol.run(self)
         return result.bitstring
 

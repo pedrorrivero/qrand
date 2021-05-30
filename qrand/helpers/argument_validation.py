@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 28, 2021
+##   |  ___/|  _  /    DATE: May 29, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,7 +20,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import Any, Optional
+from typing import Any, Optional, Tuple, Union
 from warnings import warn
 
 
@@ -45,36 +45,40 @@ def validate_natural_number(number: int, zero: bool = False) -> None:
     ValueError
         If `number` is not a natural number.
     """
-    MESSAGE = f"Invalid value {number} <{'=' if not zero else ''} 0."
     validate_type(number, int)
-    if number < 0:
-        raise ValueError(MESSAGE)
-    elif not zero and number == 0:
-        raise ValueError(MESSAGE)
+    if number < 0 or not zero and number == 0:
+        raise ValueError(
+            f"Invalid value {number} <{'=' if not zero else ''} 0."
+        )
 
 
 ###############################################################################
 ## VALIDATE TYPE
 ###############################################################################
-def validate_type(object: Any, type_class: type) -> None:
+def validate_type(
+    object: Any, classinfo: Union[type, Tuple[type, ...]]
+) -> None:
     """
     Raises TypeError with custom deprecation message if `object` and
-    `type_class` do not match.
+    `classinfo` do not match.
 
     Parameters
     ----------
     object: Any
         The object to validate.
-    type_class: type
-        The correct object type.
+    classinfo: Union[type, Tuple[type, ...]]
+        The correct object type(s).
 
     Raises
     ------
     TypeError
-        If `object` does not match `type_class`.
+        If `object` does not match `classinfo`.
     """
-    if not isinstance(object, type_class):
-        raise TypeError(
-            f"Invalid object type {type(object)}, \
-            expected {type_class.__name__}."
-        )
+    MESSAGE = f"Invalid object type {type(object)}"
+    MESSAGE += (
+        f", expected {classinfo.__name__}."
+        if isinstance(classinfo, type)
+        else "."
+    )
+    if not isinstance(object, classinfo):
+        raise TypeError(MESSAGE)
