@@ -45,11 +45,13 @@ class QsharpCircuit(QuantumCircuit):
     def measure(self, target_qubit: int) -> None:
         self._validate_qubit_index(target_qubit)
         self.gates += f"""
-        if M(q[{target_qubit}]) == One{{
-        set res = res+"1";
+        if M(q[{target_qubit}]) == One
+        {{
+            set res = res+"1";
         }}
-        else{{
-        set res = res+"0";
+            else
+        {{
+            set res = res+"0";
         }}
         """
 

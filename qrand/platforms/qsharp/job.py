@@ -102,10 +102,11 @@ class QsharpJob(QuantumJob):
         mutable value = ConstantArray({shots},"");
         mutable res = "";
 
-        for i in IndexRange(value){{
-        {gates}
-        set value w/= i <- res;
-        set res = "";
+        for i in IndexRange(value)
+        {{
+            {gates}
+            set value w/= i <- res;
+            set res = "";
         }}
 
         ResetAll(q);
