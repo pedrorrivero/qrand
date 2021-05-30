@@ -40,8 +40,8 @@ class QsharpJob(QuantumJob):
         backend: QsharpBackend,
         num_measurements: Optional[int] = None,
     ) -> None:
-        self.backend = backend
-        self.circuit = circuit
+        self.backend: QsharpBackend = backend
+        self.circuit: QsharpCircuit = circuit
         self.num_measurements: int = num_measurements  # type: ignore
 
     ############################### PUBLIC API ###############################
@@ -78,6 +78,7 @@ class QsharpJob(QuantumJob):
             if isinstance(num_measurements, int) and 0 < num_measurements
             else self.backend.max_measurements
         )
+
         if self.backend.max_measurements < num_measurements:
             warn(
                 f"Number of measurements unsupported by the job's Backend: \
@@ -85,7 +86,8 @@ class QsharpJob(QuantumJob):
                 Using max_measurements instead.",
                 UserWarning,
             )
-            self._num_measurements = self.backend.max_measurements
+            num_measurements = self.backend.max_measurements
+        self._num_measurements = num_measurements
 
     def _generate_code(self) -> QSharpCallable:
         qsharp_code = """
@@ -97,9 +99,14 @@ class QsharpJob(QuantumJob):
         operation Program():String[]{{
 
         use q = Qubit[{num_qubits}];
-        mutable value = ConstantArray({num_qubits},"0");
+        mutable value = ConstantArray({shots},"");
+        mutable res = "";
 
+        for i in IndexRange(value){{
         {gates}
+        set value w/= i <- res;
+        set res = "";
+        }}
 
         ResetAll(q);
         return value;
@@ -107,7 +114,9 @@ class QsharpJob(QuantumJob):
         """
         return compile(
             qsharp_code.format(
-                num_qubits=self.circuit.num_qubits, gates=self.circuit.gates
+                num_qubits=self.circuit.num_qubits,
+                gates=self.circuit.gates,
+                shots=self.num_measurements,
             )
         )
 
