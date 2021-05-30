@@ -35,8 +35,8 @@ class QsharpBackend(QuantumBackend):
         resource_id: Optional[str] = None,
         target_id: Optional[str] = None,
     ) -> None:
-        self.resource_id = resource_id  # type: ignore
-        self.target_id = target_id  # type: ignore
+        self.resource_id = resource_id
+        self.target_id = target_id
 
     ############################### PUBLIC API ###############################
     @property
