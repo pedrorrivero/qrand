@@ -52,4 +52,4 @@ class MonobitFrequencyValidation(ValidationStrategy):
             s_n += 2 * int(bit) - 1
         s_obs = s_n / sqrt(n)
         p_value = erfc(s_obs / sqrt(2))
-        return p_value > 0.01
+        return p_value >= 0.01
