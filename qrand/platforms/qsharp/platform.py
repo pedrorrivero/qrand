@@ -1,7 +1,7 @@
 ##    _____  _____
-##   |  __ \|  __ \    AUTHOR: Pedro Rivero
+##   |  __ \|  __ \    AUTHOR: Avhijit Nair, Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 20, 2021
+##   |  ___/|  _  /    DATE: May 30, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
