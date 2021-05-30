@@ -49,7 +49,7 @@ class QsharpCircuit(QuantumCircuit):
         {{
             set res = res+"1";
         }}
-            else
+        else
         {{
             set res = res+"0";
         }}
