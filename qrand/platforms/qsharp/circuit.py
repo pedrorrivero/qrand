@@ -1,7 +1,7 @@
 ##    _____  _____
-##   |  __ \|  __ \    AUTHOR: Pedro Rivero
+##   |  __ \|  __ \    AUTHOR: Avhijit Nair, Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 18, 2021
+##   |  ___/|  _  /    DATE: May 30, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,6 +20,11 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
+from typing import Optional
+
+from qsharp import QSharpCallable, compile
+
+from ...helpers import validate_natural_number, validate_type
 from ..circuit import QuantumCircuit
 
 
@@ -41,8 +46,18 @@ class QsharpCircuit(QuantumCircuit):
     def num_qubits(self) -> int:
         return self._num_qubits
 
+    @property
+    def _gates(self) -> str:
+        return self._gates
+
+    @_gates.setter
+    def _gates(self, gates: str) -> None:
+        validate_type(gates, str)
+        self._gates = gates
+
     ############################## SPECIAL GATES ##############################
     def measure(self, target_qubit: int) -> None:
+        validate_natural_number(target_qubit, True)
         self._validate_qubit_index(target_qubit)
         self.gates += f"""
         if M(q[{target_qubit}]) == One
@@ -57,34 +72,48 @@ class QsharpCircuit(QuantumCircuit):
 
     ########################### SINGLE QUBIT GATES ###########################
     def h(self, target_qubit: int) -> None:
+        validate_natural_number(target_qubit, True)
         self._validate_qubit_index(target_qubit)
         self.gates += f"H(q[{target_qubit}]);"
 
     def rx(self, radians: float, target_qubit: int) -> None:
+        validate_type(radians, float)
+        validate_natural_number(target_qubit, True)
         self._validate_qubit_index(target_qubit)
         self.gates += f"Rx({radians},q[{target_qubit}]);"
 
     def ry(self, radians: float, target_qubit: int) -> None:
+        validate_type(radians, float)
+        validate_natural_number(target_qubit, True)
         self._validate_qubit_index(target_qubit)
         self.gates += f"Ry({radians},q[{target_qubit}]);"
 
     def rz(self, radians: float, target_qubit: int) -> None:
+        validate_type(radians, float)
+        validate_natural_number(target_qubit, True)
         self._validate_qubit_index(target_qubit)
         self.gates += f"Rz({radians},q[{target_qubit}]);"
 
     def s(self, target_qubit: int) -> None:
+        validate_natural_number(target_qubit, True)
         self._validate_qubit_index(target_qubit)
         self.gates += f"S(q[{target_qubit}]);"
 
     def t(self, target_qubit: int) -> None:
+        validate_natural_number(target_qubit, True)
         self._validate_qubit_index(target_qubit)
         self.gates += f"T(q[{target_qubit}]);"
 
     def u1(self, theta: float, target_qubit: int) -> None:
+        validate_type(theta, float)
+        validate_natural_number(target_qubit, True)
         self._validate_qubit_index(target_qubit)
         self.gates += f"R1({theta},q[{target_qubit}]);"
 
     def u2(self, phi: float, lam: float, target_qubit: int) -> None:
+        validate_type(phi, float)
+        validate_type(lam, float)
+        validate_natural_number(target_qubit, True)
         self._validate_qubit_index(target_qubit)
         self.gates += f"""
         Rz({lam},q[{target_qubit}]);
@@ -95,6 +124,10 @@ class QsharpCircuit(QuantumCircuit):
     def u3(
         self, theta: float, phi: float, lam: float, target_qubit: int
     ) -> None:
+        validate_type(theta, float)
+        validate_type(phi, float)
+        validate_type(lam, float)
+        validate_natural_number(target_qubit, True)
         self._validate_qubit_index(target_qubit)
         self.gates += f"""
         Rz({lam},q[{target_qubit}]);
@@ -105,19 +138,24 @@ class QsharpCircuit(QuantumCircuit):
         """
 
     def x(self, target_qubit: int) -> None:
+        validate_natural_number(target_qubit, True)
         self._validate_qubit_index(target_qubit)
         self.gates += f"X(q[{target_qubit}]);"
 
     def y(self, target_qubit: int) -> None:
+        validate_natural_number(target_qubit, True)
         self._validate_qubit_index(target_qubit)
         self.gates += f"Y(q[{target_qubit}]);"
 
     def z(self, target_qubit: int) -> None:
+        validate_natural_number(target_qubit, True)
         self._validate_qubit_index(target_qubit)
         self.gates += f"Z(q[{target_qubit}]);"
 
     ############################# TWO QUBIT GATES #############################
     def cs(self, control_qubit: int, target_qubit: int) -> None:
+        validate_natural_number(control_qubit, True)
+        validate_natural_number(target_qubit, True)
         self._validate_qubit_index(control_qubit)
         self._validate_qubit_index(target_qubit)
         self.gates += f"""
@@ -125,16 +163,22 @@ class QsharpCircuit(QuantumCircuit):
         """
 
     def cx(self, control_qubit: int, target_qubit: int) -> None:
+        validate_natural_number(control_qubit, True)
+        validate_natural_number(target_qubit, True)
         self._validate_qubit_index(control_qubit)
         self._validate_qubit_index(target_qubit)
         self.gates += f"CNOT(q[{control_qubit}],q[{target_qubit}]);"
 
     def cz(self, control_qubit: int, target_qubit: int) -> None:
+        validate_natural_number(control_qubit, True)
+        validate_natural_number(target_qubit, True)
         self._validate_qubit_index(control_qubit)
         self._validate_qubit_index(target_qubit)
         self.gates += f"CZ(q[{control_qubit}],q[{target_qubit}]);"
 
     def swap(self, target_qubit_1: int, target_qubit_2: int) -> None:
+        validate_natural_number(target_qubit_1, True)
+        validate_natural_number(target_qubit_2, True)
         self._validate_qubit_index(target_qubit_1)
         self._validate_qubit_index(target_qubit_2)
         self.gates += f"SWAP(q[{target_qubit_1}],q[{target_qubit_2}]);"
@@ -143,6 +187,9 @@ class QsharpCircuit(QuantumCircuit):
     def ccx(
         self, control_qubit_1: int, control_qubit_2: int, target_qubit: int
     ) -> None:
+        validate_natural_number(control_qubit_1, True)
+        validate_natural_number(control_qubit_2, True)
+        validate_natural_number(target_qubit, True)
         self._validate_qubit_index(control_qubit_1)
         self._validate_qubit_index(control_qubit_2)
         self._validate_qubit_index(target_qubit)
@@ -153,9 +200,44 @@ class QsharpCircuit(QuantumCircuit):
     def cswap(
         self, control_qubit_1: int, control_qubit_2: int, target_qubit: int
     ) -> None:
+        validate_natural_number(control_qubit_1, True)
+        validate_natural_number(control_qubit_2, True)
+        validate_natural_number(target_qubit, True)
         self._validate_qubit_index(control_qubit_1)
         self._validate_qubit_index(control_qubit_2)
         self._validate_qubit_index(target_qubit)
         self.gates += f"""
         CSWAP(q[{control_qubit_1},q[{control_qubit_2}],q[{target_qubit}]);
         """
+
+    def generate_code(self, num_measurements: Optional[int]) -> QSharpCallable:
+        qsharp_code = """
+        open Microsoft.Quantum.Intrinsic;
+        open Microsoft.Quantum.Measurement;
+        open Microsoft.Quantum.Arrays;
+        open Microsoft.Quantum.Math;
+
+        operation Program():String[]{{
+
+        use q = Qubit[{num_qubits}];
+        mutable value = ConstantArray({shots},"");
+        mutable res = "";
+
+        for i in IndexRange(value)
+        {{
+            {gates}
+            set value w/= i <- res;
+            set res = "";
+        }}
+
+        ResetAll(q);
+        return value;
+        }}
+        """
+        return compile(
+            qsharp_code.format(
+                num_qubits=self.num_qubits,
+                gates=self.gates,
+                shots=num_measurements,
+            )
+        )
