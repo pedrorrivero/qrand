@@ -1,7 +1,7 @@
 ##    _____  _____
-##   |  __ \|  __ \    AUTHOR: Pedro Rivero
+##   |  __ \|  __ \    AUTHOR: Avhijit Nair, Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 20, 2021
+##   |  ___/|  _  /    DATE: May 30, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -22,6 +22,7 @@
 
 from typing import Optional
 
+from ...protocols import ProtocolResult
 from ..platform import QuantumPlatform, QuantumProtocol
 from .backend import QsharpBackend
 from .circuit import QsharpCircuit
@@ -32,13 +33,17 @@ from .job import QsharpJob
 ## QSHARP PLATFORM
 ###############################################################################
 class QsharpPlatform(QuantumPlatform):
-    def __init__(self) -> None:
-        self.ERROR_MSG = f"{self.__class__.__name__}"  # TODO
-        raise NotImplementedError(self.ERROR_MSG)
+    def __init__(
+        self,
+        resource_id: Optional[str] = None,
+        target_id: Optional[str] = None,
+    ) -> None:
+        self.resource_id = resource_id
+        self.target_id = target_id
 
     ############################### PUBLIC API ###############################
     def create_circuit(self, num_qubits: int) -> QsharpCircuit:
-        raise NotImplementedError(self.ERROR_MSG)
+        return QsharpCircuit(num_qubits)
 
     def create_job(  # type: ignore
         self,
@@ -46,10 +51,11 @@ class QsharpPlatform(QuantumPlatform):
         backend: QsharpBackend,
         num_measurements: Optional[int] = None,
     ) -> QsharpJob:
-        raise NotImplementedError(self.ERROR_MSG)
+        return QsharpJob(circuit, backend, num_measurements)
 
     def fetch_random_bits(self, protocol: QuantumProtocol) -> str:
-        raise NotImplementedError(self.ERROR_MSG)
+        result: ProtocolResult = protocol.run(self)
+        return result.bitstring
 
     def retrieve_backend(self) -> QsharpBackend:
-        raise NotImplementedError(self.ERROR_MSG)
+        return QsharpBackend(self.resource_id, self.target_id)

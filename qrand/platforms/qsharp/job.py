@@ -1,7 +1,7 @@
 ##    _____  _____
-##   |  __ \|  __ \    AUTHOR: Pedro Rivero
+##   |  __ \|  __ \    AUTHOR: Avhijit Nair, Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 17, 2021
+##   |  ___/|  _  /    DATE: May 30, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -21,7 +21,11 @@
 ## limitations under the License.
 
 from typing import List, Optional
+from warnings import warn
 
+from qsharp import azure
+
+from ...helpers import validate_type
 from ..job import QuantumJob
 from .backend import QsharpBackend
 from .circuit import QsharpCircuit
@@ -31,34 +35,72 @@ from .circuit import QsharpCircuit
 ## QSHARP JOB
 ###############################################################################
 class QsharpJob(QuantumJob):
-    def __init__(self) -> None:
-        self.ERROR_MSG = f"{self.__class__.__name__}"  # TODO
-        raise NotImplementedError(self.ERROR_MSG)
+    def __init__(
+        self,
+        circuit: QsharpCircuit,
+        backend: QsharpBackend,
+        num_measurements: Optional[int] = None,
+    ) -> None:
+        self.backend: QsharpBackend = backend
+        self.circuit: QsharpCircuit = circuit
+        self.num_measurements: int = num_measurements  # type: ignore
 
     ############################### PUBLIC API ###############################
     @property
     def backend(self) -> QsharpBackend:
-        raise NotImplementedError(self.ERROR_MSG)
+        return self._backend
 
     @backend.setter
     def backend(self, backend: QsharpBackend) -> None:
-        raise NotImplementedError(self.ERROR_MSG)
+        validate_type(backend, QsharpBackend)
+        self._backend: QsharpBackend = backend
 
     @property
     def circuit(self) -> QsharpCircuit:
-        raise NotImplementedError(self.ERROR_MSG)
+        return self._circuit
 
     @circuit.setter
     def circuit(self, circuit: QsharpCircuit) -> None:
-        raise NotImplementedError(self.ERROR_MSG)
+        validate_type(circuit, QsharpCircuit)
+        if self.backend.max_qubits < circuit.num_qubits:
+            raise RuntimeError(
+                f"Failed to assign QsharpCircuit for QsharpJob. Number of \
+                qubits in QsharpCircuit unsupported by this job's Backend: \
+                {self.backend.max_qubits}<{circuit.num_qubits}."
+            )
+        self._circuit: QsharpCircuit = circuit
 
     @property
-    def num_measurements(self) -> int:
-        raise NotImplementedError(self.ERROR_MSG)
+    def num_measurements(self) -> int:  # type: ignore
+        return self._num_measurements
 
     @num_measurements.setter
     def num_measurements(self, num_measurements: Optional[int]) -> None:
-        raise NotImplementedError(self.ERROR_MSG)
+        num_measurements = (
+            num_measurements
+            if isinstance(num_measurements, int) and 0 < num_measurements
+            else self.backend.max_measurements
+        )
+        if self.backend.max_measurements < num_measurements:
+            warn(
+                f"Number of measurements unsupported by the job's Backend: \
+                {self.backend.max_measurements}<{num_measurements}. \
+                Using max_measurements instead.",
+                UserWarning,
+            )
+            num_measurements = self.backend.max_measurements
+        self._num_measurements = num_measurements
 
     def execute(self) -> List[str]:
-        raise NotImplementedError(self.ERROR_MSG)
+        self.program = self.circuit.generate_code(self.num_measurements)
+
+        if self.backend.resource_id is None or self.backend.target_id is None:
+            return self.program.simulate()
+        else:
+            azure.connect(resourceId=self.backend.resource_id)
+            azure.target(targetId=self.backend.target_id)
+            return azure.execute(
+                self.program,
+                shots=1,
+                jobName="Generate random number",
+            )
