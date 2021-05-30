@@ -46,7 +46,10 @@ class QsharpCircuit(QuantumCircuit):
         self._validate_qubit_index(target_qubit)
         self.gates += f"""
         if M(q[{target_qubit}]) == One{{
-        set value w/= {target_qubit} <- "1";
+        set res = res+"1";
+        }}
+        else{{
+        set res = res+"0";
         }}
         """
 
