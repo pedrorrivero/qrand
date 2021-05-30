@@ -77,19 +77,22 @@ class QsharpCircuit(QuantumCircuit):
         self.gates += f"H(q[{target_qubit}]);"
 
     def rx(self, radians: float, target_qubit: int) -> None:
-        validate_type(radians, float)
+        validate_type(radians, (int, float))
+        radians = float(radians)
         validate_natural_number(target_qubit, True)
         self._validate_qubit_index(target_qubit)
         self.gates += f"Rx({radians},q[{target_qubit}]);"
 
     def ry(self, radians: float, target_qubit: int) -> None:
-        validate_type(radians, float)
+        validate_type(radians, (int, float))
+        radians = float(radians)
         validate_natural_number(target_qubit, True)
         self._validate_qubit_index(target_qubit)
         self.gates += f"Ry({radians},q[{target_qubit}]);"
 
     def rz(self, radians: float, target_qubit: int) -> None:
-        validate_type(radians, float)
+        validate_type(radians, (int, float))
+        radians = float(radians)
         validate_natural_number(target_qubit, True)
         self._validate_qubit_index(target_qubit)
         self.gates += f"Rz({radians},q[{target_qubit}]);"
@@ -105,14 +108,17 @@ class QsharpCircuit(QuantumCircuit):
         self.gates += f"T(q[{target_qubit}]);"
 
     def u1(self, theta: float, target_qubit: int) -> None:
-        validate_type(theta, float)
+        validate_type(theta, (int, float))
+        theta = float(theta)
         validate_natural_number(target_qubit, True)
         self._validate_qubit_index(target_qubit)
         self.gates += f"R1({theta},q[{target_qubit}]);"
 
     def u2(self, phi: float, lam: float, target_qubit: int) -> None:
-        validate_type(phi, float)
-        validate_type(lam, float)
+        validate_type(phi, (int, float))
+        validate_type(lam, (int, float))
+        phi = float(phi)
+        lam = float(lam)
         validate_natural_number(target_qubit, True)
         self._validate_qubit_index(target_qubit)
         self.gates += f"""
@@ -124,9 +130,12 @@ class QsharpCircuit(QuantumCircuit):
     def u3(
         self, theta: float, phi: float, lam: float, target_qubit: int
     ) -> None:
-        validate_type(theta, float)
-        validate_type(phi, float)
-        validate_type(lam, float)
+        validate_type(theta, (int, float))
+        validate_type(phi, (int, float))
+        validate_type(lam, (int, float))
+        theta = float(theta)
+        phi = float(phi)
+        lam = float(lam)
         validate_natural_number(target_qubit, True)
         self._validate_qubit_index(target_qubit)
         self.gates += f"""
