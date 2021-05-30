@@ -1,7 +1,7 @@
 ##    _____  _____
-##   |  __ \|  __ \    AUTHOR: Pedro Rivero
+##   |  __ \|  __ \    AUTHOR: Avhijit Nair, Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 17, 2021
+##   |  ___/|  _  /    DATE: May 30, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -22,6 +22,7 @@
 
 from typing import Optional
 
+from ...helpers import validate_type
 from ..backend import QuantumBackend
 
 
@@ -34,10 +35,30 @@ class QsharpBackend(QuantumBackend):
         resource_id: Optional[str] = None,
         target_id: Optional[str] = None,
     ) -> None:
-        self.resource_id = resource_id
-        self.target_id = target_id
+        self.resource_id = resource_id  # type: ignore
+        self.target_id = target_id  # type: ignore
 
     ############################### PUBLIC API ###############################
+    @property
+    def resource_id(self) -> Optional[str]:
+        return self._resource_id
+
+    @resource_id.setter
+    def resource_id(self, resource_id: Optional[str]) -> None:
+        if resource_id is not None:
+            validate_type(resource_id, str)
+        self._resource_id = resource_id
+
+    @property
+    def target_id(self) -> Optional[str]:
+        return self._target_id
+
+    @target_id.setter
+    def target_id(self, target_id: Optional[str]) -> None:
+        if target_id is not None:
+            validate_type(target_id, str)
+        self._target_id = target_id
+
     @property
     def max_measurements(self) -> int:
         return 1048576
@@ -53,4 +74,4 @@ class QsharpBackend(QuantumBackend):
         elif self.target_id == "honeywell.hqs-lt-s1":
             return 10
         else:
-            return 1
+            return 30
