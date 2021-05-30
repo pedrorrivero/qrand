@@ -1,7 +1,7 @@
 ##    _____  _____
-##   |  __ \|  __ \    AUTHOR: Pedro Rivero
+##   |  __ \|  __ \    AUTHOR: Avhijit Nair, Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 17, 2021
+##   |  ___/|  _  /    DATE: May 30, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -23,8 +23,9 @@
 from typing import List, Optional
 from warnings import warn
 
-from qsharp import QSharpCallable, azure, compile
+from qsharp import azure
 
+from ...helpers import validate_type
 from ..job import QuantumJob
 from .backend import QsharpBackend
 from .circuit import QsharpCircuit
@@ -51,6 +52,7 @@ class QsharpJob(QuantumJob):
 
     @backend.setter
     def backend(self, backend: QsharpBackend) -> None:
+        validate_type(backend, QsharpBackend)
         self._backend: QsharpBackend = backend
 
     @property
@@ -59,6 +61,7 @@ class QsharpJob(QuantumJob):
 
     @circuit.setter
     def circuit(self, circuit: QsharpCircuit) -> None:
+        validate_type(circuit, QsharpCircuit)
         if self.backend.max_qubits < circuit.num_qubits:
             raise RuntimeError(
                 f"Failed to assign QsharpCircuit for QsharpJob. Number of \
@@ -78,7 +81,6 @@ class QsharpJob(QuantumJob):
             if isinstance(num_measurements, int) and 0 < num_measurements
             else self.backend.max_measurements
         )
-
         if self.backend.max_measurements < num_measurements:
             warn(
                 f"Number of measurements unsupported by the job's Backend: \
@@ -89,40 +91,8 @@ class QsharpJob(QuantumJob):
             num_measurements = self.backend.max_measurements
         self._num_measurements = num_measurements
 
-    def _generate_code(self) -> QSharpCallable:
-        qsharp_code = """
-        open Microsoft.Quantum.Intrinsic;
-        open Microsoft.Quantum.Measurement;
-        open Microsoft.Quantum.Arrays;
-        open Microsoft.Quantum.Math;
-
-        operation Program():String[]{{
-
-        use q = Qubit[{num_qubits}];
-        mutable value = ConstantArray({shots},"");
-        mutable res = "";
-
-        for i in IndexRange(value)
-        {{
-            {gates}
-            set value w/= i <- res;
-            set res = "";
-        }}
-
-        ResetAll(q);
-        return value;
-        }}
-        """
-        return compile(
-            qsharp_code.format(
-                num_qubits=self.circuit.num_qubits,
-                gates=self.circuit.gates,
-                shots=self.num_measurements,
-            )
-        )
-
     def execute(self) -> List[str]:
-        self.program = self._generate_code()
+        self.program = self.circuit.generate_code(self.num_measurements)
 
         if self.backend.resource_id is None or self.backend.target_id is None:
             return self.program.simulate()
@@ -131,6 +101,6 @@ class QsharpJob(QuantumJob):
             azure.target(targetId=self.backend.target_id)
             return azure.execute(
                 self.program,
-                shots=self.num_measurements,
+                shots=1,
                 jobName="Generate random number",
             )
