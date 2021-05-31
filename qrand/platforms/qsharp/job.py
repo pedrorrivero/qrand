@@ -20,7 +20,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from datetime.datetime import utcnow
+from datetime import datetime
 from typing import List, Optional
 from warnings import warn
 
@@ -111,5 +111,5 @@ class QsharpJob(QuantumJob):
     def _name(self) -> str:
         name = f"QRAND {__version__} by Pedro Rivero"
         name += " - "
-        name += f"{utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')}"
+        name += f"{datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')}"
         return name
