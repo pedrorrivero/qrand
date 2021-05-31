@@ -20,17 +20,22 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from math import erfc, sqrt
+from math import floor
+
+from scipy.special import gammaincc
 
 from . import ValidationStrategy
 
 
-class MonobitFrequencyValidation(ValidationStrategy):
+class BlockbitFrequencyValidation:
     """
     Frequency (Monobit) Test: pg. 2-2 in [1]_.
 
     Methods
     -------
+    __init__(blocksize:int)
+        initializes classes instance with blocksize for the testing
+
     validate(bitstring:str) -> bool
         Validates the randomness/entropy in an input bitstring.
 
@@ -45,11 +50,23 @@ class MonobitFrequencyValidation(ValidationStrategy):
         https://doi.org/10.6028/NIST.SP.800-22r1a
     """
 
+    def __init__(self, blocksize: int) -> None:
+        super().__init__()
+        self.blocksize = blocksize
+
     def validate(self, bitstring: str) -> bool:
         n = len(bitstring)
-        s_n = 0.0
-        for bit in bitstring:
-            s_n += 2 * int(bit) - 1
-        s_obs = s_n / sqrt(n)
-        p_value = erfc(s_obs / sqrt(2))
+        # calculating number of blocks
+        N = floor(n / self.blocksize)
+        ki_square_obs = 0.0
+        for i in range(N):
+            pi = (
+                bitstring[i * self.blocksize : (i + 1) * self.blocksize].count(
+                    "1"
+                )
+                / self.blocksize
+            )
+            ki_square_obs += (pi - 0.5) ** 2
+        ki_square_obs *= 4 * self.blocksize
+        p_value = gammaincc(self.blocksize / 2, ki_square_obs / 2)
         return p_value > 0.01
