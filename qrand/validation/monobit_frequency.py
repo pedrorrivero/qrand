@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Vishnu Ajith, Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 30, 2021
+##   |  ___/|  _  /    DATE: May 31, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -22,6 +22,7 @@
 
 from math import erfc, sqrt
 
+from ..helpers import ALPHABETS, validate_numeral
 from . import ValidationStrategy
 
 
@@ -29,10 +30,21 @@ class MonobitFrequencyValidation(ValidationStrategy):
     """
     Frequency (Monobit) Test: pg. 2-2 in [1]_.
 
+    The focus of the test is the proportion of zeroes and ones for the entire
+    sequence. The purpose of this test is to determine whether the number of
+    ones and zeros in a sequence are approximately the same as would be
+    expected for a truly random sequence. The test assesses the closeness of
+    the fraction of ones to 1/2, that is, the number of ones and zeroes in a
+    sequence should be about the same.
+
     Methods
     -------
     validate(bitstring:str) -> bool
         Validates the randomness/entropy in an input bitstring.
+
+    Notes
+    -----
+    All subsequent tests in [1]_ depend on the passing of this test.
 
     References
     ----------
@@ -46,7 +58,10 @@ class MonobitFrequencyValidation(ValidationStrategy):
     """
 
     def validate(self, bitstring: str) -> bool:
+        validate_numeral(bitstring, ALPHABETS["BINARY"])
         n = len(bitstring)
+        if n < 100:
+            return False
         s_n = 0.0
         for bit in bitstring:
             s_n += 2 * int(bit) - 1
