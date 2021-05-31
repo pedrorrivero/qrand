@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: April 20, 2021
+##   |  ___/|  _  /    DATE: April 30, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,24 +20,68 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
+from .backend import QuantumBackend
 from .circuit import QuantumCircuit
-from .cirq import CirqCircuit, CirqJob, CirqPlatform
 from .job import QuantumJob
 from .platform import QuantumPlatform
-from .qiskit import QiskitCircuit, QiskitJob, QiskitPlatform
-from .qsharp import QsharpCircuit, QsharpJob, QsharpPlatform
 
 __all__ = [
+    "QuantumBackend",
     "QuantumCircuit",
     "QuantumJob",
     "QuantumPlatform",
-    "CirqCircuit",
-    "CirqJob",
-    "CirqPlatform",
-    "QiskitCircuit",
-    "QiskitJob",
-    "QiskitPlatform",
-    "QsharpCircuit",
-    "QsharpJob",
-    "QsharpPlatform",
 ]
+
+
+###############################################################################
+## CIRQ IMPORT
+###############################################################################
+__cirq__ = True
+__all__ += "__cirq__"
+try:
+    from .cirq import CirqBackend, CirqCircuit, CirqJob, CirqPlatform
+except ImportError:
+    __cirq__ = False
+else:
+    __all__ += [
+        "CirqBackend",
+        "CirqCircuit",
+        "CirqJob",
+        "CirqPlatform",
+    ]
+
+
+###############################################################################
+## QISKIT IMPORT
+###############################################################################
+__qiskit__ = True
+__all__ += "__qiskit__"
+try:
+    from .qiskit import QiskitBackend, QiskitCircuit, QiskitJob, QiskitPlatform
+except ImportError:
+    __qiskit__ = False
+else:
+    __all__ += [
+        "QiskitBackend",
+        "QiskitCircuit",
+        "QiskitJob",
+        "QiskitPlatform",
+    ]
+
+
+###############################################################################
+## QSHARP IMPORT
+###############################################################################
+__qsharp__ = True
+__all__ += "__qsharp__"
+try:
+    from .qsharp import QsharpBackend, QsharpCircuit, QsharpJob, QsharpPlatform
+except Exception:  # qsharp also requires the IQ# kernel
+    __qsharp__ = False
+else:
+    __all__ += [
+        "QsharpBackend",
+        "QsharpCircuit",
+        "QsharpJob",
+        "QsharpPlatform",
+    ]

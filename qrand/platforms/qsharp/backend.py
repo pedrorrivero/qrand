@@ -35,8 +35,8 @@ class QsharpBackend(QuantumBackend):
         resource_id: Optional[str] = None,
         target_id: Optional[str] = None,
     ) -> None:
-        self.resource_id = resource_id
-        self.target_id = target_id
+        self.resource_id: Optional[str] = resource_id
+        self.target_id: Optional[str] = target_id
 
     ############################### PUBLIC API ###############################
     @property
@@ -45,9 +45,8 @@ class QsharpBackend(QuantumBackend):
 
     @resource_id.setter
     def resource_id(self, resource_id: Optional[str]) -> None:
-        if resource_id is not None:
-            validate_type(resource_id, str)
-        self._resource_id = resource_id
+        validate_type(resource_id, (str, type(None)))
+        self._resource_id: Optional[str] = resource_id
 
     @property
     def target_id(self) -> Optional[str]:
@@ -55,13 +54,12 @@ class QsharpBackend(QuantumBackend):
 
     @target_id.setter
     def target_id(self, target_id: Optional[str]) -> None:
-        if target_id is not None:
-            validate_type(target_id, str)
-        self._target_id = target_id
+        validate_type(target_id, (str, type(None)))
+        self._target_id: Optional[str] = target_id
 
     @property
     def max_measurements(self) -> int:
-        return 1048576
+        return 1048576  # TODO!! (Q# truly does not have any max_measurements)
 
     @property
     def max_qubits(self) -> int:

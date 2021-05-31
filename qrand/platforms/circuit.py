@@ -22,6 +22,8 @@
 
 from abc import ABC, abstractmethod
 
+from ..helpers import validate_natural_number
+
 
 ###############################################################################
 ## QUANTUM CIRCUIT INTERFACE (ADAPTER)
@@ -147,3 +149,11 @@ class QuantumCircuit(ABC):
         self, control_qubit_1: int, control_qubit_2: int, target_qubit: int
     ) -> None:
         self.ccx(control_qubit_1, control_qubit_2, target_qubit)
+
+    ############################## PRIVATE API ##############################
+    def _validate_qubit_index(self, qubit_index: int) -> None:
+        validate_natural_number(qubit_index, zero=True)
+        if qubit_index >= self.num_qubits:
+            raise ValueError(
+                f"Qubit index out of range {qubit_index} >= {self.num_qubits}."
+            )
