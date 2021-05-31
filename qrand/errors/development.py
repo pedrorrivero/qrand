@@ -39,6 +39,10 @@ def raise_not_implemented_error(
         The non-implemented subject.
     alt: str
         Alternatives.
+
+    Raises
+    ------
+    NotImplementedError
     """
     MESSAGE = f"{subject} has not been implemented yet."
     if alt:
@@ -63,6 +67,10 @@ def raise_future_warning(
         The version in which deprecation will occur.
     alt: str
         Alternatives.
+
+    Raises
+    ------
+    FutureWarning
     """
     MESSAGE = f"{subject} will be deprecated in version {version}."
     if alt:
