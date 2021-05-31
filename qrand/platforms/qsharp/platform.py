@@ -22,6 +22,7 @@
 
 from typing import Optional
 
+from ...helpers import validate_type
 from ...protocols import ProtocolResult
 from ..platform import QuantumPlatform, QuantumProtocol
 from .backend import QsharpBackend
@@ -38,10 +39,28 @@ class QsharpPlatform(QuantumPlatform):
         resource_id: Optional[str] = None,
         target_id: Optional[str] = None,
     ) -> None:
-        self.resource_id = resource_id
-        self.target_id = target_id
+        self.resource_id: Optional[str] = resource_id
+        self.target_id: Optional[str] = target_id
 
     ############################### PUBLIC API ###############################
+    @property
+    def resource_id(self) -> Optional[str]:
+        return self._resource_id
+
+    @resource_id.setter
+    def resource_id(self, resource_id: Optional[str]) -> None:
+        validate_type(resource_id, (str, type(None)))
+        self._resource_id: Optional[str] = resource_id
+
+    @property
+    def target_id(self) -> Optional[str]:
+        return self._target_id
+
+    @target_id.setter
+    def target_id(self, target_id: Optional[str]) -> None:
+        validate_type(target_id, (str, type(None)))
+        self._target_id: Optional[str] = target_id
+
     def create_circuit(self, num_qubits: int) -> QsharpCircuit:
         return QsharpCircuit(num_qubits)
 

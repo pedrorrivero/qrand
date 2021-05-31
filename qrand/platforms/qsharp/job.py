@@ -20,11 +20,13 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
+from datetime.datetime import utcnow
 from typing import List, Optional
 from warnings import warn
 
 from qsharp import azure
 
+from ... import __version__
 from ...helpers import validate_type
 from ..job import QuantumJob
 from .backend import QsharpBackend
@@ -89,11 +91,10 @@ class QsharpJob(QuantumJob):
                 UserWarning,
             )
             num_measurements = self.backend.max_measurements
-        self._num_measurements = num_measurements
+        self._num_measurements: int = num_measurements
 
     def execute(self) -> List[str]:
         self.program = self.circuit.generate_code(self.num_measurements)
-
         if self.backend.resource_id is None or self.backend.target_id is None:
             return self.program.simulate()
         else:
@@ -102,5 +103,13 @@ class QsharpJob(QuantumJob):
             return azure.execute(
                 self.program,
                 shots=1,
-                jobName="Generate random number",
+                jobName=self._name,
             )
+
+    ############################### PRIVATE API ###############################
+    @property
+    def _name(self) -> str:
+        name = f"QRAND {__version__} by Pedro Rivero"
+        name += " - "
+        name += f"{utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')}"
+        return name
