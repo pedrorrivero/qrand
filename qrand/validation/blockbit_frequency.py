@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Vishnu Ajith, Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 30, 2021
+##   |  ___/|  _  /    DATE: May 31, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -29,7 +29,7 @@ from . import ValidationStrategy
 
 class BlockbitFrequencyValidation:
     """
-    Frequency (Monobit) Test: pg. 2-2 in [1]_.
+    Frequency (Monobit) Test: pg. 2-4 in [1]_.
 
     Methods
     -------
