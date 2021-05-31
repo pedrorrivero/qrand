@@ -52,12 +52,14 @@ license = "Apache-2.0"
 python = "^3.9"
 numpy = "^1.19.4"
 randomgen = "^1.19.3"
-qiskit = { version = "^0.25.0", optional = true }
+qiskit-aer = { version = "^0.8.2", optional = true }
+qiskit-ibmq-provider = { version = "0.12.3", optional = true }
+qiskit-terra = { version = "^0.17.2", optional = true }
 cirq = { version = "^0.10.0", optional = true }
 qsharp = { version = "^0.15.2103", optional = true }
 
 [tool.poetry.extras]
-qiskit = ["qiskit"]
+qiskit = ["qiskit-aer", "qiskit-ibmq-provider", "qiskit-terra"]
 cirq = ["cirq"]
 qsharp = ["qsharp"]
 
@@ -70,6 +72,11 @@ black = "^20.8b1"
 isort = "^5.6.4"
 mypy = "^0.790"
 data-science-types = "^0.2.20"
+qiskit-aer = { version = "^0.8.2" }
+qiskit-ibmq-provider = { version = "0.12.3" }
+qiskit-terra = { version = "^0.17.2" }
+cirq = { version = "^0.10.0" }
+qsharp = { version = "^0.15.2103" }
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
