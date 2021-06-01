@@ -32,7 +32,11 @@ class BlockbitFrequencyValidation(ValidationStrategy):
     """
     Frequency (Block) Test: pg. 2-4 in [1]_.
 
-    The focus of the test is the proportion of ones within M-bit blocks. The purpose of this test is to determine whether the frequency of ones in an M-bit block is approximately M/2, as would be expected under an assumption of randomness.  For block size M=1, this test degenerates to test 1, the Frequency (Monobit) test.
+    The focus of the test is the proportion of ones within M-bit blocks.
+     The purpose of this test is to determine whether the frequency of
+     ones in an M-bit block is approximately M/2, as would be expected
+     under an assumption of randomness.  For block size M=1, this test
+     degenerates to test 1, the Frequency (Monobit) test.
 
     Methods
     -------
