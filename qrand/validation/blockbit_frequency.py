@@ -30,7 +30,9 @@ from . import ValidationStrategy
 
 class BlockbitFrequencyValidation(ValidationStrategy):
     """
-    Frequency (Monobit) Test: pg. 2-4 in [1]_.
+    Frequency (Block) Test: pg. 2-4 in [1]_.
+
+    The focus of the test is the proportion of ones within M-bit blocks. The purpose of this test is to determine whether the frequency of ones in an M-bit block is approximately M/2, as would be expected under an assumption of randomness.  For block size M=1, this test degenerates to test 1, the Frequency (Monobit) test.
 
     Methods
     -------
@@ -72,4 +74,4 @@ class BlockbitFrequencyValidation(ValidationStrategy):
             ki_square_obs += (pi - 0.5) ** 2
         ki_square_obs *= 4 * self.blocksize
         p_value = gammaincc(self.blocksize / 2, ki_square_obs / 2)
-        return p_value >= 0.01
+        return p_value > 0.01
