@@ -28,7 +28,7 @@ from ..helpers import ALPHABETS, validate_numeral
 from . import ValidationStrategy
 
 
-class BlockbitFrequencyValidation:
+class BlockbitFrequencyValidation(ValidationStrategy):
     """
     Frequency (Monobit) Test: pg. 2-4 in [1]_.
 
