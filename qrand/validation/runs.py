@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Vishnu Ajith, Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: June 1, 2021
+##   |  ___/|  _  /    DATE: June 3, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -43,6 +43,11 @@ class RunsValidation(ValidationStrategy):
     validate(bitstring: str) -> bool
         Validates the randomness/entropy in an input bitstring.
 
+    Notes
+    -----
+    It is recommended that each sequence to be tested consist of a minimum of
+    100 bits (i.e., n >= 100).
+
     References
     ----------
     .. [1] Lawrence Bassham, Andrew Rukhin, Juan Soto, James Nechvatal, Miles
@@ -61,7 +66,7 @@ class RunsValidation(ValidationStrategy):
             return False
         pi = bitstring.count("1") / n
         # validating whether frequency run test was run
-        if abs(pi - 1) >= 2 / sqrt(n):
+        if abs(pi - 0.5) >= 2 / sqrt(n):
             return False
         v_obs = 1
         for i in range(0, n - 1):
