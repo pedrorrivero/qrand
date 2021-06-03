@@ -31,6 +31,47 @@ from .argument_validation import validate_natural
 def compute_bounded_factorization(
     n: int, bound_A: int, bound_B: int
 ) -> Tuple[int, int]:
+    """
+    f: ℕ³ → D ⊆ ℕ² such that f(n, A, B) = (a, b) minimizes n-a•b, where:
+        1. a•b ≤ n < A•B
+        2. a ≤ A < n and b ≤ B < n
+        3. f(a•b, A, B) = (a', b') : a•b = a'•b'
+
+    Parameters
+    ----------
+    n: int
+        The natural number to factor.
+    bound_A: int
+        The bound for the first factor a.
+    bound_B: int
+        The bound for the second factor b.
+
+    Notes
+    -----
+    Notice how we require A < n otherwise the trivial solution (a=n, b=1) would
+    be available. The same applies to B < n. Additionally, we require n < A•B
+    to scape the trivial solution (a=A, b=B).
+
+    The last (stability) condition is needed to guarantee performance (i.e.
+    running the algorithm iteratively does not worsen the approximation).
+    Notice that this condition is automatically satisfied if the function
+    always returns an optimal solution. However, since (a, b) ∈ D —as opposed
+    to being general natural numbers— this condition is, in principle, less
+    restrictive than asking for perfect factoring of any given composite number.
+
+    By convention, we assume zero to not be contained in the natural numbers
+    (ℕ).
+
+    Although we do not provide a formal proof, we believe this problem to be
+    beyond NP. This is so because it reduces to the factoring problem for
+    A = B = n-1, when n is the product of only two primes. Additionally,
+    verifying an answer does not seem to be efficient either, since we do not
+    know a way of finding the optimal gap n-a•b without going through the same
+    process required for solving the problem to begin with.
+
+    The algorithm currently used finds the optimal solution through exhaustive
+    search.
+    """
     _validate_args(n, bound_A, bound_B)
     if bound_A * bound_B < n:
         return bound_A, bound_B
