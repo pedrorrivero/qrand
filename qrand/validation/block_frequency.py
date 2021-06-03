@@ -87,15 +87,17 @@ class BlockFrequencyValidation(ValidationStrategy):
     ############################### VALIDATION ###############################
     def validate(self, bitstring: str) -> bool:
         validate_numeral(bitstring, ALPHABETS["BINARY"])
-        n = len(bitstring)
+        n: int = len(bitstring)
         if n < 100:
             return False
-        N = n // self.blocksize
-        ki_square_obs = 0.0
+        N: int = n // self.blocksize
+        ki_square_obs: float = 0.0
         for i in range(N):
-            block = bitstring[i * self.blocksize : (i + 1) * self.blocksize]
-            pi = block.count("1") / self.blocksize
+            block: str = bitstring[
+                i * self.blocksize : (i + 1) * self.blocksize
+            ]
+            pi: float = block.count("1") / self.blocksize
             ki_square_obs += (pi - 0.5) ** 2
         ki_square_obs *= 4 * self.blocksize
-        p_value = gammaincc(N / 2, ki_square_obs / 2)
+        p_value: float = gammaincc(N / 2, ki_square_obs / 2)
         return p_value >= 0.01

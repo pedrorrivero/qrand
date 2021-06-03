@@ -61,18 +61,18 @@ class RunsValidation(ValidationStrategy):
 
     def validate(self, bitstring: str) -> bool:
         validate_numeral(bitstring, ALPHABETS["BINARY"])
-        n = len(bitstring)
+        n: int = len(bitstring)
         if n < 100:
             return False
-        pi = bitstring.count("1") / n
+        pi: float = bitstring.count("1") / n
         # validating whether frequency run test was run
         if abs(pi - 0.5) >= 2 / sqrt(n):
             return False
-        v_obs = 1
+        v_obs: int = 1
         for i in range(0, n - 1):
             if bitstring[i] != bitstring[i + 1]:
                 v_obs += 1
-        p_value = erfc(
+        p_value: float = erfc(
             (v_obs - (2 * n * pi * (1 - pi)))
             / (2 * sqrt(2 * n) * pi * (1 - pi))
         )

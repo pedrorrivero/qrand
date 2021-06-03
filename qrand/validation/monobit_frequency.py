@@ -61,12 +61,12 @@ class MonobitFrequencyValidation(ValidationStrategy):
 
     def validate(self, bitstring: str) -> bool:
         validate_numeral(bitstring, ALPHABETS["BINARY"])
-        n = len(bitstring)
+        n: int = len(bitstring)
         if n < 100:
             return False
-        s_n = 0.0
+        s_n: float = 0.0
         for bit in bitstring:
             s_n += 2 * int(bit) - 1
-        s_obs = s_n / sqrt(n)
-        p_value = erfc(s_obs / sqrt(2))
+        s_obs: float = s_n / sqrt(n)
+        p_value: float = erfc(s_obs / sqrt(2))
         return p_value >= 0.01
