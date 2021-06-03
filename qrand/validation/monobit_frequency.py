@@ -44,7 +44,9 @@ class MonobitFrequencyValidation(ValidationStrategy):
 
     Notes
     -----
-    All subsequent tests in [1]_ depend on the passing of this test.
+    It is recommended that each sequence to be tested consist of a minimum of
+    100 bits (i.e., n ≥ 100). All subsequent tests in [1]_ depend on the
+    passing of this test.
 
     References
     ----------

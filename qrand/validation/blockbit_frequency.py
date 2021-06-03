@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Vishnu Ajith, Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: June 1, 2021
+##   |  ___/|  _  /    DATE: June 3, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -24,7 +24,7 @@ from math import floor
 
 from scipy.special import gammaincc
 
-from ..helpers import ALPHABETS, validate_numeral
+from ..helpers import ALPHABETS, validate_natural_number, validate_numeral
 from . import ValidationStrategy
 
 
@@ -32,19 +32,32 @@ class BlockbitFrequencyValidation(ValidationStrategy):
     """
     Frequency (Block) Test: pg. 2-4 in [1]_.
 
-    The focus of the test is the proportion of ones within M-bit blocks.
-     The purpose of this test is to determine whether the frequency of
-     ones in an M-bit block is approximately M/2, as would be expected
-     under an assumption of randomness.  For block size M=1, this test
-     degenerates to test 1, the Frequency (Monobit) test.
+    The focus of the test is the proportion of ones within M-bit blocks. The
+    purpose of this test is to determine whether the frequency of ones in an
+    M-bit block is approximately M/2, as would be expected under an assumption
+    of randomness.
+
+    Parameters
+    ----------
+    blocksize: int, default: 1
+        The length M of each block in the test.
+
+    Attributes
+    ----------
+    blocksize: int
+        The length M of each block in the test.
 
     Methods
     -------
-    __init__(blocksize:int)
-        initializes classes instance with blocksize for the testing
-
     validate(bitstring:str) -> bool
         Validates the randomness/entropy in an input bitstring.
+
+    Notes
+    -----
+    It is recommended that each sequence to be tested consist of a minimum of
+    100 bits (i.e., n >= 100). Note that n >= MN. The block size M should be
+    selected such that M >= 20, M > 0.01n and N < 100. For block size M=1, this
+    test degenerates to the Frequency (Monobit) test.
 
     References
     ----------
@@ -57,10 +70,23 @@ class BlockbitFrequencyValidation(ValidationStrategy):
         https://doi.org/10.6028/NIST.SP.800-22r1a
     """
 
-    def __init__(self, blocksize: int) -> None:
-        super().__init__()
+    ################################ SPECIFICS ################################
+    def __init__(self, blocksize: int = 1) -> None:
         self.blocksize = blocksize
 
+    @property
+    def blocksize(self) -> int:
+        """
+        The length M of each block in the test.
+        """
+        return self._blocksize
+
+    @blocksize.setter
+    def blocksize(self, blocksize: int):
+        validate_natural_number(blocksize, zero=False)
+        self._blocksize: int = blocksize
+
+    ############################### VALIDATION ###############################
     def validate(self, bitstring: str) -> bool:
         validate_numeral(bitstring, ALPHABETS["BINARY"])
         n = len(bitstring)

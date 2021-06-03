@@ -31,12 +31,12 @@ class RunsValidation(ValidationStrategy):
     Runs Test: pg. 2-5 in [1]_.
 
     The focus of this test is the total number of runs in the sequence, where a
-    run is an uninterrupted sequence of identical bits. A run of length k consists
-    of exactly k identical bits and is bounded before and after with a bit of the
-    opposite value. The purpose of the runs test is to determine whether the number
-    of runs of ones and zeros of various lengths is as expected for a random sequence.
-    In particular, this test determines whether the oscillation between such zeros and
-    ones is too fast or too slow.
+    run is an uninterrupted sequence of identical bits. A run of length k
+    consists of exactly k identical bits and is bounded before and after with a
+    bit of the opposite value. The purpose of the runs test is to determine
+    whether the number of runs of ones and zeros of various lengths is as
+    expected for a random sequence. In particular, this test determines whether
+    the oscillation between such zeros and ones is too fast or too slow.
 
     Methods
     -------
