@@ -24,7 +24,7 @@ from math import floor
 
 from scipy.special import gammaincc
 
-from ..helpers import ALPHABETS, validate_natural_number, validate_numeral
+from ..helpers import ALPHABETS, validate_natural, validate_numeral
 from . import ValidationStrategy
 
 
@@ -83,7 +83,7 @@ class BlockFrequencyValidation(ValidationStrategy):
 
     @blocksize.setter
     def blocksize(self, blocksize: int):
-        validate_natural_number(blocksize, zero=False)
+        validate_natural(blocksize, zero=False)
         self._blocksize: int = blocksize
 
     ############################### VALIDATION ###############################

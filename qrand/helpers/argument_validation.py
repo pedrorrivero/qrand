@@ -27,7 +27,7 @@ from warnings import warn
 ###############################################################################
 ## VALIDATE NATURAL NUMBER
 ###############################################################################
-def validate_natural_number(number: int, zero: bool = False) -> None:
+def validate_natural(number: int, zero: bool = False) -> None:
     """
     Raises ValueError with custom message if `number` is not in the naturals.
 

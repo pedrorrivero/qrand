@@ -21,7 +21,7 @@
 ## limitations under the License.
 
 from ..errors import raise_future_warning
-from ..helpers import ALPHABETS, validate_natural_number, validate_numeral
+from ..helpers import ALPHABETS, validate_natural, validate_numeral
 from .cache import BitCache
 
 
@@ -72,7 +72,7 @@ class BasicCache(BitCache):
         self._cache = ""
 
     def pop(self, num_bits: int) -> str:
-        validate_natural_number(num_bits, zero=False)
+        validate_natural(num_bits, zero=False)
         if num_bits > self.size:
             raise RuntimeError(
                 f"Insufficient cache size {self.size} < {num_bits}."

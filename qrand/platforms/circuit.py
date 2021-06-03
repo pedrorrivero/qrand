@@ -22,7 +22,7 @@
 
 from abc import ABC, abstractmethod
 
-from ..helpers import validate_natural_number
+from ..helpers import validate_natural
 
 
 ###############################################################################
@@ -152,7 +152,7 @@ class QuantumCircuit(ABC):
 
     ############################## PRIVATE API ##############################
     def _validate_qubit_index(self, qubit_index: int) -> None:
-        validate_natural_number(qubit_index, zero=True)
+        validate_natural(qubit_index, zero=True)
         if qubit_index >= self.num_qubits:
             raise ValueError(
                 f"Qubit index out of range {qubit_index} >= {self.num_qubits}."

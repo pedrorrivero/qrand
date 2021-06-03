@@ -23,7 +23,7 @@
 from collections import OrderedDict
 from typing import Any, Dict
 
-from .argument_validation import validate_natural_number, validate_type
+from .argument_validation import validate_natural, validate_type
 
 _UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 _LOWER = "abcdefghijklmnopqrstuvwxyz"
@@ -212,7 +212,7 @@ def _remove_duplicate_chars(base_alphabet: str) -> str:
 
 
 def _validate_encode_args(uint: int, base_alphabet: str) -> None:
-    validate_natural_number(uint, zero=True)
+    validate_natural(uint, zero=True)
     validate_type(base_alphabet, str)
     if not base_alphabet:
         raise ValueError("Invalid input empty `base_alphabet`.")

@@ -22,7 +22,7 @@
 
 from typing import Tuple
 
-from .argument_validation import validate_natural_number
+from .argument_validation import validate_natural
 
 
 ###############################################################################
@@ -50,6 +50,6 @@ def compute_bounded_factorization(
 
 
 def _validate_args(n: int, bound_A: int, bound_B: int) -> None:
-    validate_natural_number(n, zero=False)
-    validate_natural_number(bound_A, zero=False)
-    validate_natural_number(bound_B, zero=False)
+    validate_natural(n, zero=False)
+    validate_natural(bound_A, zero=False)
+    validate_natural(bound_B, zero=False)
