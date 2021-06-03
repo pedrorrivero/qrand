@@ -20,8 +20,6 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from math import floor
-
 from scipy.special import gammaincc
 
 from ..helpers import ALPHABETS, validate_natural, validate_numeral
@@ -92,7 +90,7 @@ class BlockFrequencyValidation(ValidationStrategy):
         n = len(bitstring)
         if n < 100:
             return False
-        N = floor(n / self.blocksize)
+        N = n // self.blocksize
         ki_square_obs = 0.0
         for i in range(N):
             block = bitstring[i * self.blocksize : (i + 1) * self.blocksize]
