@@ -1,3 +1,66 @@
+## 0.3.0 (2021-06-03)
+
+### Refactor
+
+- **validation**: add type hints
+- **blockbit_frequency**: rename to block_frequency
+- **validate_natural_number**: rename to validate_natural
+- **qsharp**: add validation and check imports
+- **QsharpCircuit**: Update type validaof gate angles
+- **QsharpBackend**: Remove #type: ignore
+- **QsharpCircuit**: Make gates a private property
+- **QsharpJob**: Add author, update date
+- **QsharpJob**: Remove generate_code, update azure shots
+- **QsharpCircuit**: Set type validation, add generate_code
+- **QsharpBackend**: Set validate_type for resource_id and target_id
+- **QsharpCircuit**: Fix 'else' indentation
+- Make Q# code better readable
+- **QsharpJob**: Update generate_code(),num_measurements
+- **QsharpCircuit**: Update measure()
+- **Qrng**: remove __init__
+- **validate_natural_number**: condense if statement
+- **QsharpBackend**: Update max_measurements
+- **QsharpBackend**: Update max_qubits and max_measurements
+- **QsharpJob**: Remove max_shots and max_experiments
+- **QsharpCircuit**: Update U3 gate
+- **validate_type**: rename type_class to classinfo
+- **helpers**: rename numeral_* to *_numeral
+- **protocols**: use raise_not_implemented_error function
+- move argument_validation from helpers to errors
+- **errors**: add raise_not_implemented_error
+- move argument_validation from errors to helpers
+- **errors**: add validate_natural_number function
+- **errors**: add validate_type function
+- **errors**: rename raise_deprecation_warn. to raise_future_warning
+
+### Perf
+
+- **BlockFrequencyValidation**: simplify floored quotient
+- **compute_bounded_factorization**: simplify algorithm
+
+### Fix
+
+- **RunsValidation**: correct frequency check
+- **BlockFrequencyValidation**: correct p_value calculation
+- **MonobitFrequencyValidation**: add input validation and min size
+- **QsharpJob**: fix datetime import
+- **MonobitFrequencyValidation**: fix return inequality
+- **QiskitPlatform**: add type validation
+- **QiskitJob**: add backend and circuit type validation
+
+### Feat
+
+- **validation**: adding RunsValidation
+- **validation**: cleaning doctring presentation for blockbit frequency
+- **validation**: fixing blockbit_frequency and adding doctring
+- **validation**: fixing blockbit_frequency validation
+- **validation**: adding blockbit_frequency validation
+- **validation**: add MonobitFrequencyValidation
+- **validate_type**: add multi-type input support
+- **QsharpCircuit**: Implement U2 and U3 gate
+- **helpers**: add validate_numeral
+- Implement Qsharp support
+
 ## 0.3.0a6 (2021-05-27)
 
 ### Refactor
