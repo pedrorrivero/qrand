@@ -40,7 +40,7 @@ class RunsValidation(ValidationStrategy):
 
     Methods
     -------
-    validate(bitstring:str) -> bool
+    validate(bitstring: str) -> bool
         Validates the randomness/entropy in an input bitstring.
 
     References

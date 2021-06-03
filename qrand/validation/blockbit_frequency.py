@@ -28,9 +28,9 @@ from ..helpers import ALPHABETS, validate_natural_number, validate_numeral
 from . import ValidationStrategy
 
 
-class BlockbitFrequencyValidation(ValidationStrategy):
+class BlockFrequencyValidation(ValidationStrategy):
     """
-    Frequency (Block) Test: pg. 2-4 in [1]_.
+    Frequency Test within a Block: pg. 2-4 in [1]_.
 
     The focus of the test is the proportion of ones within M-bit blocks. The
     purpose of this test is to determine whether the frequency of ones in an
@@ -49,7 +49,7 @@ class BlockbitFrequencyValidation(ValidationStrategy):
 
     Methods
     -------
-    validate(bitstring:str) -> bool
+    validate(bitstring: str) -> bool
         Validates the randomness/entropy in an input bitstring.
 
     Notes
@@ -95,13 +95,9 @@ class BlockbitFrequencyValidation(ValidationStrategy):
         N = floor(n / self.blocksize)
         ki_square_obs = 0.0
         for i in range(N):
-            pi = (
-                bitstring[i * self.blocksize : (i + 1) * self.blocksize].count(
-                    "1"
-                )
-                / self.blocksize
-            )
+            block = bitstring[i * self.blocksize : (i + 1) * self.blocksize]
+            pi = block.count("1") / self.blocksize
             ki_square_obs += (pi - 0.5) ** 2
         ki_square_obs *= 4 * self.blocksize
-        p_value = gammaincc(self.blocksize / 2, ki_square_obs / 2)
-        return p_value > 0.01
+        p_value = gammaincc(N / 2, ki_square_obs / 2)
+        return p_value >= 0.01
