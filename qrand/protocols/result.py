@@ -44,7 +44,7 @@ class ProtocolResult(ABC):
 
 
 ###############################################################################
-## SIMPLE RESULT
+## BASIC RESULT
 ###############################################################################
 class BasicResult(ProtocolResult):
     def __init__(

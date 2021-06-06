@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: April 30, 2021
+##   |  ___/|  _  /    DATE: June 6, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -22,12 +22,14 @@
 
 from .backend import QuantumBackend
 from .circuit import QuantumCircuit
+from .factory import QuantumFactory
 from .job import QuantumJob
 from .platform import QuantumPlatform
 
 __all__ = [
     "QuantumBackend",
     "QuantumCircuit",
+    "QuantumFactory",
     "QuantumJob",
     "QuantumPlatform",
 ]
