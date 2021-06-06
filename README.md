@@ -48,10 +48,10 @@ print(f"Random Triangular: {gen.triangular(-1, 0, 1)}")
 ```
 
 ## Supported quantum platforms
-As of May 2021, only [`Qiskit`](https://qiskit.org/) is supported. However, support for [`Cirq`](https://quantumai.google/cirq) and [`Q#`](https://docs.microsoft.com/en-us/azure/quantum/user-guide/?view=qsharp-preview) is under active development.
+As of June 2021, QRAND supports [`Qiskit`](https://qiskit.org/) and [`Q#`](https://docs.microsoft.com/en-us/azure/quantum/user-guide/?view=qsharp-preview). However, support for [`Cirq`](https://quantumai.google/cirq) is under active development.
 
 ## Implemented QRNG protocols
-As of May 2021, only the basic `HadamardProtocol` is available. We are also working on implementing this [`EntaglementProtocol`](https://www.nature.com/articles/s41598-019-56706-2), as well as a version of [Google's Sycamore routine](https://arxiv.org/abs/1612.05903) (patent permitting).
+As of June 2021, both the basic `HadamardProtocol`, and the more sophisticated [`EntanglementProtocol`](https://www.nature.com/articles/s41598-019-56706-2) are available. We are also working on implementing a version of [Google's Sycamore routine](https://arxiv.org/abs/1612.05903) (patent permitting).
 
 ## Authors and citation
 QRAND is the work of many people who contribute to the project at
@@ -67,7 +67,7 @@ If you'd like to contribute to QRAND, please take a look at the
 We use [GitHub issues](https://github.com/pedrorrivero/qrand/issues) for tracking requests and bugs. Please use Unitary Fund's [Discord](http://discord.unitary.fund/) for discussion and simple questions.
 
 ## Acknowledgements
-Parts of this software's source code have been borrowed from the [qRNG](https://github.com/ozanerhansha/qRNG) project, which is licensed under the [GNU GPLv3](https://github.com/ozanerhansha/qRNG/blob/master/LICENSE) license. Copyright notice and specific changes can be found as a docstring wherever this applies.
+Parts of this software's source code have been inspired or borrowed from the [qRNG](https://github.com/ozanerhansha/qRNG) project, which is licensed under the [GNU GPLv3](https://github.com/ozanerhansha/qRNG/blob/master/LICENSE) license. Copyright notice and specific changes can be found as a docstring wherever this applies.
 
 ## License
 [Apache License 2.0](LICENSE)
