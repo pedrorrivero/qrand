@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 29, 2021
+##   |  ___/|  _  /    DATE: June 6, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -99,7 +99,7 @@ class QiskitPlatform(QuantumPlatform):
     @staticmethod
     def default_backend_filter(b: Backend) -> bool:
         config: BackendConfiguration = b.configuration()
-        return config.memory and not config.simulator
+        return config.memory and not config.simulator and config.n_qubits > 2
 
     def create_circuit(self, num_qubits: int) -> QiskitCircuit:
         return QiskitCircuit(num_qubits)
