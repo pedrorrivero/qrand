@@ -1,3 +1,14 @@
+## 0.4.0 (2021-06-06)
+
+### Feat
+
+- **protocols**: add EntanglementProtocol
+
+### Fix
+
+- **QiskitBackend**: correct configuration_dict entry for max_qubits
+- **QuantumBitGenerator**: raise error if _refill_cache fails
+
 ## 0.3.0 (2021-06-03)
 
 ### Refactor
