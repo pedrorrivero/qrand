@@ -275,6 +275,8 @@ class QuantumBitGenerator(UserBitGenerator):
         Refill cache by fetching new random bits.
         """
         bitstring: str = self.platform.fetch_random_bits(self.protocol)
+        if not bitstring:
+            raise RuntimeError("Failed to fetch random bits.")
         self.bitcache.push(bitstring)
 
     ############################# NUMPY INTERFACE #############################
