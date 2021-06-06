@@ -60,9 +60,9 @@ class QiskitBackend(QuantumBackend, Backend):
     @property
     def max_qubits(self) -> int:
         return (
-            self.configuration_dict["num_qubits"]
-            if self.configuration_dict.__contains__("num_qubits")
-            and self.configuration_dict["num_qubits"]
+            self.configuration_dict["n_qubits"]
+            if self.configuration_dict.__contains__("n_qubits")
+            and self.configuration_dict["n_qubits"]
             else 1
         )
 
