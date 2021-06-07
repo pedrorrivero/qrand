@@ -20,8 +20,13 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import List, Optional
 
+from typing import List, Optional
+from warnings import warn
+
+
+
+from ...helpers import compute_bounded_factorization, reverse_endian
 from ..job import QuantumJob
 from .backend import CirqBackend
 from .circuit import CirqCircuit
@@ -31,34 +36,61 @@ from .circuit import CirqCircuit
 ## CIRQ JOB
 ###############################################################################
 class CirqJob(QuantumJob):
-    def __init__(self) -> None:
-        self.ERROR_MSG = f"{self.__class__.__name__}"  # TODO
-        raise NotImplementedError(self.ERROR_MSG)
+    def __init__(
+        self,
+        circuit:CirqCircuit,
+        backend:CirqBackend,
+        num_measurements:Optional[int]=None
+    ) -> None:
+        self.backend:CirqBackend = backend
+        self.circuit:CirqCircuit = circuit
+        self.num_measurements:int = num_measurements
+        
+        
 
     ############################### PUBLIC API ###############################
     @property
     def backend(self) -> CirqBackend:
-        raise NotImplementedError(self.ERROR_MSG)
+        return self._backend 
 
     @backend.setter
     def backend(self, backend: CirqBackend) -> None:
-        raise NotImplementedError(self.ERROR_MSG)
+        self._backend: CirqBackend = backend
 
     @property
     def circuit(self) -> CirqCircuit:
-        raise NotImplementedError(self.ERROR_MSG)
+        return self._circuit
 
     @circuit.setter
     def circuit(self, circuit: CirqCircuit) -> None:
-        raise NotImplementedError(self.ERROR_MSG)
+        self._circuit: CirqCircuit = circuit
 
     @property
     def num_measurements(self) -> int:
-        raise NotImplementedError(self.ERROR_MSG)
+        return self._shots
 
     @num_measurements.setter
     def num_measurements(self, num_measurements: Optional[int]) -> None:
-        raise NotImplementedError(self.ERROR_MSG)
+          #Shots == Reptition....Used because of Qiskit analogy in whole qrand
+           num_measurements = (
+            num_measurements
+            if isinstance(num_measurements, int) and 0 < num_measurements
+            else self.backend.max_measurements
+        )
+           if  self.backend.max_measurements < num_measurements:
+            warn(
+                f"Number of measurements unsupported by the job's Backend: \
+                {self.backend.max_measurements}<{num_measurements}. \
+                Using max_measurements instead.",
+                UserWarning,
+            )
+            num_measurements=self._backend.max_measurements
+            self._shots, self._experiments = compute_bounded_factorization(
+            num_measurements,
+            self.backend.max_shots,
+            self.backend.max_experiments,
+        )
 
     def execute(self) -> List[str]:
-        raise NotImplementedError(self.ERROR_MSG)
+        self.cirqcirc=self._circuit.createcircuit()
+        return self._backend.run(self.cirqcirc)
