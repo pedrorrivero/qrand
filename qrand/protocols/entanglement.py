@@ -162,7 +162,8 @@ class EntanglementProtocol(BareQuantumProtocol):
         validate_type(backend, QuantumBackend)
         if backend.max_qubits < 3:
             raise RuntimeError(
-                "EntanglementProtocol needs at least three qubits to run."
+                f"EntanglementProtocol needs at least three qubits to run. \
+                Retreived backend can only handle {backend.max_qubits} < 3."
             )
         if self.max_bits:
             num_qubits: int = min(self.max_bits + 2, backend.max_qubits)
