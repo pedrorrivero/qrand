@@ -144,16 +144,16 @@ class EntanglementProtocol(BareQuantumProtocol):
     def _parse_measurements(self, measurements: List[str]) -> BasicResult:
         validate_type(measurements, list)
         num_bits = len(measurements[0])
-        bit_sequences: List[str] = [""] * num_bits
+        num_sequences = num_bits - 1
+        bit_sequences: List[str] = [""] * num_sequences
         for m in measurements:
             validate_numeral(m, ALPHABETS["BINARY"])
             if self.purify and not self._check_even_parity(m):
                 continue
-            for b in range(num_bits):
+            for b in range(num_sequences):
                 bit_sequences[b] += m[b]
         bitstring: str = ""
         validation_token: str = bit_sequences.pop(0)
-        _ = bit_sequences.pop()
         for s in bit_sequences:
             bitstring += s
         return BasicResult(bitstring, validation_token)
