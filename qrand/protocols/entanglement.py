@@ -56,14 +56,14 @@ class EntanglementProtocol(BareQuantumProtocol):
     ----------
     max_bits: int, optional
         The maximum number of usable bits to retrieve.
-    purify: int, default: True
+    purify: bool, default: True
         Whether to discard odd parity measurements (even parity expected).
 
     Attributes
     ----------
     max_bits: int, optional
         The maximum number of usable bits to retrieve.
-    purify: int
+    purify: bool
         Whether to discard odd parity measurements (even parity expected).
 
     Methods
