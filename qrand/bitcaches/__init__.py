@@ -21,7 +21,7 @@
 ## limitations under the License.
 
 from .basic import BasicCache
-from .cache import BitCache
+from .bitcache import BitCache
 
 __all__ = [
     "BitCache",

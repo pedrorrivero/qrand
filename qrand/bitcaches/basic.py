@@ -22,7 +22,7 @@
 
 from ..errors import raise_future_warning
 from ..helpers import ALPHABETS, validate_natural, validate_numeral
-from .cache import BitCache
+from .bitcache import BitCache
 
 
 ###############################################################################
