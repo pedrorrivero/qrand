@@ -20,6 +20,8 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
+from typing import cast
+
 from qiskit import QuantumCircuit as QiskitQuantumCircuit
 
 from ..circuit import QuantumCircuit
@@ -34,7 +36,7 @@ class QiskitCircuit(QuantumCircuit, QiskitQuantumCircuit):
 
     @property
     def num_qubits(self) -> int:
-        return super(QuantumCircuit, self).num_qubits
+        return cast(int, super(QuantumCircuit, self).num_qubits)
 
     ############################## SPECIAL GATES ##############################
     def measure(self, target_qubit: int) -> None:
