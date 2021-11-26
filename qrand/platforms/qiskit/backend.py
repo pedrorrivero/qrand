@@ -20,7 +20,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import Callable, Optional
+from typing import Any, Callable, cast, Dict, Optional
 
 from qiskit.providers import BackendV1 as Backend
 from qiskit.providers import Job, Options
@@ -39,13 +39,13 @@ class QiskitBackend(Backend, QuantumBackend):
 
     ############################### PUBLIC API ###############################
     @property
-    def configuration_dict(self) -> dict:
-        return self.configuration().to_dict()
+    def configuration_dict(self) -> Dict[str, Any]:
+        return cast(Dict[str, Any], self.configuration().to_dict())
 
     @property
     def max_experiments(self) -> int:
         return (
-            self.configuration_dict["max_experiments"]
+            cast(int, self.configuration_dict["max_experiments"])
             if self.configuration_dict.__contains__("max_experiments")
             and self.configuration_dict["max_experiments"]
             else 1
@@ -58,7 +58,7 @@ class QiskitBackend(Backend, QuantumBackend):
     @property
     def max_qubits(self) -> int:
         return (
-            self.configuration_dict["n_qubits"]
+            cast(int, self.configuration_dict["n_qubits"])
             if self.configuration_dict.__contains__("n_qubits")
             and self.configuration_dict["n_qubits"]
             else 1
@@ -67,7 +67,7 @@ class QiskitBackend(Backend, QuantumBackend):
     @property
     def max_shots(self) -> int:
         return (
-            self.configuration_dict["max_shots"]
+            cast(int, self.configuration_dict["max_shots"])
             if self.configuration_dict.__contains__("max_shots")
             and self.configuration_dict["max_shots"]
             and self.memory
@@ -77,7 +77,7 @@ class QiskitBackend(Backend, QuantumBackend):
     @property
     def memory(self) -> bool:
         return (
-            self.configuration_dict["memory"]
+            cast(bool, self.configuration_dict["memory"])
             if self.configuration_dict.__contains__("memory")
             else False
         )

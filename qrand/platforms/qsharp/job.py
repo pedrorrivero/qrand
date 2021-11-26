@@ -73,7 +73,7 @@ class QsharpJob(QuantumJob):
         self._circuit: QsharpCircuit = circuit
 
     @property
-    def num_measurements(self) -> int:  # type: ignore
+    def num_measurements(self) -> int:
         return self._num_measurements
 
     @num_measurements.setter

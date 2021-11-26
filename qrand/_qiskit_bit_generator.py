@@ -21,7 +21,7 @@
 ## limitations under the License.
 
 import struct
-from typing import Any, Callable, Final, List, Optional, Tuple
+from typing import Any, Callable, cast, Dict, Final, List, Optional, Tuple
 
 from qiskit import BasicAer, QuantumCircuit, execute
 from qiskit.providers import Backend, Job, Provider
@@ -393,8 +393,8 @@ class QiskitBitGenerator(QuantumBitGenerator):
 
     ########################### PRIVATE PROPERTIES ###########################
     @property
-    def _backend_config(self) -> dict:
-        return self._backend.configuration().to_dict()
+    def _backend_config(self) -> Dict[str, Any]:
+        return cast(Dict[str, Any], self._backend.configuration().to_dict())
 
     @property
     def _circuit(self) -> QuantumCircuit:
