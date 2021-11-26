@@ -57,7 +57,8 @@ def compute_bounded_factorization(
     Notice that this condition is automatically satisfied if the function
     always returns an optimal solution. However, since (a, b) ∈ D —as opposed
     to being general natural numbers— this condition is, in principle, less
-    restrictive than asking for perfect factoring of any given composite number.
+    restrictive than asking for perfect factoring of any given composite
+    number.
 
     By convention, we assume zero to not be contained in the natural numbers
     (ℕ).

@@ -109,7 +109,8 @@ class QuantumBitGenerator(UserBitGenerator):
         """
         The default number of output bits: either 32 or 64.
 
-        Final: it cannot be modified after instantiation through the ISRAW32 parameter. This is required by NumPy (e.g. `random_raw()` method).
+        Final: it cannot be modified after instantiation through the ISRAW32
+        parameter. This is required by NumPy (e.g. `random_raw()` method).
         """
         return 32 if self._ISRAW32 else 64
 
@@ -232,9 +233,10 @@ class QuantumBitGenerator(UserBitGenerator):
         References
         ----------
         .. [1] Wikipedia contributors, "Double-precision floating-point
-            format," Wikipedia, The Free Encyclopedia, https://en.wikipedia.org/
-            w/index.php?title=Double-precision_floating-
-            point_format&oldid=1024750735 (accessed May 25, 2021).
+            format," Wikipedia, The Free Encyclopedia,
+            https://en.wikipedia.org/w/index.php?title=
+            Double-precision_floating-point_format&oldid=1024750735
+            (accessed May 25, 2021).
         """
         min, max = float(min), float(max)
         bits_as_uint: int = 0x3FF0000000000000 | self.random_uint(64 - 12)

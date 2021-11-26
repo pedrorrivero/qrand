@@ -45,8 +45,8 @@ class QiskitBitGenerator(QuantumBitGenerator):
     """
     A quantum random bit-generator based on Qiskit, which can interface with
     NumPy's random module (e.g. to instantiate Generator objects). It
-    implements an efficient strategy to retrieve random bits from IBMQ's quantum
-    backends.
+    implements an efficient strategy to retrieve random bits from IBMQ's
+    quantum backends.
 
     PARAMETERS
     ----------

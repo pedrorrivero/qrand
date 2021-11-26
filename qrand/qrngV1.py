@@ -312,9 +312,10 @@ class Qrng(QuantumBitGenerator):
         References
         ----------
         .. [1] Wikipedia contributors, "Single-precision floating-point
-            format," Wikipedia, The Free Encyclopedia, https://en.wikipedia.org/
-            w/index.php?title=Single-precision_floating-
-            point_format&oldid=1024960263 (accessed May 25, 2021).
+            format," Wikipedia, The Free Encyclopedia,
+            https://en.wikipedia.org/w/index.php?title=
+            Single-precision_floating-point_format&oldid=1024960263
+            (accessed May 25, 2021).
         """
         min, max = float(min), float(max)
         bits_as_uint: int = 0x3F800000 | self.random_uint(32 - 9)
