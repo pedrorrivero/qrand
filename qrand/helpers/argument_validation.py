@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 29, 2021
+##   |  ___/|  _  /    DATE: November 25, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,8 +20,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import Any, Optional, Tuple, Union
-from warnings import warn
+from typing import Any, Tuple, Union
 
 
 ###############################################################################

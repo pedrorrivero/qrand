@@ -96,11 +96,11 @@ class QsharpJob(QuantumJob):
     def execute(self) -> List[str]:
         self.program = self.circuit.generate_code(self.num_measurements)
         if self.backend.resource_id is None or self.backend.target_id is None:
-            return self.program.simulate()
+            return self.program.simulate()  # type: ignore
         else:
             azure.connect(resourceId=self.backend.resource_id)
             azure.target(targetId=self.backend.target_id)
-            return azure.execute(
+            return azure.execute(  # type: ignore
                 self.program,
                 shots=1,
                 jobName=self._name,

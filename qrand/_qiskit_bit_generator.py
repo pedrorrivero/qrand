@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 19, 2021
+##   |  ___/|  _  /    DATE: November 25, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,8 +20,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-import struct
-from typing import Any, Callable, cast, Dict, Final, List, Optional, Tuple
+from typing import Any, Callable, Dict, Final, List, Optional, Tuple, cast
 
 from qiskit import BasicAer, QuantumCircuit, execute
 from qiskit.providers import Backend, Job, Provider

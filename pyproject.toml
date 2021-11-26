@@ -77,6 +77,7 @@ qiskit-ibmq-provider = { version = "0.12.3" }
 qiskit-terra = { version = "^0.17.2" }
 cirq = { version = "^0.10.0" }
 qsharp = { version = "^0.15.2103" }
+flake8 = "^4.0.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

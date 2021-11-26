@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 19, 2021
+##   |  ___/|  _  /    DATE: November 25, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -21,7 +21,7 @@
 ## limitations under the License.
 
 from abc import ABC, abstractmethod
-from typing import Optional, Tuple
+from typing import Optional
 
 from .backend import QuantumBackend
 from .circuit import QuantumCircuit

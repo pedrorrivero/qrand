@@ -20,7 +20,14 @@ repos:
     entry: mypy
     language: python
     types: [python]
-    args: ["--ignore-missing-imports", "--scripts-are-modules"]
+    args: [
+      "--scripts-are-modules",
+      "--ignore-missing-imports",
+      "--warn-unused-ignores",
+      "--warn-redundant-casts",
+      "--warn-return-any",
+      "--warn-unreachable",
+    ]
     require_serial: true
     additional_dependencies: []
   - id: black
@@ -32,17 +39,14 @@ repos:
     language_version: python3
     require_serial: true
     types: [python]
-
-- repo: https://gitlab.com/pycqa/flake8
-  rev: 3.9.2
-  hooks:
   - id: flake8
     name: flake8
     description: "PyFlakes lint + PyCodeStyle + McCabe cyclomatic complexity"
     stages: [commit]
-
-- repo: local
-  hooks:
+    entry: flake8
+    language: python
+    types: [python]
+    require_serial: true
   - id: pytest
     name: pytest
     description: "Run tests and produce coverage report"

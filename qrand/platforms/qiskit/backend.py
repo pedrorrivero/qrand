@@ -20,7 +20,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from typing import Any, Callable, cast, Dict, Optional
+from typing import Any, Dict, cast
 
 from qiskit.providers import BackendV1 as Backend
 from qiskit.providers import Job, Options
