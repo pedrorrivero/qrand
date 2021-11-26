@@ -26,7 +26,7 @@ from typing import Any, Callable, Final, Optional, Union
 from numpy import float64, uint32, uint64
 from randomgen import UserBitGenerator
 
-from .caches import BasicCache, BitCache
+from .bitcaches import BasicCache, BitCache
 from .helpers import validate_type
 from .platforms import QuantumPlatform
 from .protocols import HadamardProtocol, QuantumProtocol

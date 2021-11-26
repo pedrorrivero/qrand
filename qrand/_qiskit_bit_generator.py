@@ -29,7 +29,7 @@ from qiskit.providers.ibmq import IBMQError, least_busy
 from qiskit.providers.models import BackendConfiguration
 from qiskit.result import Counts, Result
 
-from .caches import BasicCache as BitCache
+from .bitcaches import BasicCache as BitCache
 from .errors import raise_future_warning
 from .quantum_bit_generator import QuantumBitGenerator
 
