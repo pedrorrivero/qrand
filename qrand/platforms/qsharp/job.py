@@ -21,7 +21,7 @@
 ## limitations under the License.
 
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, cast
 from warnings import warn
 
 from qsharp import azure
@@ -96,15 +96,16 @@ class QsharpJob(QuantumJob):
     def execute(self) -> List[str]:
         self.program = self.circuit.generate_code(self.num_measurements)
         if self.backend.resource_id is None or self.backend.target_id is None:
-            return self.program.simulate()  # type: ignore
+            result = self.program.simulate()
         else:
             azure.connect(resourceId=self.backend.resource_id)
             azure.target(targetId=self.backend.target_id)
-            return azure.execute(  # type: ignore
+            result = azure.execute(
                 self.program,
                 shots=1,
                 jobName=self._name,
             )
+        return cast(List[str], result)
 
     ############################### PRIVATE API ###############################
     @property
