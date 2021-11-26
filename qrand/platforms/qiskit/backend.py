@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 19, 2021
+##   |  ___/|  _  /    DATE: November 25, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -31,12 +31,10 @@ from ..backend import QuantumBackend
 ###############################################################################
 ## QISKIT BACKEND (DECORATOR)
 ###############################################################################
-class QiskitBackend(QuantumBackend, Backend):
+class QiskitBackend(Backend, QuantumBackend):
     def __init__(self, backend: Backend) -> None:
         self._base_backend: Backend = backend
-        super(QuantumBackend, self).__init__(
-            backend.configuration(), backend.provider()
-        )
+        super().__init__(backend.configuration(), backend.provider())
         self._options: Options = backend._options
 
     ############################### PUBLIC API ###############################
