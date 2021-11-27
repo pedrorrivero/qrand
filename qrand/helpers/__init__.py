@@ -1,7 +1,7 @@
 ##    _____  _____
 ##   |  __ \|  __ \    AUTHOR: Pedro Rivero
 ##   | |__) | |__) |   ---------------------------------
-##   |  ___/|  _  /    DATE: May 28, 2021
+##   |  ___/|  _  /    DATE: November 26, 2021
 ##   | |    | | \ \    ---------------------------------
 ##   |_|    |_|  \_\   https://github.com/pedrorrivero
 ##
@@ -20,7 +20,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-from .argument_validation import validate_natural, validate_type
+from .argument_validation import typecheck, validate_natural, validate_type
 from .bounded_factorization import compute_bounded_factorization
 from .numeral_encodings import (
     ALPHABETS,
@@ -35,6 +35,7 @@ __all__ = [
     "validate_natural",
     "validate_numeral",
     "validate_type",
+    "typecheck",
     "compute_bounded_factorization",
     "ALPHABETS",
     "decode_numeral",
